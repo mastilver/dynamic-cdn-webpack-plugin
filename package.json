@@ -31,8 +31,7 @@
     "html-webpack-externals-plugin": "^2.2.1",
     "module-to-cdn": "^1.1.1",
     "parent-module": "^0.1.0",
-    "read-pkg": "^2.0.0",
-    "read-pkg-up": "^2.0.0"
+    "read-pkg": "^2.0.0"
   },
   "devDependencies": {
     "babel-cli": "^6.24.1",
@@ -54,9 +53,6 @@
   "xo": {
     "esnext": true,
     "space": 4,
-    "ignores": [
-      "**/coverage/**"
-    ],
     "rules": {
       "eqeqeq": "off",
       "no-eq-null": "off"

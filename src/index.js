@@ -3,8 +3,8 @@ import path from 'path';
 import HtmlWebpackExternalsPlugin from 'html-webpack-externals-plugin';
 import moduleToCdn from 'module-to-cdn';
 import parent from 'parent-module';
-import { sync as findUp } from 'find-up';
-import { sync as readPkg } from 'read-pkg';
+import {sync as findUp} from 'find-up';
+import {sync as readPkg} from 'read-pkg';
 
 export default class ModulesCdnWebpackPlugin extends HtmlWebpackExternalsPlugin {
     constructor({modules = [], disable = false}) {
@@ -23,7 +23,6 @@ export default class ModulesCdnWebpackPlugin extends HtmlWebpackExternalsPlugin 
             if (!packageJson.dependencies[name]) {
                 throw new Error(`Tried to use a CDN for ${name} but it's not present in your dependencies`);
             }
-
 
             const {version} = readPkg(path.join(projectPath, 'node_modules', name));
 
