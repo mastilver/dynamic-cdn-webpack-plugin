@@ -37,6 +37,36 @@ module.exports = {
 }
 ```
 
+Or if you want to provide your own modules config:
+
+```js
+module.exports = {
+    // ...
+    plugins: [
+        new HtmlWebpackPlugin(),
+        new ModulesCdnWebpackPlugin({
+            modules: [
+                {
+                    name: 'react',
+                    var: 'React',
+                    url: '//unpkg.com/[name]@[version]/dist/react.min.js'
+                },
+                {
+                    name: 'redux',
+                    var: 'Redux',
+                    url: '//unpkg.com/[name]@[version]/dist/redux.min.js'
+                },
+                {
+                    name: 'react-redux',
+                    var: 'ReactRedux',
+                    url: '//unpkg.com/[name]@[version]/dist/react-redux.min.js'
+                }
+            ]
+        })
+    ]
+}
+```
+
 `app.js`<br>
 ```js
 const React = require('react');
@@ -54,7 +84,7 @@ Will generate:
     <title>Webpack App</title>
   </head>
   <body>
-    <script type="text/javascript" src="https://unpkg.com/react@15.5.3/dist/react.min.js"><script src="build/app.js"></script>
+    <script type="text/javascript" src="//unpkg.com/react@15.5.3/dist/react.min.js"></script>
   </body>
 </html>
 ```
@@ -66,9 +96,9 @@ Will generate:
 
 #### options.modules
 
-Type: `Array<string>`
+Type: `Array<string>|Array<Object>`
 
-Names of module that will use cdn
+Names or configs of module that will use cdn
 
 #### options.disable
 
