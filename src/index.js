@@ -24,14 +24,14 @@ export default class ModulesCdnWebpackPlugin extends HtmlWebpackExternalsPlugin 
             const name = isObject ? module.name : module;
             const {version} = readPkg(path.join(projectPath, 'node_modules', name));
 
+            if (!packageJson.dependencies[name]) {
+                console.warn(`Tried to use a CDN for ${name} but it's not present in your dependencies`);
+            }
+
             if (isObject) {
                 module.url = module.url.replace('[name]', name);
                 module.url = module.url.replace('[version]', version);
                 return module;
-            }
-
-            if (!packageJson.dependencies[name]) {
-                throw new Error(`Tried to use a CDN for ${name} but it's not present in your dependencies`);
             }
 
             return moduleToCdn(name, version);
