@@ -29,7 +29,7 @@
   "dependencies": {
     "find-up": "^2.1.0",
     "html-webpack-externals-plugin": "^2.2.1",
-    "module-to-cdn": "^1.1.1",
+    "module-to-cdn": "^2.0.0",
     "parent-module": "^0.1.0",
     "read-pkg": "^2.0.0"
   },

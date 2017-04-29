@@ -19,16 +19,33 @@ export default class ModulesCdnWebpackPlugin extends HtmlWebpackExternalsPlugin 
             modules = [];
         }
 
+        const warnings = [];
+
         const cdnConfigs = modules.map(name => {
             if (!packageJson.dependencies[name]) {
-                throw new Error(`Tried to use a CDN for ${name} but it's not present in your dependencies`);
+                warnings.push(new Error(`Tried to use a CDN for ${name} but it's not present in your dependencies`));
+                return null;
             }
 
             const {version} = readPkg(path.join(projectPath, 'node_modules', name));
 
-            return moduleToCdn(name, version);
-        });
+            const cdnConfig = moduleToCdn(name, version);
+
+            if (cdnConfig == null) {
+                warnings.push(new Error(`'${name}' is not available through cdn, add it to https://github.com/mastilver/module-to-cdn/blob/master/modules.json if you think it should`));
+            }
+
+            return cdnConfig;
+        }).filter(x => Boolean(x));
 
         super(cdnConfigs);
+
+        this.warnings = warnings;
+    }
+
+    apply(compiler) {
+        compiler.plugin('compilation', compilation => {
+            compilation.warnings = compilation.warnings.concat(this.warnings);
+        });
     }
 }
