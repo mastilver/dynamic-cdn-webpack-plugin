@@ -6,7 +6,7 @@
 ## Install
 
 ```
-$ npm install --save modules-cdn-webpack-plugin
+$ npm install --save modules-cdn-webpack-plugin module-to-cdn
 ```
 
 
