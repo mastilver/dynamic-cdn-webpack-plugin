@@ -44,6 +44,8 @@ export default class ModulesCdnWebpackPlugin extends HtmlWebpackExternalsPlugin 
     }
 
     apply(compiler) {
+        super.apply(compiler);
+
         compiler.plugin('compilation', compilation => {
             compilation.warnings = compilation.warnings.concat(this.warnings);
         });
