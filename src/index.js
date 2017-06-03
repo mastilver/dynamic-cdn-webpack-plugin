@@ -1,30 +1,59 @@
 import path from 'path';
 
-import HtmlWebpackExternalsPlugin from 'html-webpack-externals-plugin';
 import moduleToCdn from 'module-to-cdn';
 import parent from 'parent-module';
 import {sync as findUp} from 'find-up';
 import {sync as readPkg} from 'read-pkg';
 
-export default class ModulesCdnWebpackPlugin extends HtmlWebpackExternalsPlugin {
+export default class ModulesCdnWebpackPlugin {
     constructor({modules = [], disable = false}) {
-        const webpackConfigPath = parent();
-        const packageJsonPath = findUp('package.json', {
-            cwd: path.dirname(webpackConfigPath)
-        });
-        const projectPath = path.dirname(packageJsonPath);
-        const packageJson = readPkg(packageJsonPath);
-
         if (disable) {
             modules = [];
         }
 
-        const warnings = [];
+        this.modules = modules;
+    }
 
-        const cdnConfigs = modules.map(name => {
+    apply(compiler) {
+        const context = compiler.options.context || path.dirname(parent());
+
+        const {warnings, externals, urls} = this.execute({context, modules: this.modules});
+
+        compiler.options.externals = Object.assign({}, compiler.options.externals, externals);
+
+        compiler.plugin('emit', (compilation, cb) => {
+            const entrypoint = compilation.entrypoints[Object.keys(compilation.entrypoints)[0]];
+            const parentChunk = entrypoint.chunks.find(x => x.hasEntryModule());
+
+            for (const url of urls) {
+                const chunk = compilation.addChunk();
+                chunk.files.push(url);
+
+                chunk.parents = [parentChunk];
+                parentChunk.addChunk(chunk);
+                entrypoint.insertChunk(chunk, parentChunk);
+            }
+
+            compilation.warnings = compilation.warnings.concat(warnings);
+            cb();
+        });
+    }
+
+    execute({context, modules}) {
+        const packageJsonPath = findUp('package.json', {
+            cwd: context
+        });
+        const projectPath = path.dirname(packageJsonPath);
+        const packageJson = readPkg(packageJsonPath);
+
+        const warnings = [];
+        const urls = [];
+        const externals = {};
+
+        for (const name of modules) {
             if (!packageJson.dependencies[name]) {
                 warnings.push(new Error(`Tried to use a CDN for ${name} but it's not present in your dependencies`));
-                return null;
+                continue;
             }
 
             const {version} = readPkg(path.join(projectPath, 'node_modules', name));
@@ -33,21 +62,17 @@ export default class ModulesCdnWebpackPlugin extends HtmlWebpackExternalsPlugin 
 
             if (cdnConfig == null) {
                 warnings.push(new Error(`'${name}' is not available through cdn, add it to https://github.com/mastilver/module-to-cdn/blob/master/modules.json if you think it should`));
+                continue;
             }
 
-            return cdnConfig;
-        }).filter(x => Boolean(x));
+            externals[cdnConfig.name] = cdnConfig.var;
+            urls.push(cdnConfig.url);
+        }
 
-        super(cdnConfigs);
-
-        this.warnings = warnings;
-    }
-
-    apply(compiler) {
-        super.apply(compiler);
-
-        compiler.plugin('compilation', compilation => {
-            compilation.warnings = compilation.warnings.concat(this.warnings);
-        });
+        return {
+            warnings,
+            urls,
+            externals
+        };
     }
 }
