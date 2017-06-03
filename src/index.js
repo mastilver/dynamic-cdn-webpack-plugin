@@ -25,8 +25,10 @@ export default class ModulesCdnWebpackPlugin {
             const entrypoint = compilation.entrypoints[Object.keys(compilation.entrypoints)[0]];
             const parentChunk = entrypoint.chunks.find(x => x.hasEntryModule());
 
-            for (const url of urls) {
-                const chunk = compilation.addChunk();
+            for (const name of Object.keys(urls)) {
+                const url = urls[name];
+
+                const chunk = compilation.addChunk(name);
                 chunk.files.push(url);
 
                 chunk.parents = [parentChunk];
@@ -47,7 +49,7 @@ export default class ModulesCdnWebpackPlugin {
         const packageJson = readPkg(packageJsonPath);
 
         const warnings = [];
-        const urls = [];
+        const urls = {};
         const externals = {};
 
         for (const name of modules) {
@@ -66,7 +68,7 @@ export default class ModulesCdnWebpackPlugin {
             }
 
             externals[cdnConfig.name] = cdnConfig.var;
-            urls.push(cdnConfig.url);
+            urls[cdnConfig.name] = cdnConfig.url;
         }
 
         return {
