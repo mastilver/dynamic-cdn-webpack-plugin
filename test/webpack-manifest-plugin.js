@@ -25,11 +25,11 @@ test('webpack-manifest-plugin', async t => {
         },
 
         plugins: [
-            new ModulesCdnWebpackPlugin({
-                modules: ['react']
-            }),
             new ManifestPlugin({
                 fileName: 'manifest.json'
+            }),
+            new ModulesCdnWebpackPlugin({
+                modules: ['react']
             })
         ]
     });

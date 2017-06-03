@@ -25,10 +25,10 @@ test('html-webpack-plugin', async t => {
         },
 
         plugins: [
+            new HtmlWebpackPlugin(),
             new ModulesCdnWebpackPlugin({
                 modules: ['react']
-            }),
-            new HtmlWebpackPlugin()
+            })
         ]
     });
 

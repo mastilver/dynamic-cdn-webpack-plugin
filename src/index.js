@@ -21,7 +21,7 @@ export default class ModulesCdnWebpackPlugin {
 
         compiler.options.externals = Object.assign({}, compiler.options.externals, externals);
 
-        compiler.plugin('emit', (compilation, cb) => {
+        compiler.plugin('after-compile', (compilation, cb) => {
             const entrypoint = compilation.entrypoints[Object.keys(compilation.entrypoints)[0]];
             const parentChunk = entrypoint.chunks.find(x => x.isInitial());
 
