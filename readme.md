@@ -29,10 +29,10 @@ module.exports = {
     },
 
     plugins: [
-        new HtmlWebpackPlugin(),
         new ModulesCdnWebpackPlugin({
             modules: ['react', 'redux', 'react-redux']
-        })
+        }),
+        new HtmlWebpackPlugin()
     ]
 }
 ```
@@ -78,11 +78,11 @@ module.exports = {
     },
 
     plugins: [
-        new ManifestPlugin({
-            fileName: 'manifest.json'
-        }),
         new ModulesCdnWebpackPlugin({
             modules: ['react', 'redux', 'react-redux']
+        }),
+        new ManifestPlugin({
+            fileName: 'manifest.json'
         })
     ]
 }
