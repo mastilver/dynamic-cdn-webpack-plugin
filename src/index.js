@@ -23,7 +23,7 @@ export default class ModulesCdnWebpackPlugin {
 
         compiler.plugin('emit', (compilation, cb) => {
             const entrypoint = compilation.entrypoints[Object.keys(compilation.entrypoints)[0]];
-            const parentChunk = entrypoint.chunks.find(x => x.hasEntryModule());
+            const parentChunk = entrypoint.chunks.find(x => x.isInitial());
 
             for (const name of Object.keys(urls)) {
                 const url = urls[name];
