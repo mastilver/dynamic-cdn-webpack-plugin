@@ -1,6 +1,6 @@
 {
   "name": "modules-cdn-webpack-plugin",
-  "version": "2.1.1",
+  "version": "2.1.2",
   "description": "Get your dependencies from a cdn rather than bundling them in your app",
   "license": "MIT",
   "repository": "mastilver/modules-cdn-webpack-plugin",
