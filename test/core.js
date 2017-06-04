@@ -13,7 +13,7 @@ test('basic', async t => {
     await cleanDir(path.resolve(__dirname, './fixtures/output/basic'));
 
     const stats = await runWebpack({
-        context: path.resolve(__dirname, './fixtures/basic'),
+        context: path.resolve(__dirname, './fixtures/single'),
 
         output: {
             publicPath: '',

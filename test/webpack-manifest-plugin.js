@@ -14,7 +14,7 @@ test('webpack-manifest-plugin', async t => {
     await cleanDir(path.resolve(__dirname, './fixtures/output/webpack-manifest-plugin'));
 
     const stats = await runWebpack({
-        context: path.resolve(__dirname, './fixtures/webpack-manifest-plugin'),
+        context: path.resolve(__dirname, './fixtures/single'),
 
         output: {
             publicPath: '',
