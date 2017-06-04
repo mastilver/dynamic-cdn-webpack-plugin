@@ -2,6 +2,7 @@ import path from 'path';
 import fs from 'mz/fs';
 
 import test from 'ava';
+import includes from 'babel-runtime/core-js/string/includes';
 
 import ModulesCdnWebpackPlugin from '../src';
 
@@ -32,8 +33,8 @@ test('basic', async t => {
 
     const files = stats.compilation.chunks.reduce((files, x) => files.concat(x.files), []);
 
-    t.true(files.includes('app.js'));
-    t.true(files.includes('https://unpkg.com/react@15.5.4/dist/react.min.js'));
+    t.true(includes(files, 'app.js'));
+    t.true(includes(files, 'https://unpkg.com/react@15.5.4/dist/react.min.js'));
 
     const externals = stats.compilation.options.externals;
     t.deepEqual(externals, {react: 'React'});
@@ -41,6 +42,6 @@ test('basic', async t => {
     const output = await fs.readFile(path.resolve(__dirname, './fixtures/output/basic/app.js'));
 
     // NOTE: not inside t.false to prevent ava to display whole file in console
-    const doesIncludeReact = output.includes('PureComponent');
+    const doesIncludeReact = includes(output, 'PureComponent');
     t.false(doesIncludeReact);
 });

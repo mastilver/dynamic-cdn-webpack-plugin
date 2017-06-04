@@ -3,6 +3,7 @@ import fs from 'mz/fs';
 
 import test from 'ava';
 import ManifestPlugin from 'webpack-manifest-plugin';
+import includes from 'babel-runtime/core-js/string/includes';
 
 import ModulesCdnWebpackPlugin from '../src';
 
@@ -47,6 +48,6 @@ test('webpack-manifest-plugin', async t => {
     const output = await fs.readFile(path.resolve(__dirname, './fixtures/output/webpack-manifest-plugin/app.js'));
 
     // NOTE: not inside t.false to prevent ava to display whole file in console
-    const doesIncludeReact = output.includes('PureComponent');
+    const doesIncludeReact = includes(output, 'PureComponent');
     t.false(doesIncludeReact);
 });
