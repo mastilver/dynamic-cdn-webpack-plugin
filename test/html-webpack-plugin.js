@@ -13,7 +13,7 @@ import cleanDir from './helpers/clean-dir';
 test('html-webpack-plugin', async t => {
     await cleanDir(path.resolve(__dirname, './fixtures/output/html-webpack-plugin'));
 
-    const stats = await runWebpack({
+    await runWebpack({
         context: path.resolve(__dirname, './fixtures/single'),
 
         output: {
@@ -27,9 +27,7 @@ test('html-webpack-plugin', async t => {
 
         plugins: [
             new HtmlWebpackPlugin(),
-            new ModulesCdnWebpackPlugin({
-                modules: ['react']
-            })
+            new ModulesCdnWebpackPlugin()
         ]
     });
 
@@ -37,9 +35,6 @@ test('html-webpack-plugin', async t => {
 
     t.true(includes(indexFile, 'src="/app.js"'));
     t.true(includes(indexFile, 'src="https://unpkg.com/react@15.5.4/dist/react.js"'));
-
-    const externals = stats.compilation.options.externals;
-    t.deepEqual(externals, {react: 'React'});
 
     const output = await fs.readFile(path.resolve(__dirname, './fixtures/output/html-webpack-plugin/app.js'));
 

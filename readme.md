@@ -1,6 +1,6 @@
 # modules-cdn-webpack-plugin [![Build Status](https://travis-ci.org/mastilver/modules-cdn-webpack-plugin.svg?branch=master)](https://travis-ci.org/mastilver/modules-cdn-webpack-plugin)
 
-> Get your dependencies from a cdn rather than bundling them in your app
+> Dynamically get your dependencies from a cdn rather than bundling them in your app
 
 
 ## Install
@@ -30,21 +30,36 @@ module.exports = {
 
     plugins: [
         new HtmlWebpackPlugin(),
-        new ModulesCdnWebpackPlugin({
-            modules: ['react', 'redux', 'react-redux']
-        })
+        new ModulesCdnWebpackPlugin()
     ]
 }
 ```
 
 `app.js`<br>
 ```js
-const React = require('react');
+import React from 'react';
+import { BrowserRouter } from 'react-router-dom';
 
 // ... do react stuff
 ```
 
 Will generate:
+
+```js
+/* simplified webpack build */
+[function(module, __webpack_exports__, __webpack_require__) {
+    module.exports = React;
+}),
+(function(module, __webpack_exports__, __webpack_require__) {
+    module.exports = ReactRouterDOM;
+}),
+(function(module, __webpack_exports__, __webpack_require__) {
+    var react = __webpack_require__(0);
+    var reactRouterDOM = __webpack_require__(1);
+
+    /* ... */
+})]
+```
 
 ```html
 <!DOCTYPE html>
@@ -54,7 +69,7 @@ Will generate:
     <title>Webpack App</title>
   </head>
   <body>
-    <script type="text/javascript" src="https://unpkg.com/react@15.5.3/dist/react.min.js"></script><script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/redux/3.6.0/redux.min.js"></script><script type="text/javascript"  src="https://cdnjs.cloudflare.com/ajax/libs/react-redux/5.0.3/react-redux.min.js"></script><script src="build/app.js"></script>
+    <script type="text/javascript" src="https://unpkg.com/react@15.5.3/dist/react.js"></script><script type="text/javascript" src="https://unpkg.com/react-router-dom@4.1.1/umd/react-router-dom.js"></script><script src="build/app.js"></script>
   </body>
 </html>
 ```
@@ -81,28 +96,42 @@ module.exports = {
         new ManifestPlugin({
             fileName: 'manifest.json'
         }),
-        new ModulesCdnWebpackPlugin({
-            modules: ['react', 'redux', 'react-redux']
-        })
+        new ModulesCdnWebpackPlugin()
     ]
 }
 ```
 
 `app.js`<br>
 ```js
-const React = require('react');
+import React from 'react';
+import { BrowserRouter } from 'react-router-dom';
 
 // ... do react stuff
 ```
 
 Will generate:
 
+```js
+/* simplified webpack build */
+[function(module, __webpack_exports__, __webpack_require__) {
+    module.exports = React;
+}),
+(function(module, __webpack_exports__, __webpack_require__) {
+    module.exports = ReactRouterDOM;
+}),
+(function(module, __webpack_exports__, __webpack_require__) {
+    var react = __webpack_require__(0);
+    var reactRouterDOM = __webpack_require__(1);
+
+    /* ... */
+})]
+```
+
 ```json
 {
     "app.js": "app.js",
-    "react.js": "https://unpkg.com/react@15.5.3/dist/react.min.js",
-    "redux.js": "https://cdnjs.cloudflare.com/ajax/libs/redux/3.6.0/redux.min.js",
-    "react-redux.js": "https://cdnjs.cloudflare.com/ajax/libs/react-redux/5.0.3/react-redux.min.js"
+    "react.js": "https://unpkg.com/react@15.5.3/dist/react.js",
+    "react-router-dom.js": "https://unpkg.com/react-router-dom@4.1.1/umd/react-router-dom.js"
 }
 ```
 
@@ -110,12 +139,6 @@ Will generate:
 ## API
 
 ### ModulesCdnWebpackPlugin(options)
-
-#### options.modules
-
-Type: `Array<string>`
-
-Names of module that will use cdn
 
 #### options.disable
 

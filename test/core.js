@@ -25,9 +25,7 @@ test('basic', async t => {
         },
 
         plugins: [
-            new ModulesCdnWebpackPlugin({
-                modules: ['react']
-            })
+            new ModulesCdnWebpackPlugin()
         ]
     });
 
@@ -36,25 +34,25 @@ test('basic', async t => {
     t.true(includes(files, 'app.js'));
     t.true(includes(files, 'https://unpkg.com/react@15.5.4/dist/react.js'));
 
-    const externals = stats.compilation.options.externals;
-    t.deepEqual(externals, {react: 'React'});
-
     const output = await fs.readFile(path.resolve(__dirname, './fixtures/output/basic/app.js'));
 
     // NOTE: not inside t.false to prevent ava to display whole file in console
     const doesIncludeReact = includes(output, 'PureComponent');
     t.false(doesIncludeReact);
+
+    const doesRequireReact = includes(output, 'module.exports = React');
+    t.true(doesRequireReact);
 });
 
 test('using production version', async t => {
-    await cleanDir(path.resolve(__dirname, './fixtures/output/basic'));
+    await cleanDir(path.resolve(__dirname, './fixtures/output/env-prod'));
 
     const stats = await runWebpack({
         context: path.resolve(__dirname, './fixtures/single'),
 
         output: {
             publicPath: '',
-            path: path.resolve(__dirname, './fixtures/output/basic')
+            path: path.resolve(__dirname, './fixtures/output/env-prod')
         },
 
         entry: {
@@ -63,7 +61,6 @@ test('using production version', async t => {
 
         plugins: [
             new ModulesCdnWebpackPlugin({
-                modules: ['react'],
                 env: 'production'
             })
         ]
@@ -74,10 +71,7 @@ test('using production version', async t => {
     t.true(includes(files, 'app.js'));
     t.true(includes(files, 'https://unpkg.com/react@15.5.4/dist/react.min.js'));
 
-    const externals = stats.compilation.options.externals;
-    t.deepEqual(externals, {react: 'React'});
-
-    const output = await fs.readFile(path.resolve(__dirname, './fixtures/output/basic/app.js'));
+    const output = await fs.readFile(path.resolve(__dirname, './fixtures/output/env-prod/app.js'));
 
     // NOTE: not inside t.false to prevent ava to display whole file in console
     const doesIncludeReact = includes(output, 'PureComponent');
@@ -87,14 +81,14 @@ test('using production version', async t => {
 test.serial('with NODE_ENV=production', async t => {
     process.env.NODE_ENV = 'production';
 
-    await cleanDir(path.resolve(__dirname, './fixtures/output/basic'));
+    await cleanDir(path.resolve(__dirname, './fixtures/output/node-env-prod'));
 
     const stats = await runWebpack({
         context: path.resolve(__dirname, './fixtures/single'),
 
         output: {
             publicPath: '',
-            path: path.resolve(__dirname, './fixtures/output/basic')
+            path: path.resolve(__dirname, './fixtures/output/node-env-prod')
         },
 
         entry: {
@@ -102,9 +96,7 @@ test.serial('with NODE_ENV=production', async t => {
         },
 
         plugins: [
-            new ModulesCdnWebpackPlugin({
-                modules: ['react']
-            })
+            new ModulesCdnWebpackPlugin()
         ]
     });
 
@@ -113,10 +105,7 @@ test.serial('with NODE_ENV=production', async t => {
     t.true(includes(files, 'app.js'));
     t.true(includes(files, 'https://unpkg.com/react@15.5.4/dist/react.min.js'));
 
-    const externals = stats.compilation.options.externals;
-    t.deepEqual(externals, {react: 'React'});
-
-    const output = await fs.readFile(path.resolve(__dirname, './fixtures/output/basic/app.js'));
+    const output = await fs.readFile(path.resolve(__dirname, './fixtures/output/node-env-prod/app.js'));
 
     // NOTE: not inside t.false to prevent ava to display whole file in console
     const doesIncludeReact = includes(output, 'PureComponent');

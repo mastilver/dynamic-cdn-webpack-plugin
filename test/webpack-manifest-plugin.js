@@ -13,7 +13,7 @@ import cleanDir from './helpers/clean-dir';
 test('webpack-manifest-plugin', async t => {
     await cleanDir(path.resolve(__dirname, './fixtures/output/webpack-manifest-plugin'));
 
-    const stats = await runWebpack({
+    await runWebpack({
         context: path.resolve(__dirname, './fixtures/single'),
 
         output: {
@@ -29,9 +29,7 @@ test('webpack-manifest-plugin', async t => {
             new ManifestPlugin({
                 fileName: 'manifest.json'
             }),
-            new ModulesCdnWebpackPlugin({
-                modules: ['react']
-            })
+            new ModulesCdnWebpackPlugin()
         ]
     });
 
@@ -41,9 +39,6 @@ test('webpack-manifest-plugin', async t => {
         'app.js': 'app.js',
         'react.js': 'https://unpkg.com/react@15.5.4/dist/react.js'
     });
-
-    const externals = stats.compilation.options.externals;
-    t.deepEqual(externals, {react: 'React'});
 
     const output = await fs.readFile(path.resolve(__dirname, './fixtures/output/webpack-manifest-plugin/app.js'));
 
