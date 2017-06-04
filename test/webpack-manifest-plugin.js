@@ -39,7 +39,7 @@ test('webpack-manifest-plugin', async t => {
 
     t.deepEqual(manifest, {
         'app.js': 'app.js',
-        'react.js': 'https://unpkg.com/react@15.5.4/dist/react.min.js'
+        'react.js': 'https://unpkg.com/react@15.5.4/dist/react.js'
     });
 
     const externals = stats.compilation.options.externals;

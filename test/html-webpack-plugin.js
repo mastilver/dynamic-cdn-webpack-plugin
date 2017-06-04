@@ -36,7 +36,7 @@ test('html-webpack-plugin', async t => {
     const indexFile = await fs.readFile(path.resolve(__dirname, './fixtures/output/html-webpack-plugin/index.html'), {encoding: 'utf-8'});
 
     t.true(includes(indexFile, 'src="/app.js"'));
-    t.true(includes(indexFile, 'src="https://unpkg.com/react@15.5.4/dist/react.min.js"'));
+    t.true(includes(indexFile, 'src="https://unpkg.com/react@15.5.4/dist/react.js"'));
 
     const externals = stats.compilation.options.externals;
     t.deepEqual(externals, {react: 'React'});

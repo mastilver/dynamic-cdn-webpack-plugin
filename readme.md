@@ -124,6 +124,14 @@ Default: `false`
 
 Usefull when working offline, will fallbacl to webpack normal behaviour
 
+#### options.env
+
+Type: `string`<br>
+Default: `process.env.NODE_ENV || 'development'`<br>
+Values: `development`, `production`
+
+Determine if it should load the development or the production version of modules
+
 
 ## Related
 

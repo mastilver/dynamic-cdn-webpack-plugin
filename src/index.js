@@ -8,18 +8,19 @@ import HtmlWebpackPlugin from 'html-webpack-plugin';
 import HtmlWebpackIncludeAssetsPlugin from 'html-webpack-include-assets-plugin';
 
 export default class ModulesCdnWebpackPlugin {
-    constructor({modules = [], disable = false}) {
+    constructor({modules = [], disable = false, env}) {
         if (disable) {
             modules = [];
         }
 
         this.modules = modules;
+        this.env = env || process.env.NODE_ENV || 'development';
     }
 
     apply(compiler) {
         const context = compiler.options.context || path.dirname(parent());
 
-        const {warnings, externals, urls} = this.execute({context, modules: this.modules});
+        const {warnings, externals, urls} = this.execute({context, modules: this.modules, env: this.env});
 
         compiler.options.externals = Object.assign({}, compiler.options.externals, externals);
 
@@ -68,7 +69,7 @@ export default class ModulesCdnWebpackPlugin {
         includeAssetsPlugin.apply(compiler);
     }
 
-    execute({context, modules}) {
+    execute({context, modules, env}) {
         const packageJsonPath = findUp('package.json', {
             cwd: context
         });
@@ -87,7 +88,7 @@ export default class ModulesCdnWebpackPlugin {
 
             const {version} = readPkg(path.join(projectPath, 'node_modules', name));
 
-            const cdnConfig = moduleToCdn(name, version);
+            const cdnConfig = moduleToCdn(name, version, {env});
 
             if (cdnConfig == null) {
                 warnings.push(new Error(`'${name}' is not available through cdn, add it to https://github.com/mastilver/module-to-cdn/blob/master/modules.json if you think it should`));
