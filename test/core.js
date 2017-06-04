@@ -113,3 +113,28 @@ test.serial('with NODE_ENV=production', async t => {
 
     delete process.env.NODE_ENV;
 });
+
+test('nested dependencies', async t => {
+    await cleanDir(path.resolve(__dirname, './fixtures/output/nested-dependencies'));
+
+    const stats = await runWebpack({
+        context: path.resolve(__dirname, './fixtures/nested-dependencies'),
+
+        output: {
+            publicPath: '',
+            path: path.resolve(__dirname, './fixtures/output/nested-dependencies')
+        },
+
+        entry: {
+            app: './index.js'
+        },
+
+        plugins: [
+            new ModulesCdnWebpackPlugin()
+        ]
+    });
+
+    const files = stats.compilation.chunks.reduce((files, x) => files.concat(x.files), []);
+
+    t.deepEqual(files, ['app.js']);
+});

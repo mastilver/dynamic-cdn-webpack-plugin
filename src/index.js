@@ -1,12 +1,9 @@
-import path from 'path';
-
 import moduleToCdn from 'module-to-cdn';
-import parent from 'parent-module';
-import {sync as findUp} from 'find-up';
 import {sync as readPkg} from 'read-pkg';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
 import HtmlWebpackIncludeAssetsPlugin from 'html-webpack-include-assets-plugin';
 import ExternalModule from 'webpack/lib/ExternalModule';
+import resolvePkg from 'resolve-pkg';
 
 export default class ModulesCdnWebpackPlugin {
     constructor({disable = false, env} = {}) {
@@ -16,10 +13,8 @@ export default class ModulesCdnWebpackPlugin {
     }
 
     apply(compiler) {
-        const context = compiler.options.context || path.dirname(parent());
-
         if (!this.disable) {
-            this.execute(compiler, {context, modules: this.modules, env: this.env});
+            this.execute(compiler, {env: this.env});
         }
 
         const isUsingHtmlWebpackPlugin = compiler.options.plugins.find(x => x instanceof HtmlWebpackPlugin);
@@ -31,13 +26,7 @@ export default class ModulesCdnWebpackPlugin {
         }
     }
 
-    execute(compiler, {context, env}) {
-        const packageJsonPath = findUp('package.json', {
-            cwd: context
-        });
-        const projectPath = path.dirname(packageJsonPath);
-        const packageJson = readPkg(packageJsonPath);
-
+    execute(compiler, {env}) {
         compiler.plugin('normal-module-factory', nmf => {
             nmf.plugin('factory', factory => (data, cb) => {
                 const dependency = data.dependencies[0];
@@ -48,11 +37,7 @@ export default class ModulesCdnWebpackPlugin {
 
                 const moduleName = dependency.request;
 
-                if (!packageJson.dependencies[moduleName]) {
-                    return cb(new Error(`Tried to use a CDN for ${moduleName} but it's not present in your dependencies`));
-                }
-
-                const {version} = readPkg(path.join(projectPath, 'node_modules', moduleName));
+                const {version} = readPkg(resolvePkg(moduleName, {cwd: data.context}));
 
                 const cdnConfig = moduleToCdn(moduleName, version, {env});
 
