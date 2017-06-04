@@ -4,6 +4,8 @@ import moduleToCdn from 'module-to-cdn';
 import parent from 'parent-module';
 import {sync as findUp} from 'find-up';
 import {sync as readPkg} from 'read-pkg';
+import HtmlWebpackPlugin from 'html-webpack-plugin';
+import HtmlWebpackIncludeAssetsPlugin from 'html-webpack-include-assets-plugin';
 
 export default class ModulesCdnWebpackPlugin {
     constructor({modules = [], disable = false}) {
@@ -21,6 +23,20 @@ export default class ModulesCdnWebpackPlugin {
 
         compiler.options.externals = Object.assign({}, compiler.options.externals, externals);
 
+        const isUsingHtmlWebpackPlugin = compiler.options.plugins.find(x => x instanceof HtmlWebpackPlugin);
+
+        if (isUsingHtmlWebpackPlugin) {
+            this.applyHtmlWebpackPlugin(compiler, {urls});
+        } else {
+            this.applyWebpackCore(compiler, {urls});
+        }
+
+        compiler.plugin('compilation', compilation => {
+            compilation.warnings = compilation.warnings.concat(warnings);
+        });
+    }
+
+    applyWebpackCore(compiler, {urls}) {
         compiler.plugin('after-compile', (compilation, cb) => {
             const entrypoint = compilation.entrypoints[Object.keys(compilation.entrypoints)[0]];
             const parentChunk = entrypoint.chunks.find(x => x.isInitial());
@@ -36,9 +52,20 @@ export default class ModulesCdnWebpackPlugin {
                 entrypoint.insertChunk(chunk, parentChunk);
             }
 
-            compilation.warnings = compilation.warnings.concat(warnings);
             cb();
         });
+    }
+
+    applyHtmlWebpackPlugin(compiler, {urls}) {
+        const assets = Object.values(urls);
+
+        const includeAssetsPlugin = new HtmlWebpackIncludeAssetsPlugin({
+            assets,
+            publicPath: '',
+            append: false
+        });
+
+        includeAssetsPlugin.apply(compiler);
     }
 
     execute({context, modules}) {

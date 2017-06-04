@@ -16,7 +16,7 @@ test('html-webpack-plugin', async t => {
         context: path.resolve(__dirname, './fixtures/html-webpack-plugin'),
 
         output: {
-            publicPath: '',
+            publicPath: '/',
             path: path.resolve(__dirname, './fixtures/output/html-webpack-plugin')
         },
 
@@ -34,7 +34,7 @@ test('html-webpack-plugin', async t => {
 
     const indexFile = await fs.readFile(path.resolve(__dirname, './fixtures/output/html-webpack-plugin/index.html'), {encoding: 'utf-8'});
 
-    t.true(indexFile.includes('src="app.js"'));
+    t.true(indexFile.includes('src="/app.js"'));
     t.true(indexFile.includes('src="https://unpkg.com/react@15.5.4/dist/react.min.js"'));
 
     const externals = stats.compilation.options.externals;
