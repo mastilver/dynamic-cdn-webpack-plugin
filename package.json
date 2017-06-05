@@ -35,7 +35,7 @@
     "resolve-pkg": "^1.0.0"
   },
   "peerDependencies": {
-    "module-to-cdn": "3.x",
+    "module-to-cdn": "^3.0.1",
     "webpack": "2.x"
   },
   "devDependencies": {
@@ -44,7 +44,7 @@
     "babel-core": "^6.24.1",
     "babel-plugin-transform-runtime": "^6.23.0",
     "babel-preset-env": "^1.3.3",
-    "module-to-cdn": "^3.0.0",
+    "module-to-cdn": "^3.0.1",
     "mz": "^2.6.0",
     "rimraf": "^2.6.1",
     "webpack": "^2.6.1",
