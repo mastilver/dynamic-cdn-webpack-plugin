@@ -1,9 +1,16 @@
 import moduleToCdn from 'module-to-cdn';
 import {sync as readPkg} from 'read-pkg';
-import HtmlWebpackPlugin from 'html-webpack-plugin';
 import HtmlWebpackIncludeAssetsPlugin from 'html-webpack-include-assets-plugin';
 import ExternalModule from 'webpack/lib/ExternalModule';
 import resolvePkg from 'resolve-pkg';
+
+let HtmlWebpackPlugin;
+try {
+    // eslint-disable-next-line import/no-extraneous-dependencies
+    HtmlWebpackPlugin = require('html-webpack-plugin');
+} catch (err) {
+    HtmlWebpackPlugin = null;
+}
 
 export default class ModulesCdnWebpackPlugin {
     constructor({disable = false, env} = {}) {
@@ -17,7 +24,7 @@ export default class ModulesCdnWebpackPlugin {
             this.execute(compiler, {env: this.env});
         }
 
-        const isUsingHtmlWebpackPlugin = compiler.options.plugins.find(x => x instanceof HtmlWebpackPlugin);
+        const isUsingHtmlWebpackPlugin = HtmlWebpackPlugin != null && compiler.options.plugins.some(x => x instanceof HtmlWebpackPlugin);
 
         if (isUsingHtmlWebpackPlugin) {
             this.applyHtmlWebpackPlugin(compiler);
