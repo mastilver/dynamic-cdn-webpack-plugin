@@ -36,27 +36,40 @@ export default class ModulesCdnWebpackPlugin {
     execute(compiler, {env}) {
         compiler.plugin('normal-module-factory', nmf => {
             nmf.plugin('factory', factory => (data, cb) => {
-                const dependency = data.dependencies[0];
+                const modulePath = data.dependencies[0].request;
+                const contextPath = data.context;
 
-                if (/\/|\\/.test(dependency.request)) {
+                const varName = this.addModule(contextPath, modulePath, {env});
+
+                if (!varName) {
                     return factory(data, cb);
                 }
 
-                const moduleName = dependency.request;
-
-                const {version} = readPkg(resolvePkg(moduleName, {cwd: data.context}));
-
-                const cdnConfig = moduleToCdn(moduleName, version, {env});
-
-                if (cdnConfig == null) {
-                    return factory(data, cb);
-                }
-
-                this.urls[cdnConfig.name] = cdnConfig.url;
-
-                cb(null, new ExternalModule(cdnConfig.var));
+                cb(null, new ExternalModule(varName));
             });
         });
+    }
+
+    addModule(contextPath, modulePath, {env}) {
+        const {version, peerDependencies} = readPkg(resolvePkg(modulePath, {cwd: contextPath}));
+
+        const cdnConfig = moduleToCdn(modulePath, version, {env});
+
+        if (cdnConfig == null) {
+            return null;
+        }
+
+        if (peerDependencies) {
+            for (const peerDependencyName in peerDependencies) {
+                if ({}.hasOwnProperty.call(peerDependencies, peerDependencyName)) {
+                    this.addModule(contextPath, peerDependencyName, {env});
+                }
+            }
+        }
+
+        this.urls[cdnConfig.name] = cdnConfig.url;
+
+        return cdnConfig.var;
     }
 
     applyWebpackCore(compiler) {

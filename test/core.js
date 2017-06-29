@@ -138,3 +138,31 @@ test('nested dependencies', async t => {
 
     t.deepEqual(files, ['app.js']);
 });
+
+test('peerDependencies', async t => {
+    await cleanDir(path.resolve(__dirname, './fixtures/output/peer-dependencies'));
+
+    const stats = await runWebpack({
+        context: path.resolve(__dirname, './fixtures/peer-dependencies'),
+
+        output: {
+            publicPath: '',
+            path: path.resolve(__dirname, './fixtures/output/peer-dependencies')
+        },
+
+        entry: {
+            app: './index.js'
+        },
+
+        plugins: [
+            new ModulesCdnWebpackPlugin()
+        ]
+    });
+
+    const files = stats.compilation.chunks.reduce((files, x) => files.concat(x.files), []);
+
+    t.true(includes(files, 'app.js'));
+    t.true(includes(files, 'https://unpkg.com/@angular/core@4.2.4/bundles/core.umd.js'));
+    t.true(includes(files, 'https://unpkg.com/rxjs@5.4.1/bundles/Rx.js'));
+    t.true(includes(files, 'https://unpkg.com/zone.js@0.8.12/dist/zone.js'));
+});
