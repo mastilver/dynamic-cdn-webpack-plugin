@@ -39,6 +39,11 @@ export default class ModulesCdnWebpackPlugin {
                 const modulePath = data.dependencies[0].request;
                 const contextPath = data.context;
 
+                const isModulePath = /^(@[a-z0-9][\w-.]+\/)?[a-z0-9][\w-.]*/.test(modulePath);
+                if (!isModulePath) {
+                    return factory(data, cb);
+                }
+
                 const varName = this.addModule(contextPath, modulePath, {env});
 
                 if (varName === false) {
