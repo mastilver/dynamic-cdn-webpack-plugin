@@ -166,3 +166,29 @@ test('peerDependencies', async t => {
     t.true(includes(files, 'https://unpkg.com/rxjs@5.4.1/bundles/Rx.js'));
     t.true(includes(files, 'https://unpkg.com/zone.js@0.8.12/dist/zone.js'));
 });
+
+test('load module without export', async t => {
+    await cleanDir(path.resolve(__dirname, './fixtures/output/no-export'));
+
+    const stats = await runWebpack({
+        context: path.resolve(__dirname, './fixtures/no-export'),
+
+        output: {
+            publicPath: '',
+            path: path.resolve(__dirname, './fixtures/output/no-export')
+        },
+
+        entry: {
+            app: './index.js'
+        },
+
+        plugins: [
+            new ModulesCdnWebpackPlugin()
+        ]
+    });
+
+    const files = stats.compilation.chunks.reduce((files, x) => files.concat(x.files), []);
+
+    t.true(includes(files, 'app.js'));
+    t.true(includes(files, 'https://unpkg.com/babel-polyfill@6.23.0/dist/polyfill.js'));
+});

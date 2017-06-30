@@ -41,7 +41,7 @@ export default class ModulesCdnWebpackPlugin {
 
                 const varName = this.addModule(contextPath, modulePath, {env});
 
-                if (!varName) {
+                if (varName === false) {
                     return factory(data, cb);
                 }
 
@@ -56,7 +56,7 @@ export default class ModulesCdnWebpackPlugin {
         const cdnConfig = moduleToCdn(modulePath, version, {env});
 
         if (cdnConfig == null) {
-            return null;
+            return false;
         }
 
         if (peerDependencies) {
