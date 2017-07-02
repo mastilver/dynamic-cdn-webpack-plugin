@@ -3,6 +3,7 @@ import {sync as readPkg} from 'read-pkg';
 import HtmlWebpackIncludeAssetsPlugin from 'html-webpack-include-assets-plugin';
 import ExternalModule from 'webpack/lib/ExternalModule';
 import resolvePkg from 'resolve-pkg';
+import includes from 'babel-runtime/core-js/array/includes';
 
 let HtmlWebpackPlugin;
 try {
@@ -62,8 +63,8 @@ export default class ModulesCdnWebpackPlugin {
     }
 
     addModule(contextPath, modulePath, {env}) {
-        const isModuleExcluded = this.exclude.includes(modulePath) ||
-                                 (this.only && !this.only.includes(modulePath));
+        const isModuleExcluded = includes(this.exclude, modulePath) ||
+                                 (this.only && !includes(this.only, modulePath));
         if (isModuleExcluded) {
             return false;
         }
