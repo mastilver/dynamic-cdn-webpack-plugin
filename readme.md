@@ -169,6 +169,12 @@ Default: `[]`
 
 List the modules that will always be bundled (not be served by the cdn)
 
+#### options.verbose
+
+Type: `boolean`<br>
+Default: `false`
+
+Log whether the library is being served by the cdn or is bundled
 
 ## Related
 

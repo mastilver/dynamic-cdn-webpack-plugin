@@ -14,7 +14,7 @@ try {
 }
 
 export default class ModulesCdnWebpackPlugin {
-    constructor({disable = false, env, exclude, only} = {}) {
+    constructor({disable = false, env, exclude, only, verbose} = {}) {
         if (exclude && only) {
             throw new Error('You can\'t use \'exclude\' and \'only\' at the same time');
         }
@@ -24,6 +24,7 @@ export default class ModulesCdnWebpackPlugin {
         this.urls = {};
         this.exclude = exclude || [];
         this.only = only || null;
+        this.verbose = verbose === true;
     }
 
     apply(compiler) {
@@ -74,7 +75,14 @@ export default class ModulesCdnWebpackPlugin {
         const cdnConfig = moduleToCdn(modulePath, version, {env});
 
         if (cdnConfig == null) {
+            if (this.verbose) {
+                console.log(`❌ '${modulePath}' couldn't be find, please add it to https://github.com/mastilver/module-to-cdn/blob/master/modules.json`);
+            }
             return false;
+        }
+
+        if (this.verbose) {
+            console.log(`✔️ '${cdnConfig.name}' will be served by ${cdnConfig.url}`);
         }
 
         if (peerDependencies) {
