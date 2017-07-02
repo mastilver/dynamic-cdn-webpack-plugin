@@ -37,7 +37,7 @@ test('basic', async t => {
     const output = await fs.readFile(path.resolve(__dirname, './fixtures/output/basic/app.js'));
 
     // NOTE: not inside t.false to prevent ava to display whole file in console
-    const doesIncludeReact = includes(output, 'PureComponent');
+    const doesIncludeReact = includes(output, 'THIS IS REACT!');
     t.false(doesIncludeReact);
 
     const doesRequireReact = includes(output, 'module.exports = React');
@@ -74,7 +74,7 @@ test('using production version', async t => {
     const output = await fs.readFile(path.resolve(__dirname, './fixtures/output/env-prod/app.js'));
 
     // NOTE: not inside t.false to prevent ava to display whole file in console
-    const doesIncludeReact = includes(output, 'PureComponent');
+    const doesIncludeReact = includes(output, 'THIS IS REACT!');
     t.false(doesIncludeReact);
 });
 
@@ -108,7 +108,7 @@ test.serial('with NODE_ENV=production', async t => {
     const output = await fs.readFile(path.resolve(__dirname, './fixtures/output/node-env-prod/app.js'));
 
     // NOTE: not inside t.false to prevent ava to display whole file in console
-    const doesIncludeReact = includes(output, 'PureComponent');
+    const doesIncludeReact = includes(output, 'THIS IS REACT!');
     t.false(doesIncludeReact);
 
     delete process.env.NODE_ENV;
@@ -191,4 +191,101 @@ test('load module without export', async t => {
 
     t.true(includes(files, 'app.js'));
     t.true(includes(files, 'https://unpkg.com/babel-polyfill@6.23.0/dist/polyfill.js'));
+});
+
+test('exclude some modules', async t => {
+    await cleanDir(path.resolve(__dirname, './fixtures/output/exclude'));
+
+    const stats = await runWebpack({
+        context: path.resolve(__dirname, './fixtures/single'),
+
+        output: {
+            publicPath: '',
+            path: path.resolve(__dirname, './fixtures/output/exclude')
+        },
+
+        entry: {
+            app: './index.js'
+        },
+
+        plugins: [
+            new ModulesCdnWebpackPlugin({
+                exclude: ['react']
+            })
+        ]
+    });
+
+    const files = stats.compilation.chunks.reduce((files, x) => files.concat(x.files), []);
+
+    t.true(includes(files, 'app.js'));
+    t.false(includes(files, 'https://unpkg.com/react@15.5.4/dist/react.js'));
+
+    const output = await fs.readFile(path.resolve(__dirname, './fixtures/output/exclude/app.js'));
+
+    // NOTE: not inside t.true to prevent ava to display whole file in console
+    const doesIncludeReact = includes(output, 'THIS IS REACT!');
+    t.true(doesIncludeReact);
+});
+
+test('only include some modules', async t => {
+    await cleanDir(path.resolve(__dirname, './fixtures/output/only'));
+
+    const stats = await runWebpack({
+        context: path.resolve(__dirname, './fixtures/multiple'),
+
+        output: {
+            publicPath: '',
+            path: path.resolve(__dirname, './fixtures/output/only')
+        },
+
+        entry: {
+            app: './index.js'
+        },
+
+        plugins: [
+            new ModulesCdnWebpackPlugin({
+                only: ['react']
+            })
+        ]
+    });
+
+    const files = stats.compilation.chunks.reduce((files, x) => files.concat(x.files), []);
+
+    t.true(includes(files, 'app.js'));
+    t.true(includes(files, 'https://unpkg.com/react@15.6.1/dist/react.js'));
+    t.false(includes(files, 'https://unpkg.com/babel-polyfill@6.23.0/dist/polyfill.js'));
+    t.false(includes(files, 'https://unpkg.com/react-dom@15.6.1/dist/react-dom.js'));
+
+    const output = await fs.readFile(path.resolve(__dirname, './fixtures/output/only/app.js'));
+
+    // NOTE: not inside t.true to prevent ava to display whole file in console
+    const doesIncludeReactDom = includes(output, 'THIS IS REACT DOM!');
+    t.true(doesIncludeReactDom);
+
+    const doesIncludeBabelPolyfill = includes(output, 'THIS IS BABEL POLYFILL!');
+    t.true(doesIncludeBabelPolyfill);
+});
+
+test('errors when using \'only\' and \'exclude\' together', async t => {
+    await cleanDir(path.resolve(__dirname, './fixtures/output/error'));
+
+    t.throws(() => runWebpack({
+        context: path.resolve(__dirname, './fixtures/single'),
+
+        output: {
+            publicPath: '',
+            path: path.resolve(__dirname, './fixtures/output/error')
+        },
+
+        entry: {
+            app: './index.js'
+        },
+
+        plugins: [
+            new ModulesCdnWebpackPlugin({
+                exclude: ['react'],
+                only: ['react']
+            })
+        ]
+    }), /You can't use 'exclude' and 'only' at the same time/);
 });

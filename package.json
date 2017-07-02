@@ -38,7 +38,7 @@
     "webpack": "2.x"
   },
   "devDependencies": {
-    "ava": "^0.19.1",
+    "ava": "^0.20.0",
     "babel-cli": "^6.24.1",
     "babel-core": "^6.24.1",
     "babel-plugin-transform-runtime": "^6.23.0",

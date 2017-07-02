@@ -154,6 +154,21 @@ Values: `development`, `production`
 
 Determine if it should load the development or the production version of modules
 
+#### options.only
+
+Type: `Array<string>`
+Default: `null`
+
+List the only modules that should be served by the cdn
+
+
+#### options.exclude
+
+Type: `Array<string>`
+Default: `[]`
+
+List the modules that will always be bundled (not be served by the cdn)
+
 
 ## Related
 

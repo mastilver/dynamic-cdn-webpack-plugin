@@ -13,10 +13,16 @@ try {
 }
 
 export default class ModulesCdnWebpackPlugin {
-    constructor({disable = false, env} = {}) {
+    constructor({disable = false, env, exclude, only} = {}) {
+        if (exclude && only) {
+            throw new Error('You can\'t use \'exclude\' and \'only\' at the same time');
+        }
+
         this.disable = disable;
         this.env = env || process.env.NODE_ENV || 'development';
         this.urls = {};
+        this.exclude = exclude || [];
+        this.only = only || null;
     }
 
     apply(compiler) {
@@ -56,6 +62,12 @@ export default class ModulesCdnWebpackPlugin {
     }
 
     addModule(contextPath, modulePath, {env}) {
+        const isModuleExcluded = this.exclude.includes(modulePath) ||
+                                 (this.only && !this.only.includes(modulePath));
+        if (isModuleExcluded) {
+            return false;
+        }
+
         const {version, peerDependencies} = readPkg(resolvePkg(modulePath, {cwd: contextPath}));
 
         const cdnConfig = moduleToCdn(modulePath, version, {env});
