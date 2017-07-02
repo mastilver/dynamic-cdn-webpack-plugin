@@ -43,7 +43,7 @@ import { BrowserRouter } from 'react-router-dom';
 // ... do react stuff
 ```
 
-Will generate:
+`NODE_ENV=production webpack` will generate:
 
 ```js
 /* simplified webpack build */
@@ -69,8 +69,7 @@ Will generate:
     <title>Webpack App</title>
   </head>
   <body>
-    <script type="text/javascript" src="https://unpkg.com/react@15.5.3/dist/react.js"></script><script type="text/javascript" src="https://unpkg.com/react-router-dom@4.1.1/umd/react-router-dom.js"></script><script src="build/app.js"></script>
-  </body>
+    <script type="text/javascript" src="https://unpkg.com/react@15.5.3/dist/react.min.js"></script><script type="text/javascript" src="https://unpkg.com/react-router-dom@4.1.1/umd/react-router-dom.min.js"></script><script src="build/app.js"></script></body>
 </html>
 ```
 
@@ -109,7 +108,7 @@ import { BrowserRouter } from 'react-router-dom';
 // ... do react stuff
 ```
 
-Will generate:
+`NODE_ENV=production webpack` will generate:
 
 ```js
 /* simplified webpack build */
@@ -130,8 +129,8 @@ Will generate:
 ```json
 {
     "app.js": "app.js",
-    "react.js": "https://unpkg.com/react@15.5.3/dist/react.js",
-    "react-router-dom.js": "https://unpkg.com/react-router-dom@4.1.1/umd/react-router-dom.js"
+    "react.js": "https://unpkg.com/react@15.5.3/dist/react.min.js",
+    "react-router-dom.js": "https://unpkg.com/react-router-dom@4.1.1/umd/react-router-dom.min.js"
 }
 ```
 
