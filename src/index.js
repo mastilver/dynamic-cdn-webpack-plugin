@@ -43,8 +43,8 @@ export default class ModulesCdnWebpackPlugin {
     }
 
     execute(compiler, {env}) {
-        compiler.plugin('normal-module-factory', nmf => {
-            nmf.plugin('factory', factory => (data, cb) => {
+        compiler.plugin('compile', params => {
+            params.normalModuleFactory.plugin('factory', factory => (data, cb) => {
                 const modulePath = data.dependencies[0].request;
                 const contextPath = data.context;
 
@@ -60,15 +60,6 @@ export default class ModulesCdnWebpackPlugin {
                 }
 
                 cb(null, new ExternalModule(varName));
-            });
-
-            nmf.plugin('parser', (parser, parserOptions) => {
-                parser.plugin('import-call', expr => {
-                    const modulePath = parser.evaluateExpression(expr.arguments[0]).string;
-
-                    const dep = new ExternalModule(modulePath, expr.range);
-                    parser.state.current.addDependency(dep);
-                });
             });
         });
     }
@@ -117,7 +108,7 @@ export default class ModulesCdnWebpackPlugin {
                 const url = this.urls[name];
 
                 const chunk = compilation.addChunk(name);
-                chunk.files.push(url);
+                chunk.entrypoints.push(url);
 
                 chunk.parents = [parentChunk];
                 parentChunk.addChunk(chunk);

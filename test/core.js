@@ -374,22 +374,20 @@ test('async loading', async t => {
         },
 
         plugins: [
-            new ModulesCdnWebpackPlugin({
-                exclude: ['react']
-            })
+            new ModulesCdnWebpackPlugin()
         ]
     });
 
     const files = stats.compilation.chunks.reduce((files, x) => files.concat(x.files), []);
 
-    // console.log(stats.compilation.chunks);
-
     t.true(includes(files, 'app.js'));
     t.false(includes(files, 'https://unpkg.com/react@15.5.4/dist/react.js'));
 
-    const output = await fs.readFile(path.resolve(__dirname, './fixtures/output/async/app.js'));
+    const outputs = await Promise.all(files.map(async file => {
+        return fs.readFile(path.resolve(__dirname, `./fixtures/output/async/${file}`));
+    }));
 
     // NOTE: not inside t.false to prevent ava to display whole file in console
-    const doesIncludeReact = includes(output, 'THIS IS REACT!');
+    const doesIncludeReact = outputs.some(output => includes(output, 'THIS IS REACT!'));
     t.false(doesIncludeReact);
 });
