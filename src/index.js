@@ -4,6 +4,7 @@ import HtmlWebpackIncludeAssetsPlugin from 'html-webpack-include-assets-plugin';
 import ExternalModule from 'webpack/lib/ExternalModule';
 import resolvePkg from 'resolve-pkg';
 import includes from 'babel-runtime/core-js/array/includes';
+import NullDependency from 'webpack/lib/dependencies/NullDependency';
 
 let HtmlWebpackPlugin;
 try {
@@ -59,6 +60,15 @@ export default class ModulesCdnWebpackPlugin {
                 }
 
                 cb(null, new ExternalModule(varName));
+            });
+
+            nmf.plugin('parser', (parser, parserOptions) => {
+                parser.plugin('import-call', expr => {
+                    const modulePath = parser.evaluateExpression(expr.arguments[0]).string;
+
+                    const dep = new ExternalModule(modulePath, expr.range);
+                    parser.state.current.addDependency(dep);
+                });
             });
         });
     }
