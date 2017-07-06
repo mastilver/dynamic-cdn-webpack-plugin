@@ -14,7 +14,7 @@ test('html-webpack-plugin', async t => {
     await cleanDir(path.resolve(__dirname, './fixtures/output/html-webpack-plugin'));
 
     await runWebpack({
-        context: path.resolve(__dirname, './fixtures/single'),
+        context: path.resolve(__dirname, './fixtures/app'),
 
         output: {
             publicPath: '/',
@@ -22,7 +22,7 @@ test('html-webpack-plugin', async t => {
         },
 
         entry: {
-            app: './index.js'
+            app: './single.js'
         },
 
         plugins: [
@@ -34,7 +34,7 @@ test('html-webpack-plugin', async t => {
     const indexFile = await fs.readFile(path.resolve(__dirname, './fixtures/output/html-webpack-plugin/index.html'), {encoding: 'utf-8'});
 
     t.true(includes(indexFile, 'src="/app.js"'));
-    t.true(includes(indexFile, 'src="https://unpkg.com/react@15.5.4/dist/react.js"'));
+    t.true(includes(indexFile, 'src="https://unpkg.com/react@15.6.1/dist/react.js"'));
 
     const output = await fs.readFile(path.resolve(__dirname, './fixtures/output/html-webpack-plugin/app.js'));
 

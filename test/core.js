@@ -13,7 +13,7 @@ test('basic', async t => {
     await cleanDir(path.resolve(__dirname, './fixtures/output/basic'));
 
     const stats = await runWebpack({
-        context: path.resolve(__dirname, './fixtures/single'),
+        context: path.resolve(__dirname, './fixtures/app'),
 
         output: {
             publicPath: '',
@@ -21,7 +21,7 @@ test('basic', async t => {
         },
 
         entry: {
-            app: './index.js'
+            app: './single.js'
         },
 
         plugins: [
@@ -31,8 +31,9 @@ test('basic', async t => {
 
     const files = stats.compilation.chunks.reduce((files, x) => files.concat(x.files), []);
 
+    t.is(files.length, 2);
     t.true(includes(files, 'app.js'));
-    t.true(includes(files, 'https://unpkg.com/react@15.5.4/dist/react.js'));
+    t.true(includes(files, 'https://unpkg.com/react@15.6.1/dist/react.js'));
 
     const output = await fs.readFile(path.resolve(__dirname, './fixtures/output/basic/app.js'));
 
@@ -48,7 +49,7 @@ test('using production version', async t => {
     await cleanDir(path.resolve(__dirname, './fixtures/output/env-prod'));
 
     const stats = await runWebpack({
-        context: path.resolve(__dirname, './fixtures/single'),
+        context: path.resolve(__dirname, './fixtures/app'),
 
         output: {
             publicPath: '',
@@ -56,7 +57,7 @@ test('using production version', async t => {
         },
 
         entry: {
-            app: './index.js'
+            app: './single.js'
         },
 
         plugins: [
@@ -68,8 +69,9 @@ test('using production version', async t => {
 
     const files = stats.compilation.chunks.reduce((files, x) => files.concat(x.files), []);
 
+    t.is(files.length, 2);
     t.true(includes(files, 'app.js'));
-    t.true(includes(files, 'https://unpkg.com/react@15.5.4/dist/react.min.js'));
+    t.true(includes(files, 'https://unpkg.com/react@15.6.1/dist/react.min.js'));
 
     const output = await fs.readFile(path.resolve(__dirname, './fixtures/output/env-prod/app.js'));
 
@@ -84,7 +86,7 @@ test.serial('with NODE_ENV=production', async t => {
     await cleanDir(path.resolve(__dirname, './fixtures/output/node-env-prod'));
 
     const stats = await runWebpack({
-        context: path.resolve(__dirname, './fixtures/single'),
+        context: path.resolve(__dirname, './fixtures/app'),
 
         output: {
             publicPath: '',
@@ -92,7 +94,7 @@ test.serial('with NODE_ENV=production', async t => {
         },
 
         entry: {
-            app: './index.js'
+            app: './single.js'
         },
 
         plugins: [
@@ -102,8 +104,9 @@ test.serial('with NODE_ENV=production', async t => {
 
     const files = stats.compilation.chunks.reduce((files, x) => files.concat(x.files), []);
 
+    t.is(files.length, 2);
     t.true(includes(files, 'app.js'));
-    t.true(includes(files, 'https://unpkg.com/react@15.5.4/dist/react.min.js'));
+    t.true(includes(files, 'https://unpkg.com/react@15.6.1/dist/react.min.js'));
 
     const output = await fs.readFile(path.resolve(__dirname, './fixtures/output/node-env-prod/app.js'));
 
@@ -143,7 +146,7 @@ test('peerDependencies', async t => {
     await cleanDir(path.resolve(__dirname, './fixtures/output/peer-dependencies'));
 
     const stats = await runWebpack({
-        context: path.resolve(__dirname, './fixtures/peer-dependencies'),
+        context: path.resolve(__dirname, './fixtures/app'),
 
         output: {
             publicPath: '',
@@ -151,7 +154,7 @@ test('peerDependencies', async t => {
         },
 
         entry: {
-            app: './index.js'
+            app: './peer-dependencies.js'
         },
 
         plugins: [
@@ -161,6 +164,7 @@ test('peerDependencies', async t => {
 
     const files = stats.compilation.chunks.reduce((files, x) => files.concat(x.files), []);
 
+    t.is(files.length, 4);
     t.true(includes(files, 'app.js'));
     t.true(includes(files, 'https://unpkg.com/@angular/core@4.2.4/bundles/core.umd.js'));
     t.true(includes(files, 'https://unpkg.com/rxjs@5.4.1/bundles/Rx.js'));
@@ -171,7 +175,7 @@ test('load module without export', async t => {
     await cleanDir(path.resolve(__dirname, './fixtures/output/no-export'));
 
     const stats = await runWebpack({
-        context: path.resolve(__dirname, './fixtures/no-export'),
+        context: path.resolve(__dirname, './fixtures/app'),
 
         output: {
             publicPath: '',
@@ -179,7 +183,7 @@ test('load module without export', async t => {
         },
 
         entry: {
-            app: './index.js'
+            app: './no-export.js'
         },
 
         plugins: [
@@ -189,6 +193,7 @@ test('load module without export', async t => {
 
     const files = stats.compilation.chunks.reduce((files, x) => files.concat(x.files), []);
 
+    t.is(files.length, 2);
     t.true(includes(files, 'app.js'));
     t.true(includes(files, 'https://unpkg.com/babel-polyfill@6.23.0/dist/polyfill.js'));
 });
@@ -197,7 +202,7 @@ test('exclude some modules', async t => {
     await cleanDir(path.resolve(__dirname, './fixtures/output/exclude'));
 
     const stats = await runWebpack({
-        context: path.resolve(__dirname, './fixtures/single'),
+        context: path.resolve(__dirname, './fixtures/app'),
 
         output: {
             publicPath: '',
@@ -205,7 +210,7 @@ test('exclude some modules', async t => {
         },
 
         entry: {
-            app: './index.js'
+            app: './single.js'
         },
 
         plugins: [
@@ -217,8 +222,9 @@ test('exclude some modules', async t => {
 
     const files = stats.compilation.chunks.reduce((files, x) => files.concat(x.files), []);
 
+    t.is(files.length, 1);
     t.true(includes(files, 'app.js'));
-    t.false(includes(files, 'https://unpkg.com/react@15.5.4/dist/react.js'));
+    t.false(includes(files, 'https://unpkg.com/react@15.6.1/dist/react.js'));
 
     const output = await fs.readFile(path.resolve(__dirname, './fixtures/output/exclude/app.js'));
 
@@ -231,7 +237,7 @@ test('only include some modules', async t => {
     await cleanDir(path.resolve(__dirname, './fixtures/output/only'));
 
     const stats = await runWebpack({
-        context: path.resolve(__dirname, './fixtures/multiple'),
+        context: path.resolve(__dirname, './fixtures/app'),
 
         output: {
             publicPath: '',
@@ -239,7 +245,7 @@ test('only include some modules', async t => {
         },
 
         entry: {
-            app: './index.js'
+            app: './multiple.js'
         },
 
         plugins: [
@@ -251,6 +257,7 @@ test('only include some modules', async t => {
 
     const files = stats.compilation.chunks.reduce((files, x) => files.concat(x.files), []);
 
+    t.is(files.length, 2);
     t.true(includes(files, 'app.js'));
     t.true(includes(files, 'https://unpkg.com/react@15.6.1/dist/react.js'));
     t.false(includes(files, 'https://unpkg.com/babel-polyfill@6.23.0/dist/polyfill.js'));
@@ -270,7 +277,7 @@ test('errors when using \'only\' and \'exclude\' together', async t => {
     await cleanDir(path.resolve(__dirname, './fixtures/output/error'));
 
     t.throws(() => runWebpack({
-        context: path.resolve(__dirname, './fixtures/single'),
+        context: path.resolve(__dirname, './fixtures/app'),
 
         output: {
             publicPath: '',
@@ -278,7 +285,7 @@ test('errors when using \'only\' and \'exclude\' together', async t => {
         },
 
         entry: {
-            app: './index.js'
+            app: './single.js'
         },
 
         plugins: [

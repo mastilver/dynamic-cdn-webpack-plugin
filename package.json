@@ -75,6 +75,10 @@
     }
   },
   "ava": {
+    "files": [
+      "test/**/*.js",
+      "!test/fixtures/output/**/*"
+    ],
     "babel": "inherit",
     "require": [
       "babel-core/register"

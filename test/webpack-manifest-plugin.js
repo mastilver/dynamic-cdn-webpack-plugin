@@ -14,7 +14,7 @@ test('webpack-manifest-plugin', async t => {
     await cleanDir(path.resolve(__dirname, './fixtures/output/webpack-manifest-plugin'));
 
     await runWebpack({
-        context: path.resolve(__dirname, './fixtures/single'),
+        context: path.resolve(__dirname, './fixtures/app'),
 
         output: {
             publicPath: '',
@@ -22,7 +22,7 @@ test('webpack-manifest-plugin', async t => {
         },
 
         entry: {
-            app: './index.js'
+            app: './single.js'
         },
 
         plugins: [
@@ -37,7 +37,7 @@ test('webpack-manifest-plugin', async t => {
 
     t.deepEqual(manifest, {
         'app.js': 'app.js',
-        'react.js': 'https://unpkg.com/react@15.5.4/dist/react.js'
+        'react.js': 'https://unpkg.com/react@15.6.1/dist/react.js'
     });
 
     const output = await fs.readFile(path.resolve(__dirname, './fixtures/output/webpack-manifest-plugin/app.js'));

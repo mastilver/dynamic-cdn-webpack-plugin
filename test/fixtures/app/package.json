@@ -1,5 +1,5 @@
 {
-  "name": "single",
+  "name": "app",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -10,6 +10,11 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "react": "15.5.4"
+    "@angular/core": "^4.2.5",
+    "babel-polyfill": "^6.23.0",
+    "react": "^15.6.1",
+    "react-dom": "^15.6.1",
+    "rxjs": "^5.4.2",
+    "zone.js": "^0.8.12"
   }
 }
