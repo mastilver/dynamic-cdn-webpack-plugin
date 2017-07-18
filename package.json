@@ -26,7 +26,11 @@
     "cdn",
     "unpkg.com",
     "html-webpack-plugin",
-    "webpack-manifest-plugin"
+    "webpack-manifest-plugin",
+    "html",
+    "script",
+    "assets",
+    "externals"
   ],
   "dependencies": {
     "babel-runtime": "^6.23.0",
