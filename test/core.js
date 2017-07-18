@@ -296,3 +296,37 @@ test('errors when using \'only\' and \'exclude\' together', async t => {
         ]
     }), /You can't use 'exclude' and 'only' at the same time/);
 });
+
+test.serial('verbose options to output which modules are loaded from CDN / which are bundled', async t => {
+    await cleanDir(path.resolve(__dirname, './fixtures/output/verbose'));
+
+    const logs = [];
+
+    const originalLog = console.log;
+    console.log = log => {
+        logs.push(log);
+    };
+
+    await runWebpack({
+        context: path.resolve(__dirname, './fixtures/app'),
+
+        output: {
+            publicPath: '',
+            path: path.resolve(__dirname, './fixtures/output/verbose')
+        },
+
+        entry: {
+            app: './mix.js'
+        },
+
+        plugins: [
+            new ModulesCdnWebpackPlugin({
+                verbose: true
+            })
+        ]
+    });
+
+    t.snapshot(logs);
+
+    console.log = originalLog;
+});

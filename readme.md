@@ -1,4 +1,4 @@
-# modules-cdn-webpack-plugin [![Build Status](https://travis-ci.org/mastilver/modules-cdn-webpack-plugin.svg?branch=master)](https://travis-ci.org/mastilver/modules-cdn-webpack-plugin)
+# modules-cdn-webpack-plugin [![Build Status](https://travis-ci.org/mastilver/modules-cdn-webpack-plugin.svg?branch=master)](https://travis-ci.org/mastilver/modules-cdn-webpack-plugin) [![codecov](https://codecov.io/gh/mastilver/modules-cdn-webpack-plugin/badge.svg?branch=master)](https://codecov.io/gh/mastilver/modules-cdn-webpack-plugin?branch=master)
 
 > Dynamically get your dependencies from a cdn rather than bundling them in your app
 
