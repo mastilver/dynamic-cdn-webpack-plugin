@@ -182,6 +182,18 @@ Log whether the library is being served by the cdn or is bundled
 - [module-to-cdn](https://github.com/mastilver/module-to-cdn)
 
 
+## Contributors
+
+Thanks goes to these wonderful people ([emoji key](https://github.com/kentcdodds/all-contributors#emoji-key)):
+
+<!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
+| [<img src="https://avatars3.githubusercontent.com/u/4112409?v=4" width="100px;"/><br /><sub>Thomas Sileghem</sub>](https://github.com/mastilver)<br />[💻](https://github.com/mastilver/modules-cdn-webpack-plugin/commits?author=mastilver "Code") [📖](https://github.com/mastilver/modules-cdn-webpack-plugin/commits?author=mastilver "Documentation") [⚠️](https://github.com/mastilver/modules-cdn-webpack-plugin/commits?author=mastilver "Tests") | [<img src="https://avatars0.githubusercontent.com/u/92839?v=4" width="100px;"/><br /><sub>MICHAEL JACKSON</sub>](https://twitter.com/mjackson)<br />[💡](https://github.com/unpkg/unpkg-demos "Examples") |
+| :---: | :---: |
+<!-- ALL-CONTRIBUTORS-LIST:END -->
+
+This project follows the [all-contributors](https://github.com/kentcdodds/all-contributors) specification. Contributions of any kind welcome!
+
+
 ## License
 
 MIT © [Thomas Sileghem](http://mastilver.com)

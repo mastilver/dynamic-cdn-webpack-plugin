@@ -1,0 +1,34 @@
+{
+  "projectName": "modules-cdn-webpack-plugin",
+  "projectOwner": "mastilver",
+  "files": [
+    "README.md"
+  ],
+  "imageSize": 100,
+  "commit": true,
+  "contributors": [
+    {
+      "login": "mastilver",
+      "name": "Thomas Sileghem",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/4112409?v=4",
+      "profile": "https://github.com/mastilver",
+      "contributions": [
+        "code",
+        "doc",
+        "test"
+      ]
+    },
+    {
+      "login": "mjackson",
+      "name": "MICHAEL JACKSON",
+      "avatar_url": "https://avatars0.githubusercontent.com/u/92839?v=4",
+      "profile": "https://twitter.com/mjackson",
+      "contributions": [
+        {
+          "type": "example",
+          "url": "https://github.com/unpkg/unpkg-demos"
+        }
+      ]
+    }
+  ]
+}
