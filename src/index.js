@@ -25,6 +25,7 @@ export default class ModulesCdnWebpackPlugin {
         this.exclude = exclude || [];
         this.only = only || null;
         this.verbose = verbose === true;
+        this.cacheModuleVersion = {};
     }
 
     apply(compiler) {
@@ -81,21 +82,33 @@ export default class ModulesCdnWebpackPlugin {
             return false;
         }
 
+        if (this.hasConflict(cdnConfig.name, version)) {
+            return false;
+        }
+
         if (this.verbose) {
             console.log(`✔️ '${cdnConfig.name}' will be served by ${cdnConfig.url}`);
         }
 
+        let result = cdnConfig.var;
         if (peerDependencies) {
             for (const peerDependencyName in peerDependencies) {
                 if ({}.hasOwnProperty.call(peerDependencies, peerDependencyName)) {
-                    this.addModule(contextPath, peerDependencyName, {env});
+                    result = result && this.addModule(contextPath, peerDependencyName, {env});
                 }
             }
         }
 
-        this.urls[cdnConfig.name] = cdnConfig.url;
+        if (result) {
+            this.urls[cdnConfig.name] = cdnConfig.url;
+            this.cacheModuleVersion[cdnConfig.name] = version;
+        }
 
-        return cdnConfig.var;
+        return result;
+    }
+
+    hasConflict(varName, version) {
+        return this.cacheModuleVersion[varName] && this.cacheModuleVersion[varName] !== version;
     }
 
     applyWebpackCore(compiler) {
