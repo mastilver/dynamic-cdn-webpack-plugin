@@ -391,3 +391,38 @@ test('async loading', async t => {
     const doesIncludeReact = outputs.some(output => includes(output, 'THIS IS REACT!'));
     t.false(doesIncludeReact);
 });
+
+test('when using multiple versions of a module, make sure the right version is used for each', async t => {
+    await cleanDir(path.resolve(__dirname, './fixtures/output/multiple-versions'));
+
+    const stats = await runWebpack({
+        context: path.resolve(__dirname, './fixtures/app'),
+
+        output: {
+            publicPath: '',
+            path: path.resolve(__dirname, './fixtures/output/multiple-versions')
+        },
+
+        entry: {
+            app: './mix.js'
+        },
+
+        plugins: [
+            new ModulesCdnWebpackPlugin()
+        ]
+    });
+
+    const files = stats.compilation.chunks.reduce((files, x) => files.concat(x.files), []);
+
+    t.true(includes(files, 'app.js'));
+    t.true(includes(files, 'https://unpkg.com/react@15.6.1/dist/react.js'));
+
+    const output = await fs.readFile(path.resolve(__dirname, './fixtures/output/multiple-versions/app.js'));
+
+    // NOTE: not inside t.false to prevent ava to display whole file in console
+    const doesIncludeReact14 = includes(output, 'THIS IS REACT@0.14.9!');
+    t.true(doesIncludeReact14);
+
+    const doesIncludeReact = includes(output, 'THIS IS REACT!');
+    t.false(doesIncludeReact);
+});
