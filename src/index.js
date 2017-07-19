@@ -4,7 +4,6 @@ import HtmlWebpackIncludeAssetsPlugin from 'html-webpack-include-assets-plugin';
 import ExternalModule from 'webpack/lib/ExternalModule';
 import resolvePkg from 'resolve-pkg';
 import includes from 'babel-runtime/core-js/array/includes';
-import NullDependency from 'webpack/lib/dependencies/NullDependency';
 
 let HtmlWebpackPlugin;
 try {
@@ -108,7 +107,7 @@ export default class ModulesCdnWebpackPlugin {
                 const url = this.urls[name];
 
                 const chunk = compilation.addChunk(name);
-                chunk.entrypoints.push(url);
+                chunk.files.push(url);
 
                 chunk.parents = [parentChunk];
                 parentChunk.addChunk(chunk);

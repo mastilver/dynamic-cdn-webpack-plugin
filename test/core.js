@@ -362,7 +362,7 @@ test('async loading', async t => {
     await cleanDir(path.resolve(__dirname, './fixtures/output/async'));
 
     const stats = await runWebpack({
-        context: path.resolve(__dirname, './fixtures/async'),
+        context: path.resolve(__dirname, './fixtures/app'),
 
         output: {
             publicPath: '',
@@ -370,7 +370,7 @@ test('async loading', async t => {
         },
 
         entry: {
-            app: './index.js'
+            app: './async.js'
         },
 
         plugins: [
@@ -381,9 +381,9 @@ test('async loading', async t => {
     const files = stats.compilation.chunks.reduce((files, x) => files.concat(x.files), []);
 
     t.true(includes(files, 'app.js'));
-    t.false(includes(files, 'https://unpkg.com/react@15.5.4/dist/react.js'));
+    t.true(includes(files, 'https://unpkg.com/react@15.6.1/dist/react.js'));
 
-    const outputs = await Promise.all(files.map(async file => {
+    const outputs = await Promise.all(files.filter(x => !x.startsWith('https://unpkg.com')).map(async file => {
         return fs.readFile(path.resolve(__dirname, `./fixtures/output/async/${file}`));
     }));
 
