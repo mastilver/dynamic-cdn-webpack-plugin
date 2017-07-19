@@ -21,10 +21,11 @@ export default class ModulesCdnWebpackPlugin {
 
         this.disable = disable;
         this.env = env || process.env.NODE_ENV || 'development';
-        this.urls = {};
         this.exclude = exclude || [];
         this.only = only || null;
         this.verbose = verbose === true;
+
+        this.modulesFromCdn = {};
     }
 
     apply(compiler) {
@@ -72,6 +73,16 @@ export default class ModulesCdnWebpackPlugin {
 
         const {version, peerDependencies} = readPkgUp({cwd: resolvePkg(modulePath, {cwd: contextPath})}).pkg;
 
+        const isModuleAlreadyLoaded = Boolean(this.modulesFromCdn[modulePath]);
+        if (isModuleAlreadyLoaded) {
+            const isSameVersion = this.modulesFromCdn[modulePath].version === version;
+            if (isSameVersion) {
+                return modulePath;
+            }
+
+            return false;
+        }
+
         const cdnConfig = moduleToCdn(modulePath, version, {env});
 
         if (cdnConfig == null) {
@@ -93,7 +104,12 @@ export default class ModulesCdnWebpackPlugin {
             }
         }
 
-        this.urls[cdnConfig.name] = cdnConfig.url;
+        // TODO: on next breaking change, rely on module-to-cdn>=3.1.0 to get version
+        this.modulesFromCdn[modulePath] = Object.assign(
+            {},
+            cdnConfig,
+            {version}
+        );
 
         return cdnConfig.var;
     }
@@ -103,11 +119,11 @@ export default class ModulesCdnWebpackPlugin {
             const entrypoint = compilation.entrypoints[Object.keys(compilation.entrypoints)[0]];
             const parentChunk = entrypoint.chunks.find(x => x.isInitial());
 
-            for (const name of Object.keys(this.urls)) {
-                const url = this.urls[name];
+            for (const name of Object.keys(this.modulesFromCdn)) {
+                const cdnConfig = this.modulesFromCdn[name];
 
                 const chunk = compilation.addChunk(name);
-                chunk.files.push(url);
+                chunk.files.push(cdnConfig.url);
 
                 chunk.parents = [parentChunk];
                 parentChunk.addChunk(chunk);
@@ -128,7 +144,7 @@ export default class ModulesCdnWebpackPlugin {
         includeAssetsPlugin.apply(compiler);
 
         compiler.plugin('after-compile', (compilation, cb) => {
-            const assets = Object.values(this.urls);
+            const assets = Object.keys(this.modulesFromCdn).map(key => this.modulesFromCdn[key].url);
 
             // HACK: Calling the constructor directly is not recomended
             //       But that's the only secure way to edit `assets` afterhand
