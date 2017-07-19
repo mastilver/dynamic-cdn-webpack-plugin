@@ -1,5 +1,5 @@
 import moduleToCdn from 'module-to-cdn';
-import {sync as readPkg} from 'read-pkg';
+import {sync as readPkgUp} from 'read-pkg-up';
 import HtmlWebpackIncludeAssetsPlugin from 'html-webpack-include-assets-plugin';
 import ExternalModule from 'webpack/lib/ExternalModule';
 import resolvePkg from 'resolve-pkg';
@@ -70,7 +70,7 @@ export default class ModulesCdnWebpackPlugin {
             return false;
         }
 
-        const {version, peerDependencies} = readPkg(resolvePkg(modulePath, {cwd: contextPath}));
+        const {version, peerDependencies} = readPkgUp({cwd: resolvePkg(modulePath, {cwd: contextPath})}).pkg;
 
         const cdnConfig = moduleToCdn(modulePath, version, {env});
 
