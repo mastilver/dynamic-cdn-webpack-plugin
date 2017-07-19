@@ -357,3 +357,37 @@ test('require files without extension', async t => {
     t.true(includes(files, 'app.js'));
     t.false(includes(files, 'https://unpkg.com/react@15.6.1/dist/react.js'));
 });
+
+test('async loading', async t => {
+    await cleanDir(path.resolve(__dirname, './fixtures/output/async'));
+
+    const stats = await runWebpack({
+        context: path.resolve(__dirname, './fixtures/app'),
+
+        output: {
+            publicPath: '',
+            path: path.resolve(__dirname, './fixtures/output/async')
+        },
+
+        entry: {
+            app: './async.js'
+        },
+
+        plugins: [
+            new ModulesCdnWebpackPlugin()
+        ]
+    });
+
+    const files = stats.compilation.chunks.reduce((files, x) => files.concat(x.files), []);
+
+    t.true(includes(files, 'app.js'));
+    t.true(includes(files, 'https://unpkg.com/react@15.6.1/dist/react.js'));
+
+    const outputs = await Promise.all(files.filter(x => !x.startsWith('https://unpkg.com')).map(async file => {
+        return fs.readFile(path.resolve(__dirname, `./fixtures/output/async/${file}`));
+    }));
+
+    // NOTE: not inside t.false to prevent ava to display whole file in console
+    const doesIncludeReact = outputs.some(output => includes(output, 'THIS IS REACT!'));
+    t.false(doesIncludeReact);
+});
