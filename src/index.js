@@ -42,8 +42,8 @@ export default class ModulesCdnWebpackPlugin {
     }
 
     execute(compiler, {env}) {
-        compiler.plugin('compile', params => {
-            params.normalModuleFactory.plugin('factory', factory => (data, cb) => {
+        compiler.plugin('normal-module-factory', nmf => {
+            nmf.plugin('factory', factory => (data, cb) => {
                 const modulePath = data.dependencies[0].request;
                 const contextPath = data.context;
 
