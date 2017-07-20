@@ -77,7 +77,7 @@ export default class ModulesCdnWebpackPlugin {
         if (isModuleAlreadyLoaded) {
             const isSameVersion = this.modulesFromCdn[modulePath].version === version;
             if (isSameVersion) {
-                return modulePath;
+                return this.modulesFromCdn[modulePath].var;
             }
 
             return false;

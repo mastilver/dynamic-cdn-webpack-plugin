@@ -417,7 +417,11 @@ test('when using multiple versions of a module, make sure the right version is u
     t.true(includes(files, 'app.js'));
     t.true(includes(files, 'https://unpkg.com/react@15.6.1/dist/react.js'));
 
-    const output = await fs.readFile(path.resolve(__dirname, './fixtures/output/multiple-versions/app.js'));
+    let output = await fs.readFile(path.resolve(__dirname, './fixtures/output/multiple-versions/app.js'));
+    output = output.toString();
+
+    const numberOfExports = output.match(/module\.exports =/g).length;
+    t.is(numberOfExports, 1);
 
     // NOTE: not inside t.false to prevent ava to display whole file in console
     const doesIncludeReact14 = includes(output, 'THIS IS REACT@0.14.9!');
