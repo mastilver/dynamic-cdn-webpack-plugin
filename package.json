@@ -14,7 +14,9 @@
   },
   "scripts": {
     "test": "xo && nyc ava",
-    "prepublish": "babel src --out-dir lib",
+    "prepublishOnly": "npm run build",
+    "version": "all-contributors generate",
+    "build": "babel src --out-dir lib",
     "add-contributor": "all-contributors add"
   },
   "files": [

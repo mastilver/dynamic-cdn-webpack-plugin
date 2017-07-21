@@ -1,4 +1,6 @@
-# modules-cdn-webpack-plugin [![Build Status](https://travis-ci.org/mastilver/modules-cdn-webpack-plugin.svg?branch=master)](https://travis-ci.org/mastilver/modules-cdn-webpack-plugin) [![codecov](https://codecov.io/gh/mastilver/modules-cdn-webpack-plugin/badge.svg?branch=master)](https://codecov.io/gh/mastilver/modules-cdn-webpack-plugin?branch=master)
+# modules-cdn-webpack-plugin
+
+[![npm](https://img.shields.io/npm/v/modules-cdn-webpack-plugin.svg)](https://www.npmjs.com/package/modules-cdn-webpack-plugin) [![Build Status](https://travis-ci.org/mastilver/modules-cdn-webpack-plugin.svg?branch=master)](https://travis-ci.org/mastilver/modules-cdn-webpack-plugin) [![codecov](https://codecov.io/gh/mastilver/modules-cdn-webpack-plugin/badge.svg?branch=master)](https://codecov.io/gh/mastilver/modules-cdn-webpack-plugin?branch=master) [![David](https://img.shields.io/david/mastilver/modules-cdn-webpack-plugin.svg)](https://david-dm.org/mastilver/modules-cdn-webpack-plugin)
 
 > Dynamically get your dependencies from a cdn rather than bundling them in your app
 
@@ -194,8 +196,8 @@ The resolver should return either `null` or an `object` with the keys: `name`, `
 Thanks goes to these wonderful people ([emoji key](https://github.com/kentcdodds/all-contributors#emoji-key)):
 
 <!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
-| [<img src="https://avatars3.githubusercontent.com/u/4112409?v=4" width="100px;"/><br /><sub>Thomas Sileghem</sub>](https://github.com/mastilver)<br />[💻](https://github.com/mastilver/modules-cdn-webpack-plugin/commits?author=mastilver "Code") [📖](https://github.com/mastilver/modules-cdn-webpack-plugin/commits?author=mastilver "Documentation") [⚠️](https://github.com/mastilver/modules-cdn-webpack-plugin/commits?author=mastilver "Tests") | [<img src="https://avatars0.githubusercontent.com/u/92839?v=4" width="100px;"/><br /><sub>MICHAEL JACKSON</sub>](https://twitter.com/mjackson)<br />[💡](https://github.com/unpkg/unpkg-demos "Examples") |
-| :---: | :---: |
+| [<img src="https://avatars3.githubusercontent.com/u/4112409?v=4" width="100px;"/><br /><sub>Thomas Sileghem</sub>](https://github.com/mastilver)<br />[💻](https://github.com/mastilver/modules-cdn-webpack-plugin/commits?author=mastilver "Code") [📖](https://github.com/mastilver/modules-cdn-webpack-plugin/commits?author=mastilver "Documentation") [⚠️](https://github.com/mastilver/modules-cdn-webpack-plugin/commits?author=mastilver "Tests") | [<img src="https://avatars0.githubusercontent.com/u/92839?v=4" width="100px;"/><br /><sub>MICHAEL JACKSON</sub>](https://twitter.com/mjackson)<br />[💡](https://github.com/unpkg/unpkg-demos "Examples") | [<img src="https://avatars2.githubusercontent.com/u/5313455?v=4" width="100px;"/><br /><sub>fedeoo</sub>](http://blog.fedeoo.cn/)<br />[💻](https://github.com/mastilver/modules-cdn-webpack-plugin/pull/21 "Code") |
+| :---: | :---: | :---: |
 <!-- ALL-CONTRIBUTORS-LIST:END -->
 
 This project follows the [all-contributors](https://github.com/kentcdodds/all-contributors) specification. Contributions of any kind welcome!

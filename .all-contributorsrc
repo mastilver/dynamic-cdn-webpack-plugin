@@ -29,6 +29,18 @@
           "url": "https://github.com/unpkg/unpkg-demos"
         }
       ]
+    },
+    {
+      "login": "fedeoo",
+      "name": "fedeoo",
+      "avatar_url": "https://avatars2.githubusercontent.com/u/5313455?v=4",
+      "profile": "http://blog.fedeoo.cn/",
+      "contributions": [
+        {
+            "type": "code",
+            "url": "https://github.com/mastilver/modules-cdn-webpack-plugin/pull/21"
+        }
+      ]
     }
   ]
 }
