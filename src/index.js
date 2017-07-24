@@ -99,10 +99,16 @@ export default class ModulesCdnWebpackPlugin {
         }
 
         if (peerDependencies) {
+            let arePeerDependenciesLoaded = true;
             for (const peerDependencyName in peerDependencies) {
                 if ({}.hasOwnProperty.call(peerDependencies, peerDependencyName)) {
-                    this.addModule(contextPath, peerDependencyName, {env});
+                    const isModuleLoaded = Boolean(this.addModule(contextPath, peerDependencyName, {env}));
+                    arePeerDependenciesLoaded = arePeerDependenciesLoaded && isModuleLoaded;
                 }
+            }
+
+            if (!arePeerDependenciesLoaded) {
+                return false;
             }
         }
 

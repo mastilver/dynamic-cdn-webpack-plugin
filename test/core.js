@@ -474,3 +474,55 @@ test('when using a custom resolver', async t => {
     const doesIncludeReact = includes(output, 'THIS IS REACT!');
     t.false(doesIncludeReact);
 });
+
+test('when one peerDependency fails, do not load from cdn', async t => {
+    await cleanDir(path.resolve(__dirname, './fixtures/output/failing-peer-dependency'));
+
+    const stats = await runWebpack({
+        context: path.resolve(__dirname, './fixtures/app'),
+
+        output: {
+            publicPath: '',
+            path: path.resolve(__dirname, './fixtures/output/failing-peer-dependency')
+        },
+
+        entry: {
+            app: './peer-dependencies.js'
+        },
+
+        plugins: [
+            new ModulesCdnWebpackPlugin({
+                resolver: name => {
+                    return {
+                        '@angular/core': {
+                            var: 'ng',
+                            name: 'angular',
+                            url: 'https://unpkg.com/@angular/core@4.2.4/bundles/core.umd.js',
+                            version: '4.2.4'
+                        },
+                        rxjs: {
+                            var: 'Rx',
+                            name: 'rxjs',
+                            url: 'https://unpkg.com/rxjs@5.4.1/bundles/Rx.js',
+                            version: '5.4.1'
+                        }
+                    }[name];
+                }
+            })
+        ]
+    });
+
+    const files = stats.compilation.chunks.reduce((files, x) => files.concat(x.files), []);
+
+    t.is(files.length, 2);
+    t.true(includes(files, 'app.js'));
+    t.false(includes(files, 'https://unpkg.com/@angular/core@4.2.4/bundles/core.umd.js'));
+    t.true(includes(files, 'https://unpkg.com/rxjs@5.4.1/bundles/Rx.js'));
+    t.false(includes(files, 'https://unpkg.com/zone.js@0.8.12/dist/zone.js'));
+
+    let output = await fs.readFile(path.resolve(__dirname, './fixtures/output/failing-peer-dependency/app.js'));
+    output = output.toString();
+
+    const doesIncludeAngular = includes(output, 'console.log(\'THIS IS ANGULAR!\');');
+    t.true(doesIncludeAngular);
+});
