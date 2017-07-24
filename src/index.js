@@ -1,9 +1,10 @@
-import moduleToCdn from 'module-to-cdn';
 import {sync as readPkgUp} from 'read-pkg-up';
 import HtmlWebpackIncludeAssetsPlugin from 'html-webpack-include-assets-plugin';
 import ExternalModule from 'webpack/lib/ExternalModule';
 import resolvePkg from 'resolve-pkg';
 import includes from 'babel-runtime/core-js/array/includes';
+
+import getResolver from './get-resolver';
 
 let HtmlWebpackPlugin;
 try {
@@ -14,7 +15,7 @@ try {
 }
 
 export default class ModulesCdnWebpackPlugin {
-    constructor({disable = false, env, exclude, only, verbose} = {}) {
+    constructor({disable = false, env, exclude, only, verbose, resolver} = {}) {
         if (exclude && only) {
             throw new Error('You can\'t use \'exclude\' and \'only\' at the same time');
         }
@@ -24,6 +25,7 @@ export default class ModulesCdnWebpackPlugin {
         this.exclude = exclude || [];
         this.only = only || null;
         this.verbose = verbose === true;
+        this.resolver = getResolver(resolver);
 
         this.modulesFromCdn = {};
     }
@@ -83,7 +85,7 @@ export default class ModulesCdnWebpackPlugin {
             return false;
         }
 
-        const cdnConfig = moduleToCdn(modulePath, version, {env});
+        const cdnConfig = this.resolver(modulePath, version, {env});
 
         if (cdnConfig == null) {
             if (this.verbose) {

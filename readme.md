@@ -161,7 +161,6 @@ Default: `null`
 
 List the only modules that should be served by the cdn
 
-
 #### options.exclude
 
 Type: `Array<string>`
@@ -175,6 +174,14 @@ Type: `boolean`<br>
 Default: `false`
 
 Log whether the library is being served by the cdn or is bundled
+
+#### options.resolver
+Type: `string`, `function`<br>
+Default: `'module-to-cdn'`
+
+Allow you to define a custom module resolver, it can either be a `function` or an npm module
+The resolver should return either `null` or an `object` with the keys: `name`, `var`, `url`, `version`
+
 
 ## Related
 

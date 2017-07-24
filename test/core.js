@@ -430,3 +430,47 @@ test('when using multiple versions of a module, make sure the right version is u
     const doesIncludeReact = includes(output, 'THIS IS REACT!');
     t.false(doesIncludeReact);
 });
+
+test('when using a custom resolver', async t => {
+    await cleanDir(path.resolve(__dirname, './fixtures/output/custom-resolver'));
+
+    const stats = await runWebpack({
+        context: path.resolve(__dirname, './fixtures/app'),
+
+        output: {
+            publicPath: '',
+            path: path.resolve(__dirname, './fixtures/output/custom-resolver')
+        },
+
+        entry: {
+            app: './single.js'
+        },
+
+        plugins: [
+            new ModulesCdnWebpackPlugin({
+                resolver: () => {
+                    return {
+                        var: 'CustomReact',
+                        name: 'react',
+                        url: 'https://my-cdn.com/react.js',
+                        version: '15.0.0'
+                    };
+                }
+            })
+        ]
+    });
+
+    const files = stats.compilation.chunks.reduce((files, x) => files.concat(x.files), []);
+
+    t.true(includes(files, 'app.js'));
+    t.true(includes(files, 'https://my-cdn.com/react.js'));
+
+    let output = await fs.readFile(path.resolve(__dirname, './fixtures/output/custom-resolver/app.js'));
+    output = output.toString();
+
+    const doesExportCustomReact = includes(output, 'module.exports = CustomReact');
+    t.true(doesExportCustomReact);
+
+    const doesIncludeReact = includes(output, 'THIS IS REACT!');
+    t.false(doesIncludeReact);
+});
