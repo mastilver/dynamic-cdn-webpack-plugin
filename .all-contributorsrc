@@ -1,5 +1,5 @@
 {
-  "projectName": "modules-cdn-webpack-plugin",
+  "projectName": "dynamic-cdn-webpack-plugin",
   "projectOwner": "mastilver",
   "files": [
     "README.md"
@@ -38,7 +38,7 @@
       "contributions": [
         {
             "type": "code",
-            "url": "https://github.com/mastilver/modules-cdn-webpack-plugin/pull/21"
+            "url": "https://github.com/mastilver/dynamic-cdn-webpack-plugin/pull/21"
         }
       ]
     }

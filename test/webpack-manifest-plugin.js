@@ -5,7 +5,7 @@ import test from 'ava';
 import ManifestPlugin from 'webpack-manifest-plugin';
 import includes from 'babel-runtime/core-js/string/includes';
 
-import ModulesCdnWebpackPlugin from '../src';
+import DynamicCdnWebpackPlugin from '../src';
 
 import runWebpack from './helpers/run-webpack';
 import cleanDir from './helpers/clean-dir';
@@ -29,7 +29,7 @@ test('webpack-manifest-plugin', async t => {
             new ManifestPlugin({
                 fileName: 'manifest.json'
             }),
-            new ModulesCdnWebpackPlugin()
+            new DynamicCdnWebpackPlugin()
         ]
     });
 

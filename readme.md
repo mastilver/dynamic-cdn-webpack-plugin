@@ -1,6 +1,6 @@
-# modules-cdn-webpack-plugin
+# dynamic-cdn-webpack-plugin
 
-[![npm](https://img.shields.io/npm/v/modules-cdn-webpack-plugin.svg)](https://www.npmjs.com/package/modules-cdn-webpack-plugin) [![Build Status](https://travis-ci.org/mastilver/modules-cdn-webpack-plugin.svg?branch=master)](https://travis-ci.org/mastilver/modules-cdn-webpack-plugin) [![codecov](https://codecov.io/gh/mastilver/modules-cdn-webpack-plugin/badge.svg?branch=master)](https://codecov.io/gh/mastilver/modules-cdn-webpack-plugin?branch=master) [![David](https://img.shields.io/david/mastilver/modules-cdn-webpack-plugin.svg)](https://david-dm.org/mastilver/modules-cdn-webpack-plugin)
+[![npm](https://img.shields.io/npm/v/dynamic-cdn-webpack-plugin.svg)](https://www.npmjs.com/package/dynamic-cdn-webpack-plugin) [![Build Status](https://travis-ci.org/mastilver/dynamic-cdn-webpack-plugin.svg?branch=master)](https://travis-ci.org/mastilver/dynamic-cdn-webpack-plugin) [![codecov](https://codecov.io/gh/mastilver/dynamic-cdn-webpack-plugin/badge.svg?branch=master)](https://codecov.io/gh/mastilver/dynamic-cdn-webpack-plugin?branch=master) [![David](https://img.shields.io/david/mastilver/dynamic-cdn-webpack-plugin.svg)](https://david-dm.org/mastilver/dynamic-cdn-webpack-plugin)
 
 > Dynamically get your dependencies from a cdn rather than bundling them in your app
 
@@ -8,7 +8,7 @@
 ## Install
 
 ```
-$ npm install --save modules-cdn-webpack-plugin module-to-cdn
+$ npm install --save dynamic-cdn-webpack-plugin module-to-cdn
 ```
 
 
@@ -19,7 +19,7 @@ $ npm install --save modules-cdn-webpack-plugin module-to-cdn
 const path = require('path');
 
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-const ModulesCdnWebpackPlugin = require('modules-cdn-webpack-plugin');
+const DynamicCdnWebpackPlugin = require('dynamic-cdn-webpack-plugin');
 
 module.exports = {
     entry: {
@@ -32,7 +32,7 @@ module.exports = {
 
     plugins: [
         new HtmlWebpackPlugin(),
-        new ModulesCdnWebpackPlugin()
+        new DynamicCdnWebpackPlugin()
     ]
 }
 ```
@@ -82,7 +82,7 @@ import { BrowserRouter } from 'react-router-dom';
 const path = require('path');
 
 const ManifestPlugin = require('webpack-manifest-plugin');
-const ModulesCdnWebpackPlugin = require('modules-cdn-webpack-plugin');
+const DynamicCdnWebpackPlugin = require('dynamic-cdn-webpack-plugin');
 
 module.exports = {
     entry: {
@@ -97,7 +97,7 @@ module.exports = {
         new ManifestPlugin({
             fileName: 'manifest.json'
         }),
-        new ModulesCdnWebpackPlugin()
+        new DynamicCdnWebpackPlugin()
     ]
 }
 ```
@@ -139,7 +139,7 @@ import { BrowserRouter } from 'react-router-dom';
 
 ## API
 
-### ModulesCdnWebpackPlugin(options)
+### DynamicCdnWebpackPlugin(options)
 
 #### options.disable
 
@@ -196,7 +196,7 @@ The resolver should return either `null` or an `object` with the keys: `name`, `
 Thanks goes to these wonderful people ([emoji key](https://github.com/kentcdodds/all-contributors#emoji-key)):
 
 <!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
-| [<img src="https://avatars3.githubusercontent.com/u/4112409?v=4" width="100px;"/><br /><sub>Thomas Sileghem</sub>](https://github.com/mastilver)<br />[💻](https://github.com/mastilver/modules-cdn-webpack-plugin/commits?author=mastilver "Code") [📖](https://github.com/mastilver/modules-cdn-webpack-plugin/commits?author=mastilver "Documentation") [⚠️](https://github.com/mastilver/modules-cdn-webpack-plugin/commits?author=mastilver "Tests") | [<img src="https://avatars0.githubusercontent.com/u/92839?v=4" width="100px;"/><br /><sub>MICHAEL JACKSON</sub>](https://twitter.com/mjackson)<br />[💡](https://github.com/unpkg/unpkg-demos "Examples") | [<img src="https://avatars2.githubusercontent.com/u/5313455?v=4" width="100px;"/><br /><sub>fedeoo</sub>](http://blog.fedeoo.cn/)<br />[💻](https://github.com/mastilver/modules-cdn-webpack-plugin/pull/21 "Code") |
+| [<img src="https://avatars3.githubusercontent.com/u/4112409?v=4" width="100px;"/><br /><sub>Thomas Sileghem</sub>](https://github.com/mastilver)<br />[💻](https://github.com/mastilver/dynamic-cdn-webpack-plugin/commits?author=mastilver "Code") [📖](https://github.com/mastilver/dynamic-cdn-webpack-plugin/commits?author=mastilver "Documentation") [⚠️](https://github.com/mastilver/dynamic-cdn-webpack-plugin/commits?author=mastilver "Tests") | [<img src="https://avatars0.githubusercontent.com/u/92839?v=4" width="100px;"/><br /><sub>MICHAEL JACKSON</sub>](https://twitter.com/mjackson)<br />[💡](https://github.com/unpkg/unpkg-demos "Examples") | [<img src="https://avatars2.githubusercontent.com/u/5313455?v=4" width="100px;"/><br /><sub>fedeoo</sub>](http://blog.fedeoo.cn/)<br />[💻](https://github.com/mastilver/dynamic-cdn-webpack-plugin/pull/21 "Code") |
 | :---: | :---: | :---: |
 <!-- ALL-CONTRIBUTORS-LIST:END -->
 

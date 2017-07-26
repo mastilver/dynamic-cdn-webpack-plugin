@@ -4,7 +4,7 @@ import fs from 'mz/fs';
 import test from 'ava';
 import includes from 'babel-runtime/core-js/string/includes';
 
-import ModulesCdnWebpackPlugin from '../src';
+import DynamicCdnWebpackPlugin from '../src';
 
 import runWebpack from './helpers/run-webpack';
 import cleanDir from './helpers/clean-dir';
@@ -25,7 +25,7 @@ test('basic', async t => {
         },
 
         plugins: [
-            new ModulesCdnWebpackPlugin()
+            new DynamicCdnWebpackPlugin()
         ]
     });
 
@@ -61,7 +61,7 @@ test('using production version', async t => {
         },
 
         plugins: [
-            new ModulesCdnWebpackPlugin({
+            new DynamicCdnWebpackPlugin({
                 env: 'production'
             })
         ]
@@ -98,7 +98,7 @@ test.serial('with NODE_ENV=production', async t => {
         },
 
         plugins: [
-            new ModulesCdnWebpackPlugin()
+            new DynamicCdnWebpackPlugin()
         ]
     });
 
@@ -133,7 +133,7 @@ test('nested dependencies', async t => {
         },
 
         plugins: [
-            new ModulesCdnWebpackPlugin()
+            new DynamicCdnWebpackPlugin()
         ]
     });
 
@@ -158,7 +158,7 @@ test('peerDependencies', async t => {
         },
 
         plugins: [
-            new ModulesCdnWebpackPlugin()
+            new DynamicCdnWebpackPlugin()
         ]
     });
 
@@ -187,7 +187,7 @@ test('load module without export', async t => {
         },
 
         plugins: [
-            new ModulesCdnWebpackPlugin()
+            new DynamicCdnWebpackPlugin()
         ]
     });
 
@@ -214,7 +214,7 @@ test('exclude some modules', async t => {
         },
 
         plugins: [
-            new ModulesCdnWebpackPlugin({
+            new DynamicCdnWebpackPlugin({
                 exclude: ['react']
             })
         ]
@@ -249,7 +249,7 @@ test('only include some modules', async t => {
         },
 
         plugins: [
-            new ModulesCdnWebpackPlugin({
+            new DynamicCdnWebpackPlugin({
                 only: ['react']
             })
         ]
@@ -289,7 +289,7 @@ test('errors when using \'only\' and \'exclude\' together', async t => {
         },
 
         plugins: [
-            new ModulesCdnWebpackPlugin({
+            new DynamicCdnWebpackPlugin({
                 exclude: ['react'],
                 only: ['react']
             })
@@ -320,7 +320,7 @@ test.serial('verbose options to output which modules are loaded from CDN / which
         },
 
         plugins: [
-            new ModulesCdnWebpackPlugin({
+            new DynamicCdnWebpackPlugin({
                 verbose: true
             })
         ]
@@ -347,7 +347,7 @@ test('require files without extension', async t => {
         },
 
         plugins: [
-            new ModulesCdnWebpackPlugin()
+            new DynamicCdnWebpackPlugin()
         ]
     });
 
@@ -374,7 +374,7 @@ test('async loading', async t => {
         },
 
         plugins: [
-            new ModulesCdnWebpackPlugin()
+            new DynamicCdnWebpackPlugin()
         ]
     });
 
@@ -408,7 +408,7 @@ test('when using multiple versions of a module, make sure the right version is u
         },
 
         plugins: [
-            new ModulesCdnWebpackPlugin()
+            new DynamicCdnWebpackPlugin()
         ]
     });
 
@@ -447,7 +447,7 @@ test('when using a custom resolver', async t => {
         },
 
         plugins: [
-            new ModulesCdnWebpackPlugin({
+            new DynamicCdnWebpackPlugin({
                 resolver: () => {
                     return {
                         var: 'CustomReact',
@@ -491,7 +491,7 @@ test('when one peerDependency fails, do not load from cdn', async t => {
         },
 
         plugins: [
-            new ModulesCdnWebpackPlugin({
+            new DynamicCdnWebpackPlugin({
                 resolver: name => {
                     return {
                         '@angular/core': {

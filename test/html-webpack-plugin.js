@@ -5,7 +5,7 @@ import test from 'ava';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
 import includes from 'babel-runtime/core-js/string/includes';
 
-import ModulesCdnWebpackPlugin from '../src';
+import DynamicCdnWebpackPlugin from '../src';
 
 import runWebpack from './helpers/run-webpack';
 import cleanDir from './helpers/clean-dir';
@@ -27,7 +27,7 @@ test('html-webpack-plugin', async t => {
 
         plugins: [
             new HtmlWebpackPlugin(),
-            new ModulesCdnWebpackPlugin()
+            new DynamicCdnWebpackPlugin()
         ]
     });
 

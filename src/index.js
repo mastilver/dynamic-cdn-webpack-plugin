@@ -14,7 +14,7 @@ try {
     HtmlWebpackPlugin = null;
 }
 
-export default class ModulesCdnWebpackPlugin {
+export default class DynamicCdnWebpackPlugin {
     constructor({disable = false, env, exclude, only, verbose, resolver} = {}) {
         if (exclude && only) {
             throw new Error('You can\'t use \'exclude\' and \'only\' at the same time');
