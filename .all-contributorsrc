@@ -2,7 +2,7 @@
   "projectName": "dynamic-cdn-webpack-plugin",
   "projectOwner": "mastilver",
   "files": [
-    "README.md"
+    "readme.md"
   ],
   "imageSize": 100,
   "commit": true,
