@@ -45,6 +45,37 @@ export default class DynamicCdnWebpackPlugin {
     }
 
     execute(compiler, {env}) {
+        compiler.plugin('after-compile', (compilation, cb) => {
+            console.log('adding fallback');
+            const entrypoint = compilation.entrypoints[Object.keys(compilation.entrypoints)[0]];
+            const mainChunk = entrypoint.chunks.find(x => x.isInitial());
+
+            const fallbackChunk = compilation.addChunk('fallback');
+            fallbackChunk.files.unshift('fallback.js');
+
+            fallbackChunk.parents = [mainChunk];
+            mainChunk.addChunk(fallbackChunk);
+            entrypoint.insertChunk(mainChunk, fallbackChunk);
+
+            cb();
+        });
+
+        compiler.plugin('emit', (compilation, cb) => {
+            const text = `
+                const fallback = true;
+            `;
+            compilation.assets['fallback.js'] = {
+                source() {
+                    return text;
+                },
+                size() {
+                    return text.length;
+                }
+            };
+
+            cb();
+        });
+
         compiler.plugin('normal-module-factory', nmf => {
             nmf.plugin('factory', factory => (data, cb) => {
                 const modulePath = data.dependencies[0].request;
@@ -122,6 +153,7 @@ export default class DynamicCdnWebpackPlugin {
 
     applyWebpackCore(compiler) {
         compiler.plugin('after-compile', (compilation, cb) => {
+            console.log('after-compile');
             const entrypoint = compilation.entrypoints[Object.keys(compilation.entrypoints)[0]];
             const parentChunk = entrypoint.chunks.find(x => x.isInitial());
 
