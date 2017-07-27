@@ -55,18 +55,18 @@ export default class DynamicCdnWebpackPlugin {
                     return factory(data, cb);
                 }
 
-                const varName = this.addModule(contextPath, modulePath, {env});
+                this.addModule(contextPath, modulePath, {env}).then(varName => {
+                    if (varName === false) {
+                        return factory(data, cb);
+                    }
 
-                if (varName === false) {
-                    return factory(data, cb);
-                }
-
-                cb(null, new ExternalModule(varName));
+                    cb(null, new ExternalModule(varName));
+                });
             });
         });
     }
 
-    addModule(contextPath, modulePath, {env}) {
+    async addModule(contextPath, modulePath, {env}) {
         const isModuleExcluded = includes(this.exclude, modulePath) ||
                                  (this.only && !includes(this.only, modulePath));
         if (isModuleExcluded) {
@@ -85,7 +85,7 @@ export default class DynamicCdnWebpackPlugin {
             return false;
         }
 
-        const cdnConfig = this.resolver(modulePath, version, {env});
+        const cdnConfig = await this.resolver(modulePath, version, {env});
 
         if (cdnConfig == null) {
             if (this.verbose) {
@@ -99,13 +99,11 @@ export default class DynamicCdnWebpackPlugin {
         }
 
         if (peerDependencies) {
-            let arePeerDependenciesLoaded = true;
-            for (const peerDependencyName in peerDependencies) {
-                if ({}.hasOwnProperty.call(peerDependencies, peerDependencyName)) {
-                    const isModuleLoaded = Boolean(this.addModule(contextPath, peerDependencyName, {env}));
-                    arePeerDependenciesLoaded = arePeerDependenciesLoaded && isModuleLoaded;
-                }
-            }
+            const arePeerDependenciesLoaded = (await Promise.all(Object.keys(peerDependencies).map(peerDependencyName => {
+                return this.addModule(contextPath, peerDependencyName, {env});
+            })))
+            .map(x => Boolean(x))
+            .reduce((result, x) => result && x, true);
 
             if (!arePeerDependenciesLoaded) {
                 return false;

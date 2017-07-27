@@ -1,6 +1,6 @@
 # dynamic-cdn-webpack-plugin
 
-[![npm](https://img.shields.io/npm/v/dynamic-cdn-webpack-plugin.svg)](https://www.npmjs.com/package/dynamic-cdn-webpack-plugin) [![Build Status](https://travis-ci.org/mastilver/dynamic-cdn-webpack-plugin.svg?branch=master)](https://travis-ci.org/mastilver/dynamic-cdn-webpack-plugin) [![codecov](https://codecov.io/gh/mastilver/dynamic-cdn-webpack-plugin/badge.svg?branch=master)](https://codecov.io/gh/mastilver/dynamic-cdn-webpack-plugin?branch=master) [![David](https://img.shields.io/david/mastilver/dynamic-cdn-webpack-plugin.svg)](https://david-dm.org/mastilver/dynamic-cdn-webpack-plugin)
+[![npm](https://img.shields.io/npm/v/dynamic-cdn-webpack-plugin.svg)](https://www.npmjs.com/package/dynamic-cdn-webpack-plugin) [![Build Status](https://travis-ci.org/mastilver/dynamic-cdn-webpack-plugin.svg?branch=master)](https://travis-ci.org/mastilver/dynamic-cdn-webpack-plugin) [![codecov](https://codecov.io/gh/mastilver/dynamic-cdn-webpack-plugin/badge.svg?branch=master)](https://codecov.io/gh/mastilver/dynamic-cdn-webpack-plugin?branch=master) [![David](https://img.shields.io/david/mastilver/dynamic-cdn-webpack-plugin.svg)](https://david-dm.org/mastilver/dynamic-cdn-webpack-plugin) [![XO code style](https://img.shields.io/badge/code_style-XO-5ed9c7.svg)](https://github.com/sindresorhus/xo)
 
 > Dynamically get your dependencies from a cdn rather than bundling them in your app
 
@@ -181,8 +181,8 @@ Log whether the library is being served by the cdn or is bundled
 Type: `string`, `function`<br>
 Default: `'module-to-cdn'`
 
-Allow you to define a custom module resolver, it can either be a `function` or an npm module
-The resolver should return either `null` or an `object` with the keys: `name`, `var`, `url`, `version`
+Allow you to define a custom module resolver, it can either be a `function` or an npm module.
+The resolver should return (or resolve as a Promise) either `null` or an `object` with the keys: `name`, `var`, `url`, `version`.
 
 
 ## Related
