@@ -60,7 +60,7 @@ export default class DynamicCdnWebpackPlugin {
                         return factory(data, cb);
                     }
 
-                    cb(null, new ExternalModule(varName));
+                    cb(null, new ExternalModule(varName, 'var', modulePath));
                 });
             });
         });
