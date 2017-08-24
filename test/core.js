@@ -606,6 +606,6 @@ test('when used with NamedModulesPlugin', async t => {
     const doesHaveIncorrectRequire = includes(output, '__webpack_require__(undefined)');
     t.false(doesHaveIncorrectRequire);
 
-    const doesHaveCorrectReactRequire = includes(output, '__webpack_require__("react")');
+    const doesHaveCorrectReactRequire = includes(output, '__webpack_require__("react")') || includes(output, '__webpack_require__(0)');
     t.true(doesHaveCorrectReactRequire);
 });
