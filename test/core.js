@@ -3,6 +3,7 @@ import fs from 'mz/fs';
 
 import test from 'ava';
 import includes from 'babel-runtime/core-js/string/includes';
+import webpack from 'webpack';
 
 import DynamicCdnWebpackPlugin from '../src';
 
@@ -571,4 +572,40 @@ test('when resolver retuns a Promise', async t => {
 
     const doesIncludeReact = includes(output, 'THIS IS REACT!');
     t.false(doesIncludeReact);
+});
+
+test('when used with NamedModulesPlugin', async t => {
+    await cleanDir(path.resolve(__dirname, './fixtures/output/named-modules'));
+
+    const stats = await runWebpack({
+        context: path.resolve(__dirname, './fixtures/app'),
+
+        output: {
+            publicPath: '',
+            path: path.resolve(__dirname, './fixtures/output/named-modules')
+        },
+
+        entry: {
+            app: './single.js'
+        },
+
+        plugins: [
+            new DynamicCdnWebpackPlugin(),
+            new webpack.NamedModulesPlugin()
+        ]
+    });
+
+    const files = stats.compilation.chunks.reduce((files, x) => files.concat(x.files), []);
+
+    t.is(files.length, 2);
+    t.true(includes(files, 'app.js'));
+    t.true(includes(files, 'https://unpkg.com/react@15.6.1/dist/react.js'));
+
+    const output = await fs.readFile(path.resolve(__dirname, './fixtures/output/named-modules/app.js'));
+
+    const doesHaveIncorrectRequire = includes(output, '__webpack_require__(undefined)');
+    t.false(doesHaveIncorrectRequire);
+
+    const doesHaveCorrectReactRequire = includes(output, '__webpack_require__("react")') || includes(output, '__webpack_require__(0)');
+    t.true(doesHaveCorrectReactRequire);
 });
