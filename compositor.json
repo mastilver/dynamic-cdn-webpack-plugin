@@ -1,0 +1,143 @@
+{
+  "name": "mastilver/dynamic-cdn-webpack-plugin",
+  "version": "0.1.4",
+  "libraries": {
+    "xv": "^1.1.25"
+  },
+  "title": "",
+  "branch": "",
+  "style": {
+    "name": "Default",
+    "componentSet": {
+      "nav": "nav/BasicNav",
+      "header": "header/BannerHeader",
+      "article": "article/BasicArticle",
+      "footer": "footer/BasicFooter"
+    },
+    "fontFamily": "-apple-system, BlinkMacSystemFont, sans-serif",
+    "fontWeight": 400,
+    "bold": 600,
+    "lineHeight": 1.5,
+    "typeScale": [
+      72,
+      48,
+      24,
+      20,
+      16,
+      14,
+      12
+    ],
+    "monospace": "Menlo, monospace",
+    "heading": {
+      "fontFamily": null,
+      "fontStyle": null,
+      "fontWeight": 600,
+      "lineHeight": 1.25,
+      "textTransform": null,
+      "letterSpacing": null
+    },
+    "h0": {},
+    "h1": {},
+    "h2": {},
+    "h3": {},
+    "h4": {},
+    "h5": {},
+    "h6": {},
+    "alternativeText": {},
+    "space": [
+      0,
+      8,
+      16,
+      32,
+      48,
+      64,
+      96
+    ],
+    "layout": {
+      "maxWidth": 1024,
+      "centered": false
+    },
+    "colors": {
+      "text": "#111",
+      "background": "#fff",
+      "primary": "#08e",
+      "secondary": "#059",
+      "highlight": "#e08",
+      "border": "#ddd",
+      "muted": "#eee"
+    },
+    "border": {
+      "width": 1,
+      "radius": 2
+    },
+    "link": {},
+    "button": {
+      "hover": {
+        "boxShadow": "inset 0 0 0 999px rgba(0, 0, 0, .125)"
+      }
+    },
+    "input": {},
+    "body": {
+      "margin": 0
+    },
+    "breakpoints": {
+      "xs": "@media screen and (max-width:40em)",
+      "sm": "@media screen and (min-width:40em)",
+      "md": "@media screen and (min-width:52em)",
+      "lg": "@media screen and (min-width:64em)"
+    }
+  },
+  "content": [
+    {
+      "component": "nav",
+      "links": [
+        {
+          "href": "https://github.com/mastilver/dynamic-cdn-webpack-plugin",
+          "text": "GitHub"
+        },
+        {
+          "href": "https://npmjs.com/package/dynamic-cdn-webpack-plugin",
+          "text": "npm"
+        }
+      ]
+    },
+    {
+      "component": "header",
+      "heading": "dynamic-cdn-webpack-plugin",
+      "subhead": "Get your dependencies from a cdn rather than bundling them in your app",
+      "children": [
+        {
+          "component": "ui/TweetButton",
+          "text": "dynamic-cdn-webpack-plugin: Get your dependencies from a cdn rather than bundling them in your app",
+          "url": ""
+        },
+        {
+          "component": "ui/GithubButton",
+          "user": "mastilver",
+          "repo": "dynamic-cdn-webpack-plugin"
+        }
+      ],
+      "text": "v3.4.0"
+    },
+    {
+      "component": "article",
+      "metadata": {
+        "source": "github.readme"
+      },
+      "html": "\n<p><a href=\"https://www.npmjs.com/package/dynamic-cdn-webpack-plugin\"><img src=\"https://img.shields.io/npm/v/dynamic-cdn-webpack-plugin.svg\"></a> <a href=\"https://travis-ci.org/mastilver/dynamic-cdn-webpack-plugin\"><img src=\"https://travis-ci.org/mastilver/dynamic-cdn-webpack-plugin.svg?branch=master\"></a> <a href=\"https://codecov.io/gh/mastilver/dynamic-cdn-webpack-plugin?branch=master\"><img src=\"https://codecov.io/gh/mastilver/dynamic-cdn-webpack-plugin/badge.svg?branch=master\"></a> <a href=\"https://david-dm.org/mastilver/dynamic-cdn-webpack-plugin\"><img src=\"https://img.shields.io/david/mastilver/dynamic-cdn-webpack-plugin.svg\"></a> <a href=\"https://github.com/sindresorhus/xo\"><img src=\"https://img.shields.io/badge/code_style-XO-5ed9c7.svg\"></a></p>\n<blockquote>\n<p>Dynamically get your dependencies from a cdn rather than bundling them in your app</p>\n</blockquote>\n<h2>Install</h2>\n<pre>$ npm install --save dynamic-cdn-webpack-plugin <span class=\"hljs-class\"><span class=\"hljs-keyword\">module</span>-<span class=\"hljs-title\">to</span>-<span class=\"hljs-title\">cdn</span></span></pre><h2>Usage with HtmlWebpackPlugin</h2>\n<p><code>webpack.config.js</code><br></p>\n<pre><span class=\"hljs-keyword\">const</span> path = <span class=\"hljs-built_in\">require</span>(<span class=\"hljs-string\">&apos;path&apos;</span>);\n\n<span class=\"hljs-keyword\">const</span> HtmlWebpackPlugin = <span class=\"hljs-built_in\">require</span>(<span class=\"hljs-string\">&apos;html-webpack-plugin&apos;</span>);\n<span class=\"hljs-keyword\">const</span> DynamicCdnWebpackPlugin = <span class=\"hljs-built_in\">require</span>(<span class=\"hljs-string\">&apos;dynamic-cdn-webpack-plugin&apos;</span>);\n\n<span class=\"hljs-built_in\">module</span>.exports = {\n    <span class=\"hljs-attr\">entry</span>: {\n        <span class=\"hljs-string\">&apos;app.js&apos;</span>: <span class=\"hljs-string\">&apos;./src/app.js&apos;</span>\n    },\n\n    <span class=\"hljs-attr\">output</span>: {\n        path.resolve(__dirname, <span class=\"hljs-string\">&apos;./build&apos;</span>),\n    },\n\n    <span class=\"hljs-attr\">plugins</span>: [\n        <span class=\"hljs-keyword\">new</span> HtmlWebpackPlugin(),\n        <span class=\"hljs-keyword\">new</span> DynamicCdnWebpackPlugin()\n    ]\n}</pre><p><code>app.js</code><br></p>\n<pre><span class=\"hljs-keyword\">import</span> React <span class=\"hljs-keyword\">from</span> <span class=\"hljs-string\">&apos;react&apos;</span>;\n<span class=\"hljs-keyword\">import</span> { BrowserRouter } <span class=\"hljs-keyword\">from</span> <span class=\"hljs-string\">&apos;react-router-dom&apos;</span>;\n\n<span class=\"hljs-comment\">// ... do react stuff</span></pre><p><code>NODE_ENV=production webpack</code> will generate:</p>\n<pre><span class=\"hljs-comment\">/* simplified webpack build */</span>\n[<span class=\"hljs-function\"><span class=\"hljs-keyword\">function</span>(<span class=\"hljs-params\">module, __webpack_exports__, __webpack_require__</span>) </span>{\n    <span class=\"hljs-built_in\">module</span>.exports = React;\n}),\n(<span class=\"hljs-function\"><span class=\"hljs-keyword\">function</span>(<span class=\"hljs-params\">module, __webpack_exports__, __webpack_require__</span>) </span>{\n    <span class=\"hljs-built_in\">module</span>.exports = ReactRouterDOM;\n}),\n(<span class=\"hljs-function\"><span class=\"hljs-keyword\">function</span>(<span class=\"hljs-params\">module, __webpack_exports__, __webpack_require__</span>) </span>{\n    <span class=\"hljs-keyword\">var</span> react = __webpack_require__(<span class=\"hljs-number\">0</span>);\n    <span class=\"hljs-keyword\">var</span> reactRouterDOM = __webpack_require__(<span class=\"hljs-number\">1</span>);\n\n    <span class=\"hljs-comment\">/* ... */</span>\n})]</pre><pre><span class=\"hljs-meta\">&lt;!DOCTYPE html&gt;</span>\n<span class=\"hljs-tag\">&lt;<span class=\"hljs-name\">html</span>&gt;</span>\n  <span class=\"hljs-tag\">&lt;<span class=\"hljs-name\">head</span>&gt;</span>\n    <span class=\"hljs-tag\">&lt;<span class=\"hljs-name\">meta</span> <span class=\"hljs-attr\">charset</span>=<span class=\"hljs-string\">&quot;UTF-8&quot;</span>&gt;</span>\n    <span class=\"hljs-tag\">&lt;<span class=\"hljs-name\">title</span>&gt;</span>Webpack App<span class=\"hljs-tag\">&lt;/<span class=\"hljs-name\">title</span>&gt;</span>\n  <span class=\"hljs-tag\">&lt;/<span class=\"hljs-name\">head</span>&gt;</span>\n  <span class=\"hljs-tag\">&lt;<span class=\"hljs-name\">body</span>&gt;</span>\n    <span class=\"hljs-tag\">&lt;<span class=\"hljs-name\">script</span> <span class=\"hljs-attr\">type</span>=<span class=\"hljs-string\">&quot;text/javascript&quot;</span> <span class=\"hljs-attr\">src</span>=<span class=\"hljs-string\">&quot;https://unpkg.com/react@15.5.3/dist/react.min.js&quot;</span>&gt;</span><span class=\"undefined\"></span><span class=\"hljs-tag\">&lt;/<span class=\"hljs-name\">script</span>&gt;</span><span class=\"hljs-tag\">&lt;<span class=\"hljs-name\">script</span> <span class=\"hljs-attr\">type</span>=<span class=\"hljs-string\">&quot;text/javascript&quot;</span> <span class=\"hljs-attr\">src</span>=<span class=\"hljs-string\">&quot;https://unpkg.com/react-router-dom@4.1.1/umd/react-router-dom.min.js&quot;</span>&gt;</span><span class=\"undefined\"></span><span class=\"hljs-tag\">&lt;/<span class=\"hljs-name\">script</span>&gt;</span><span class=\"hljs-tag\">&lt;<span class=\"hljs-name\">script</span> <span class=\"hljs-attr\">src</span>=<span class=\"hljs-string\">&quot;build/app.js&quot;</span>&gt;</span><span class=\"undefined\"></span><span class=\"hljs-tag\">&lt;/<span class=\"hljs-name\">script</span>&gt;</span><span class=\"hljs-tag\">&lt;/<span class=\"hljs-name\">body</span>&gt;</span>\n<span class=\"hljs-tag\">&lt;/<span class=\"hljs-name\">html</span>&gt;</span></pre><h2>Usage with ManifestPlugin</h2>\n<p><code>webpack.config.js</code><br></p>\n<pre><span class=\"hljs-keyword\">const</span> path = <span class=\"hljs-built_in\">require</span>(<span class=\"hljs-string\">&apos;path&apos;</span>);\n\n<span class=\"hljs-keyword\">const</span> ManifestPlugin = <span class=\"hljs-built_in\">require</span>(<span class=\"hljs-string\">&apos;webpack-manifest-plugin&apos;</span>);\n<span class=\"hljs-keyword\">const</span> DynamicCdnWebpackPlugin = <span class=\"hljs-built_in\">require</span>(<span class=\"hljs-string\">&apos;dynamic-cdn-webpack-plugin&apos;</span>);\n\n<span class=\"hljs-built_in\">module</span>.exports = {\n    <span class=\"hljs-attr\">entry</span>: {\n        <span class=\"hljs-string\">&apos;app&apos;</span>: <span class=\"hljs-string\">&apos;./src/app.js&apos;</span>\n    },\n\n    <span class=\"hljs-attr\">output</span>: {\n        path.resolve(__dirname, <span class=\"hljs-string\">&apos;./build&apos;</span>),\n    },\n\n    <span class=\"hljs-attr\">plugins</span>: [\n        <span class=\"hljs-keyword\">new</span> ManifestPlugin({\n            <span class=\"hljs-attr\">fileName</span>: <span class=\"hljs-string\">&apos;manifest.json&apos;</span>\n        }),\n        <span class=\"hljs-keyword\">new</span> DynamicCdnWebpackPlugin()\n    ]\n}</pre><p><code>app.js</code><br></p>\n<pre><span class=\"hljs-keyword\">import</span> React <span class=\"hljs-keyword\">from</span> <span class=\"hljs-string\">&apos;react&apos;</span>;\n<span class=\"hljs-keyword\">import</span> { BrowserRouter } <span class=\"hljs-keyword\">from</span> <span class=\"hljs-string\">&apos;react-router-dom&apos;</span>;\n\n<span class=\"hljs-comment\">// ... do react stuff</span></pre><p><code>NODE_ENV=production webpack</code> will generate:</p>\n<pre><span class=\"hljs-comment\">/* simplified webpack build */</span>\n[<span class=\"hljs-function\"><span class=\"hljs-keyword\">function</span>(<span class=\"hljs-params\">module, __webpack_exports__, __webpack_require__</span>) </span>{\n    <span class=\"hljs-built_in\">module</span>.exports = React;\n}),\n(<span class=\"hljs-function\"><span class=\"hljs-keyword\">function</span>(<span class=\"hljs-params\">module, __webpack_exports__, __webpack_require__</span>) </span>{\n    <span class=\"hljs-built_in\">module</span>.exports = ReactRouterDOM;\n}),\n(<span class=\"hljs-function\"><span class=\"hljs-keyword\">function</span>(<span class=\"hljs-params\">module, __webpack_exports__, __webpack_require__</span>) </span>{\n    <span class=\"hljs-keyword\">var</span> react = __webpack_require__(<span class=\"hljs-number\">0</span>);\n    <span class=\"hljs-keyword\">var</span> reactRouterDOM = __webpack_require__(<span class=\"hljs-number\">1</span>);\n\n    <span class=\"hljs-comment\">/* ... */</span>\n})]</pre><pre>{\n    <span class=\"hljs-attr\">&quot;app.js&quot;</span>: <span class=\"hljs-string\">&quot;app.js&quot;</span>,\n    <span class=\"hljs-attr\">&quot;react.js&quot;</span>: <span class=\"hljs-string\">&quot;https://unpkg.com/react@15.5.3/dist/react.min.js&quot;</span>,\n    <span class=\"hljs-attr\">&quot;react-router-dom.js&quot;</span>: <span class=\"hljs-string\">&quot;https://unpkg.com/react-router-dom@4.1.1/umd/react-router-dom.min.js&quot;</span>\n}</pre><h2>API</h2>\n<h3>DynamicCdnWebpackPlugin(options)</h3>\n<h4>options.disable</h4>\n<p>Type: <code>boolean</code><br>\nDefault: <code>false</code></p>\n<p>Usefull when working offline, will fallbacl to webpack normal behaviour</p>\n<h4>options.env</h4>\n<p>Type: <code>string</code><br>\nDefault: <code>process.env.NODE_ENV || &apos;development&apos;</code><br>\nValues: <code>development</code>, <code>production</code></p>\n<p>Determine if it should load the development or the production version of modules</p>\n<h4>options.only</h4>\n<p>Type: <code>Array&lt;string&gt;</code>\nDefault: <code>null</code></p>\n<p>List the only modules that should be served by the cdn</p>\n<h4>options.exclude</h4>\n<p>Type: <code>Array&lt;string&gt;</code>\nDefault: <code>[]</code></p>\n<p>List the modules that will always be bundled (not be served by the cdn)</p>\n<h4>options.verbose</h4>\n<p>Type: <code>boolean</code><br>\nDefault: <code>false</code></p>\n<p>Log whether the library is being served by the cdn or is bundled</p>\n<h4>options.resolver</h4>\n<p>Type: <code>string</code>, <code>function</code><br>\nDefault: <code>&apos;module-to-cdn&apos;</code></p>\n<p>Allow you to define a custom module resolver, it can either be a <code>function</code> or an npm module.\nThe resolver should return (or resolve as a Promise) either <code>null</code> or an <code>object</code> with the keys: <code>name</code>, <code>var</code>, <code>url</code>, <code>version</code>.</p>\n<h2>Related</h2>\n<ul>\n<li><a href=\"https://github.com/jantimon/html-webpack-plugin\">html-webpack-plugin</a></li>\n<li><a href=\"https://github.com/mastilver/module-to-cdn\">module-to-cdn</a></li>\n</ul>\n<h2>Contributors</h2>\n<p>Thanks goes to these wonderful people (<a href=\"https://github.com/kentcdodds/all-contributors#emoji-key\">emoji key</a>):</p>\n\n<table>\n<thead>\n<tr>\n<th><a href=\"https://github.com/mastilver\"><img src=\"https://avatars3.githubusercontent.com/u/4112409?v=4\"><br><sub>Thomas Sileghem</sub></a><br><a href=\"https://github.com/mastilver/dynamic-cdn-webpack-plugin/commits?author=mastilver\">&#x1F4BB;</a> <a href=\"https://github.com/mastilver/dynamic-cdn-webpack-plugin/commits?author=mastilver\">&#x1F4D6;</a> <a href=\"https://github.com/mastilver/dynamic-cdn-webpack-plugin/commits?author=mastilver\">&#x26A0;&#xFE0F;</a></th>\n<th><a href=\"https://twitter.com/mjackson\"><img src=\"https://avatars0.githubusercontent.com/u/92839?v=4\"><br><sub>MICHAEL JACKSON</sub></a><br><a href=\"https://github.com/unpkg/unpkg-demos\">&#x1F4A1;</a></th>\n<th><a href=\"http://blog.fedeoo.cn/\"><img src=\"https://avatars2.githubusercontent.com/u/5313455?v=4\"><br><sub>fedeoo</sub></a><br><a href=\"https://github.com/mastilver/dynamic-cdn-webpack-plugin/pull/21\">&#x1F4BB;</a></th>\n</tr>\n</thead>\n<tbody>\n<tr>\n<td></td>\n</tr>\n</tbody>\n</table>\n\n<p>This project follows the <a href=\"https://github.com/kentcdodds/all-contributors\">all-contributors</a> specification. Contributions of any kind welcome!</p>\n<h2>License</h2>\n<p>MIT &#xA9; <a href=\"http://mastilver.com\">Thomas Sileghem</a></p>\n"
+    },
+    {
+      "component": "footer",
+      "links": [
+        {
+          "href": "https://github.com/mastilver/dynamic-cdn-webpack-plugin",
+          "text": "GitHub"
+        },
+        {
+          "href": "https://github.com/mastilver",
+          "text": "mastilver"
+        }
+      ]
+    }
+  ]
+}
