@@ -46,7 +46,7 @@ export default class DynamicCdnWebpackPlugin {
 
     execute(compiler, {env}) {
         compiler.plugin('normal-module-factory', nmf => {
-            nmf.plugin('factory', factory => (data, cb) => {
+            nmf.plugin('factory', factory => async (data, cb) => {
                 const modulePath = data.dependencies[0].request;
                 const contextPath = data.context;
 
@@ -55,13 +55,15 @@ export default class DynamicCdnWebpackPlugin {
                     return factory(data, cb);
                 }
 
-                this.addModule(contextPath, modulePath, {env}).then(varName => {
-                    if (varName === false) {
-                        return factory(data, cb);
-                    }
+                const varName = await this.addModule(contextPath, modulePath, {env});
 
+                if (varName === false) {
+                    factory(data, cb);
+                } else if (varName == null) {
+                    cb(null);
+                } else {
                     cb(null, new ExternalModule(varName, 'var', modulePath));
-                });
+                }
             });
         });
     }

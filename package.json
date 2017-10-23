@@ -57,7 +57,7 @@
     "mz": "^2.6.0",
     "nyc": "^11.0.3",
     "rimraf": "^2.6.1",
-    "webpack": "^3.3.0",
+    "webpack": "^3.8.1",
     "webpack-manifest-plugin": "^1.1.0",
     "xo": "^0.18.2"
   },
