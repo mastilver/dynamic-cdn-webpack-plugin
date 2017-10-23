@@ -1,4 +1,4 @@
-import {sync as readPkgUp} from 'read-pkg-up';
+import readPkgUp from 'read-pkg-up';
 import HtmlWebpackIncludeAssetsPlugin from 'html-webpack-include-assets-plugin';
 import ExternalModule from 'webpack/lib/ExternalModule';
 import resolvePkg from 'resolve-pkg';
@@ -13,6 +13,8 @@ try {
 } catch (err) {
     HtmlWebpackPlugin = null;
 }
+
+const moduleRegex = /^((?:@[a-z0-9][\w-.]+\/)?[a-z0-9][\w-.]*)/;
 
 export default class DynamicCdnWebpackPlugin {
     constructor({disable = false, env, exclude, only, verbose, resolver} = {}) {
@@ -50,7 +52,7 @@ export default class DynamicCdnWebpackPlugin {
                 const modulePath = data.dependencies[0].request;
                 const contextPath = data.context;
 
-                const isModulePath = /^(@[a-z0-9][\w-.]+\/)?[a-z0-9][\w-.]*/.test(modulePath);
+                const isModulePath = moduleRegex.test(modulePath);
                 if (!isModulePath) {
                     return factory(data, cb);
                 }
@@ -75,7 +77,8 @@ export default class DynamicCdnWebpackPlugin {
             return false;
         }
 
-        const {version, peerDependencies} = readPkgUp({cwd: resolvePkg(modulePath, {cwd: contextPath})}).pkg;
+        const moduleName = modulePath.match(moduleRegex)[1];
+        const {pkg: {version, peerDependencies}} = await readPkgUp({cwd: resolvePkg(moduleName, {cwd: contextPath})});
 
         const isModuleAlreadyLoaded = Boolean(this.modulesFromCdn[modulePath]);
         if (isModuleAlreadyLoaded) {
