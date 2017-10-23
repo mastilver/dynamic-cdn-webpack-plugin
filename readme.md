@@ -146,7 +146,7 @@ import { BrowserRouter } from 'react-router-dom';
 Type: `boolean`<br>
 Default: `false`
 
-Usefull when working offline, will fallbacl to webpack normal behaviour
+Usefull when working offline, will fallback to webpack normal behaviour
 
 #### options.env
 
