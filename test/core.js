@@ -328,7 +328,7 @@ test.serial('verbose options to output which modules are loaded from CDN / which
     });
 
     t.true(includes(logs, '✔️ \'react\' will be served by https://unpkg.com/react@15.6.1/dist/react.js'));
-    t.true(includes(logs, '❌ \'a\' couldn\'t be find, please add it to https://github.com/mastilver/module-to-cdn/blob/master/modules.json'));
+    t.true(includes(logs, '❌ \'a\' couldn\'t be found, please add it to https://github.com/mastilver/module-to-cdn/blob/master/modules.json'));
 
     console.log = originalLog;
 });
