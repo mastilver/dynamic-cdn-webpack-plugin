@@ -94,7 +94,7 @@ export default class DynamicCdnWebpackPlugin {
 
         if (cdnConfig == null) {
             if (this.verbose) {
-                console.log(`❌ '${modulePath}' couldn't be find, please add it to https://github.com/mastilver/module-to-cdn/blob/master/modules.json`);
+                console.log(`❌ '${modulePath}' couldn't be found, please add it to https://github.com/mastilver/module-to-cdn/blob/master/modules.json`);
             }
             return false;
         }
