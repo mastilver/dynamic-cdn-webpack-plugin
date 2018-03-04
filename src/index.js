@@ -6,6 +6,7 @@ import includes from 'babel-runtime/core-js/array/includes';
 
 import getResolver from './get-resolver';
 
+const pluginName = 'dynamic-cdn-webpack-plugin';
 let HtmlWebpackPlugin;
 try {
     // eslint-disable-next-line import/no-extraneous-dependencies
@@ -47,8 +48,8 @@ export default class DynamicCdnWebpackPlugin {
     }
 
     execute(compiler, {env}) {
-        compiler.plugin('normal-module-factory', nmf => {
-            nmf.plugin('factory', factory => async (data, cb) => {
+        compiler.hooks.normalModuleFactory.tap(pluginName, nmf => {
+            nmf.hooks.factory.tap(pluginName, factory => async (data, cb) => {
                 const modulePath = data.dependencies[0].request;
                 const contextPath = data.context;
 
@@ -115,7 +116,6 @@ export default class DynamicCdnWebpackPlugin {
             }
         }
 
-        // TODO: on next breaking change, rely on module-to-cdn>=3.1.0 to get version
         this.modulesFromCdn[modulePath] = Object.assign(
             {},
             cdnConfig,
@@ -126,18 +126,21 @@ export default class DynamicCdnWebpackPlugin {
     }
 
     applyWebpackCore(compiler) {
-        compiler.plugin('after-compile', (compilation, cb) => {
-            const entrypoint = compilation.entrypoints[Object.keys(compilation.entrypoints)[0]];
-            const parentChunk = entrypoint.chunks.find(x => x.isInitial());
-
-            for (const name of Object.keys(this.modulesFromCdn)) {
-                const cdnConfig = this.modulesFromCdn[name];
-
+        compiler.hooks.afterCompile.tapAsync(pluginName, (compilation, cb) => {
+            // Is this to find the initial entrypoint?
+            const entrypoint = compilation.entrypoints.values().next().value;
+            // How does this logic work now with ChunkGroups ?
+            const parentChunk = entrypoint.getChildren().find(x => x.chunks.find(y => y.canBeInitial()));
+            if (!parentChunk) {
+                cb();
+                return;
+            }
+            for (const [name, cdnConfig] of Object.entries(this.modulesFromCdn)) {
                 const chunk = compilation.addChunk(name);
                 chunk.files.push(cdnConfig.url);
-
-                chunk.parents = [parentChunk];
-                parentChunk.addChunk(chunk);
+                const chunkGroup = compilation.addChunkInGroup(name);
+                chunkGroup.addParent(parentChunk);
+                parentChunk.addGroup(chunkGroup);
                 entrypoint.insertChunk(chunk, parentChunk);
             }
 
@@ -154,8 +157,8 @@ export default class DynamicCdnWebpackPlugin {
 
         includeAssetsPlugin.apply(compiler);
 
-        compiler.plugin('after-compile', (compilation, cb) => {
-            const assets = Object.keys(this.modulesFromCdn).map(key => this.modulesFromCdn[key].url);
+        compiler.hooks.afterCompile.tapAsync(pluginName, (compilation, cb) => {
+            const assets = Object.values(this.modulesFromCdn).map(moduleFromCdn => moduleFromCdn.url);
 
             // HACK: Calling the constructor directly is not recomended
             //       But that's the only secure way to edit `assets` afterhand
