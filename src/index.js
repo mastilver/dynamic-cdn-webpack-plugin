@@ -73,7 +73,7 @@ export default class DynamicCdnWebpackPlugin {
 
     async addModule(contextPath, modulePath, {env}) {
         const isModuleExcluded = includes(this.exclude, modulePath) ||
-                                 (this.only && !includes(this.only, modulePath));
+            (this.only && !includes(this.only, modulePath));
         if (isModuleExcluded) {
             return false;
         }
@@ -108,8 +108,8 @@ export default class DynamicCdnWebpackPlugin {
             const arePeerDependenciesLoaded = (await Promise.all(Object.keys(peerDependencies).map(peerDependencyName => {
                 return this.addModule(contextPath, peerDependencyName, {env});
             })))
-            .map(x => Boolean(x))
-            .reduce((result, x) => result && x, true);
+                .map(x => Boolean(x))
+                .reduce((result, x) => result && x, true);
 
             if (!arePeerDependenciesLoaded) {
                 return false;
@@ -127,21 +127,10 @@ export default class DynamicCdnWebpackPlugin {
 
     applyWebpackCore(compiler) {
         compiler.hooks.afterCompile.tapAsync(pluginName, (compilation, cb) => {
-            // Is this to find the initial entrypoint?
-            const entrypoint = compilation.entrypoints.values().next().value;
-            // How does this logic work now with ChunkGroups ?
-            const parentChunk = entrypoint.getChildren().find(x => x.chunks.find(y => y.canBeInitial()));
-            if (!parentChunk) {
-                cb();
-                return;
-            }
             for (const [name, cdnConfig] of Object.entries(this.modulesFromCdn)) {
+                compilation.addChunkInGroup(name);
                 const chunk = compilation.addChunk(name);
                 chunk.files.push(cdnConfig.url);
-                const chunkGroup = compilation.addChunkInGroup(name);
-                chunkGroup.addParent(parentChunk);
-                parentChunk.addGroup(chunkGroup);
-                entrypoint.insertChunk(chunk, parentChunk);
             }
 
             cb();
