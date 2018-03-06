@@ -6,6 +6,7 @@ import includes from 'babel-runtime/core-js/array/includes';
 
 import getResolver from './get-resolver';
 
+const pluginName = 'dynamic-cdn-webpack-plugin';
 let HtmlWebpackPlugin;
 try {
     // eslint-disable-next-line import/no-extraneous-dependencies
@@ -47,8 +48,8 @@ export default class DynamicCdnWebpackPlugin {
     }
 
     execute(compiler, {env}) {
-        compiler.plugin('normal-module-factory', nmf => {
-            nmf.plugin('factory', factory => async (data, cb) => {
+        compiler.hooks.normalModuleFactory.tap(pluginName, nmf => {
+            nmf.hooks.factory.tap(pluginName, factory => async (data, cb) => {
                 const modulePath = data.dependencies[0].request;
                 const contextPath = data.context;
 
@@ -72,7 +73,7 @@ export default class DynamicCdnWebpackPlugin {
 
     async addModule(contextPath, modulePath, {env}) {
         const isModuleExcluded = includes(this.exclude, modulePath) ||
-                                 (this.only && !includes(this.only, modulePath));
+            (this.only && !includes(this.only, modulePath));
         if (isModuleExcluded) {
             return false;
         }
@@ -107,15 +108,14 @@ export default class DynamicCdnWebpackPlugin {
             const arePeerDependenciesLoaded = (await Promise.all(Object.keys(peerDependencies).map(peerDependencyName => {
                 return this.addModule(contextPath, peerDependencyName, {env});
             })))
-            .map(x => Boolean(x))
-            .reduce((result, x) => result && x, true);
+                .map(x => Boolean(x))
+                .reduce((result, x) => result && x, true);
 
             if (!arePeerDependenciesLoaded) {
                 return false;
             }
         }
 
-        // TODO: on next breaking change, rely on module-to-cdn>=3.1.0 to get version
         this.modulesFromCdn[modulePath] = Object.assign(
             {},
             cdnConfig,
@@ -126,19 +126,11 @@ export default class DynamicCdnWebpackPlugin {
     }
 
     applyWebpackCore(compiler) {
-        compiler.plugin('after-compile', (compilation, cb) => {
-            const entrypoint = compilation.entrypoints[Object.keys(compilation.entrypoints)[0]];
-            const parentChunk = entrypoint.chunks.find(x => x.isInitial());
-
-            for (const name of Object.keys(this.modulesFromCdn)) {
-                const cdnConfig = this.modulesFromCdn[name];
-
+        compiler.hooks.afterCompile.tapAsync(pluginName, (compilation, cb) => {
+            for (const [name, cdnConfig] of Object.entries(this.modulesFromCdn)) {
+                compilation.addChunkInGroup(name);
                 const chunk = compilation.addChunk(name);
                 chunk.files.push(cdnConfig.url);
-
-                chunk.parents = [parentChunk];
-                parentChunk.addChunk(chunk);
-                entrypoint.insertChunk(chunk, parentChunk);
             }
 
             cb();
@@ -154,8 +146,8 @@ export default class DynamicCdnWebpackPlugin {
 
         includeAssetsPlugin.apply(compiler);
 
-        compiler.plugin('after-compile', (compilation, cb) => {
-            const assets = Object.keys(this.modulesFromCdn).map(key => this.modulesFromCdn[key].url);
+        compiler.hooks.afterCompile.tapAsync(pluginName, (compilation, cb) => {
+            const assets = Object.values(this.modulesFromCdn).map(moduleFromCdn => moduleFromCdn.url);
 
             // HACK: Calling the constructor directly is not recomended
             //       But that's the only secure way to edit `assets` afterhand
