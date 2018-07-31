@@ -8,9 +8,16 @@
 ## Install
 
 ```
-$ npm install --save dynamic-cdn-webpack-plugin module-to-cdn
+$ npm install --save-dev dynamic-cdn-webpack-plugin module-to-cdn
 ```
 
+## Compatibility with webpack
+
+If you are using `webpack --version <= 3` then you should be installing with the following command.
+
+```
+$ npm install --save-dev dynamic-cdn-webpack-plugin@3.4.1 module-to-cdn
+```
 
 ## Usage with HtmlWebpackPlugin
 
