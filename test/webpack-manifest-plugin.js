@@ -10,6 +10,8 @@ import DynamicCdnWebpackPlugin from '../src';
 import runWebpack from './helpers/run-webpack';
 import cleanDir from './helpers/clean-dir';
 
+process.env.NODE_ENV = 'development';
+
 test('webpack-manifest-plugin', async t => {
     await cleanDir(path.resolve(__dirname, './fixtures/output/webpack-manifest-plugin'));
 

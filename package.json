@@ -46,7 +46,7 @@
   },
   "devDependencies": {
     "all-contributors-cli": "^5.4.0",
-    "ava": "^0.22.0",
+    "ava": "^0.25.0",
     "babel-cli": "^6.26.0",
     "babel-core": "^6.26.0",
     "babel-plugin-transform-runtime": "^6.23.0",
@@ -60,7 +60,7 @@
     "webpack": "^4.17.1",
     "webpack-cli": "^3.1.0",
     "webpack-manifest-plugin": "2.0.0-rc.2",
-    "xo": "^0.18.2"
+    "xo": "^0.22.0"
   },
   "babel": {
     "presets": [
@@ -83,7 +83,10 @@
     "rules": {
       "eqeqeq": "off",
       "no-eq-null": "off"
-    }
+    },
+    "ignores": [
+      "test/fixtures/**/*.js"
+    ]
   },
   "ava": {
     "files": [
