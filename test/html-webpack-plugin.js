@@ -3,7 +3,6 @@ import fs from 'mz/fs';
 
 import test from 'ava';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
-import includes from 'babel-runtime/core-js/string/includes';
 
 import DynamicCdnWebpackPlugin from '../src';
 
@@ -35,12 +34,12 @@ test('html-webpack-plugin', async t => {
 
     const indexFile = await fs.readFile(path.resolve(__dirname, './fixtures/output/html-webpack-plugin/index.html'), {encoding: 'utf-8'});
 
-    t.true(includes(indexFile, 'src="/app.js"'));
-    t.true(includes(indexFile, 'src="https://unpkg.com/react@15.6.1/dist/react.js"'));
+    t.true(indexFile.includes('src="/app.js"'));
+    t.true(indexFile.includes('src="https://unpkg.com/react@15.6.1/dist/react.js"'));
 
     const output = await fs.readFile(path.resolve(__dirname, './fixtures/output/html-webpack-plugin/app.js'));
 
     // NOTE: not inside t.false to prevent ava to display whole file in console
-    const doesIncludeReact = includes(output, 'PureComponent');
+    const doesIncludeReact = output.includes('PureComponent');
     t.false(doesIncludeReact);
 });

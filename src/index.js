@@ -2,7 +2,6 @@ import readPkgUp from 'read-pkg-up';
 import HtmlWebpackIncludeAssetsPlugin from 'html-webpack-include-assets-plugin';
 import ExternalModule from 'webpack/lib/ExternalModule';
 import resolvePkg from 'resolve-pkg';
-import includes from 'babel-runtime/core-js/array/includes';
 
 import getResolver from './get-resolver';
 
@@ -72,8 +71,8 @@ export default class DynamicCdnWebpackPlugin {
     }
 
     async addModule(contextPath, modulePath, {env}) {
-        const isModuleExcluded = includes(this.exclude, modulePath) ||
-            (this.only && !includes(this.only, modulePath));
+        const isModuleExcluded = this.exclude.includes(modulePath) ||
+            (this.only && !this.only.includes(modulePath));
         if (isModuleExcluded) {
             return false;
         }

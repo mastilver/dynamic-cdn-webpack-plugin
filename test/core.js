@@ -2,7 +2,6 @@ import path from 'path';
 import fs from 'mz/fs';
 
 import test from 'ava';
-import includes from 'babel-runtime/core-js/string/includes';
 import webpack from 'webpack';
 
 import DynamicCdnWebpackPlugin from '../src';
@@ -35,16 +34,16 @@ test('basic', async t => {
     const files = stats.compilation.chunks.reduce((files, x) => files.concat(x.files), []);
 
     t.is(files.length, 2);
-    t.true(includes(files, 'app.js'));
-    t.true(includes(files, 'https://unpkg.com/react@15.6.1/dist/react.js'));
+    t.true(files.includes('app.js'));
+    t.true(files.includes('https://unpkg.com/react@15.6.1/dist/react.js'));
 
     const output = await fs.readFile(path.resolve(__dirname, './fixtures/output/basic/app.js'));
 
     // NOTE: not inside t.false to prevent ava to display whole file in console
-    const doesIncludeReact = includes(output, 'THIS IS REACT!');
+    const doesIncludeReact = output.includes('THIS IS REACT!');
     t.false(doesIncludeReact);
 
-    const doesRequireReact = includes(output, 'module.exports = React');
+    const doesRequireReact = output.includes('module.exports = React');
     t.true(doesRequireReact);
 });
 
@@ -73,13 +72,13 @@ test('using production version', async t => {
     const files = stats.compilation.chunks.reduce((files, x) => files.concat(x.files), []);
 
     t.is(files.length, 2);
-    t.true(includes(files, 'app.js'));
-    t.true(includes(files, 'https://unpkg.com/react@15.6.1/dist/react.min.js'));
+    t.true(files.includes('app.js'));
+    t.true(files.includes('https://unpkg.com/react@15.6.1/dist/react.min.js'));
 
     const output = await fs.readFile(path.resolve(__dirname, './fixtures/output/env-prod/app.js'));
 
     // NOTE: not inside t.false to prevent ava to display whole file in console
-    const doesIncludeReact = includes(output, 'THIS IS REACT!');
+    const doesIncludeReact = output.includes('THIS IS REACT!');
     t.false(doesIncludeReact);
 });
 
@@ -108,13 +107,13 @@ test.serial('with NODE_ENV=production', async t => {
     const files = stats.compilation.chunks.reduce((files, x) => files.concat(x.files), []);
 
     t.is(files.length, 2);
-    t.true(includes(files, 'app.js'));
-    t.true(includes(files, 'https://unpkg.com/react@15.6.1/dist/react.min.js'));
+    t.true(files.includes('app.js'));
+    t.true(files.includes('https://unpkg.com/react@15.6.1/dist/react.min.js'));
 
     const output = await fs.readFile(path.resolve(__dirname, './fixtures/output/node-env-prod/app.js'));
 
     // NOTE: not inside t.false to prevent ava to display whole file in console
-    const doesIncludeReact = includes(output, 'THIS IS REACT!');
+    const doesIncludeReact = output.includes('THIS IS REACT!');
     t.false(doesIncludeReact);
 
     delete process.env.NODE_ENV;
@@ -168,10 +167,10 @@ test('peerDependencies', async t => {
     const files = stats.compilation.chunks.reduce((files, x) => files.concat(x.files), []);
 
     t.is(files.length, 4);
-    t.true(includes(files, 'app.js'));
-    t.true(includes(files, 'https://unpkg.com/@angular/core@4.2.4/bundles/core.umd.js'));
-    t.true(includes(files, 'https://unpkg.com/rxjs@5.4.1/bundles/Rx.js'));
-    t.true(includes(files, 'https://unpkg.com/zone.js@0.8.12/dist/zone.js'));
+    t.true(files.includes('app.js'));
+    t.true(files.includes('https://unpkg.com/@angular/core@4.2.4/bundles/core.umd.js'));
+    t.true(files.includes('https://unpkg.com/rxjs@5.4.1/bundles/Rx.js'));
+    t.true(files.includes('https://unpkg.com/zone.js@0.8.12/dist/zone.js'));
 });
 
 test('load module without export', async t => {
@@ -197,8 +196,8 @@ test('load module without export', async t => {
     const files = stats.compilation.chunks.reduce((files, x) => files.concat(x.files), []);
 
     t.is(files.length, 2);
-    t.true(includes(files, 'app.js'));
-    t.true(includes(files, 'https://unpkg.com/babel-polyfill@6.23.0/dist/polyfill.js'));
+    t.true(files.includes('app.js'));
+    t.true(files.includes('https://unpkg.com/babel-polyfill@6.23.0/dist/polyfill.js'));
 });
 
 test('exclude some modules', async t => {
@@ -226,13 +225,13 @@ test('exclude some modules', async t => {
     const files = stats.compilation.chunks.reduce((files, x) => files.concat(x.files), []);
 
     t.is(files.length, 1);
-    t.true(includes(files, 'app.js'));
-    t.false(includes(files, 'https://unpkg.com/react@15.6.1/dist/react.js'));
+    t.true(files.includes('app.js'));
+    t.false(files.includes('https://unpkg.com/react@15.6.1/dist/react.js'));
 
     const output = await fs.readFile(path.resolve(__dirname, './fixtures/output/exclude/app.js'));
 
     // NOTE: not inside t.true to prevent ava to display whole file in console
-    const doesIncludeReact = includes(output, 'THIS IS REACT!');
+    const doesIncludeReact = output.includes('THIS IS REACT!');
     t.true(doesIncludeReact);
 });
 
@@ -261,18 +260,18 @@ test('only include some modules', async t => {
     const files = stats.compilation.chunks.reduce((files, x) => files.concat(x.files), []);
 
     t.is(files.length, 2);
-    t.true(includes(files, 'app.js'));
-    t.true(includes(files, 'https://unpkg.com/react@15.6.1/dist/react.js'));
-    t.false(includes(files, 'https://unpkg.com/babel-polyfill@6.23.0/dist/polyfill.js'));
-    t.false(includes(files, 'https://unpkg.com/react-dom@15.6.1/dist/react-dom.js'));
+    t.true(files.includes('app.js'));
+    t.true(files.includes('https://unpkg.com/react@15.6.1/dist/react.js'));
+    t.false(files.includes('https://unpkg.com/babel-polyfill@6.23.0/dist/polyfill.js'));
+    t.false(files.includes('https://unpkg.com/react-dom@15.6.1/dist/react-dom.js'));
 
     const output = await fs.readFile(path.resolve(__dirname, './fixtures/output/only/app.js'));
 
     // NOTE: not inside t.true to prevent ava to display whole file in console
-    const doesIncludeReactDom = includes(output, 'THIS IS REACT DOM!');
+    const doesIncludeReactDom = output.includes('THIS IS REACT DOM!');
     t.true(doesIncludeReactDom);
 
-    const doesIncludeBabelPolyfill = includes(output, 'THIS IS BABEL POLYFILL!');
+    const doesIncludeBabelPolyfill = output.includes('THIS IS BABEL POLYFILL!');
     t.true(doesIncludeBabelPolyfill);
 });
 
@@ -329,8 +328,8 @@ test.serial('verbose options to output which modules are loaded from CDN / which
         ]
     });
 
-    t.true(includes(logs, '✔️ \'react\' will be served by https://unpkg.com/react@15.6.1/dist/react.js'));
-    t.true(includes(logs, '❌ \'a\' couldn\'t be found, please add it to https://github.com/mastilver/module-to-cdn/blob/master/modules.json'));
+    t.true(logs.includes('✔️ \'react\' will be served by https://unpkg.com/react@15.6.1/dist/react.js'));
+    t.true(logs.includes('❌ \'a\' couldn\'t be found, please add it to https://github.com/mastilver/module-to-cdn/blob/master/modules.json'));
 
     console.log = originalLog;
 });
@@ -358,8 +357,8 @@ test('require files without extension', async t => {
     const files = stats.compilation.chunks.reduce((files, x) => files.concat(x.files), []);
 
     t.is(files.length, 1);
-    t.true(includes(files, 'app.js'));
-    t.false(includes(files, 'https://unpkg.com/react@15.6.1/dist/react.js'));
+    t.true(files.includes('app.js'));
+    t.false(files.includes('https://unpkg.com/react@15.6.1/dist/react.js'));
 });
 
 test('async loading', async t => {
@@ -384,15 +383,15 @@ test('async loading', async t => {
 
     const files = stats.compilation.chunks.reduce((files, x) => files.concat(x.files), []);
 
-    t.true(includes(files, 'app.js'));
-    t.true(includes(files, 'https://unpkg.com/react@15.6.1/dist/react.js'));
+    t.true(files.includes('app.js'));
+    t.true(files.includes('https://unpkg.com/react@15.6.1/dist/react.js'));
 
     const outputs = await Promise.all(files.filter(x => !x.startsWith('https://unpkg.com')).map(async file => {
         return fs.readFile(path.resolve(__dirname, `./fixtures/output/async/${file}`));
     }));
 
     // NOTE: not inside t.false to prevent ava to display whole file in console
-    const doesIncludeReact = outputs.some(output => includes(output, 'THIS IS REACT!'));
+    const doesIncludeReact = outputs.some(output => output.includes('THIS IS REACT!'));
     t.false(doesIncludeReact);
 });
 
@@ -418,8 +417,8 @@ test('when using multiple versions of a module, make sure the right version is u
 
     const files = stats.compilation.chunks.reduce((files, x) => files.concat(x.files), []);
 
-    t.true(includes(files, 'app.js'));
-    t.true(includes(files, 'https://unpkg.com/react@15.6.1/dist/react.js'));
+    t.true(files.includes('app.js'));
+    t.true(files.includes('https://unpkg.com/react@15.6.1/dist/react.js'));
 
     let output = await fs.readFile(path.resolve(__dirname, './fixtures/output/multiple-versions/app.js'));
     output = output.toString();
@@ -428,10 +427,10 @@ test('when using multiple versions of a module, make sure the right version is u
     t.is(numberOfExports, 1);
 
     // NOTE: not inside t.false to prevent ava to display whole file in console
-    const doesIncludeReact14 = includes(output, 'THIS IS REACT@0.14.9!');
+    const doesIncludeReact14 = output.includes('THIS IS REACT@0.14.9!');
     t.true(doesIncludeReact14);
 
-    const doesIncludeReact = includes(output, 'THIS IS REACT!');
+    const doesIncludeReact = output.includes('THIS IS REACT!');
     t.false(doesIncludeReact);
 });
 
@@ -466,16 +465,16 @@ test('when using a custom resolver', async t => {
 
     const files = stats.compilation.chunks.reduce((files, x) => files.concat(x.files), []);
 
-    t.true(includes(files, 'app.js'));
-    t.true(includes(files, 'https://my-cdn.com/react.js'));
+    t.true(files.includes('app.js'));
+    t.true(files.includes('https://my-cdn.com/react.js'));
 
     let output = await fs.readFile(path.resolve(__dirname, './fixtures/output/custom-resolver/app.js'));
     output = output.toString();
 
-    const doesExportCustomReact = includes(output, 'module.exports = CustomReact');
+    const doesExportCustomReact = output.includes('module.exports = CustomReact');
     t.true(doesExportCustomReact);
 
-    const doesIncludeReact = includes(output, 'THIS IS REACT!');
+    const doesIncludeReact = output.includes('THIS IS REACT!');
     t.false(doesIncludeReact);
 });
 
@@ -519,15 +518,15 @@ test('when one peerDependency fails, do not load from cdn', async t => {
     const files = stats.compilation.chunks.reduce((files, x) => files.concat(x.files), []);
 
     t.is(files.length, 2);
-    t.true(includes(files, 'app.js'));
-    t.false(includes(files, 'https://unpkg.com/@angular/core@4.2.4/bundles/core.umd.js'));
-    t.true(includes(files, 'https://unpkg.com/rxjs@5.4.1/bundles/Rx.js'));
-    t.false(includes(files, 'https://unpkg.com/zone.js@0.8.12/dist/zone.js'));
+    t.true(files.includes('app.js'));
+    t.false(files.includes('https://unpkg.com/@angular/core@4.2.4/bundles/core.umd.js'));
+    t.true(files.includes('https://unpkg.com/rxjs@5.4.1/bundles/Rx.js'));
+    t.false(files.includes('https://unpkg.com/zone.js@0.8.12/dist/zone.js'));
 
     let output = await fs.readFile(path.resolve(__dirname, './fixtures/output/failing-peer-dependency/app.js'));
     output = output.toString();
 
-    const doesIncludeAngular = includes(output, 'console.log(\'THIS IS ANGULAR!\');');
+    const doesIncludeAngular = output.includes('console.log(\'THIS IS ANGULAR!\');');
     t.true(doesIncludeAngular);
 });
 
@@ -564,16 +563,16 @@ test('when resolver retuns a Promise', async t => {
 
     const files = stats.compilation.chunks.reduce((files, x) => files.concat(x.files), []);
 
-    t.true(includes(files, 'app.js'));
-    t.true(includes(files, 'https://my-cdn.com/react.js'));
+    t.true(files.includes('app.js'));
+    t.true(files.includes('https://my-cdn.com/react.js'));
 
     let output = await fs.readFile(path.resolve(__dirname, './fixtures/output/custom-resolver/app.js'));
     output = output.toString();
 
-    const doesExportCustomReact = includes(output, 'module.exports = CustomReact');
+    const doesExportCustomReact = output.includes('module.exports = CustomReact');
     t.true(doesExportCustomReact);
 
-    const doesIncludeReact = includes(output, 'THIS IS REACT!');
+    const doesIncludeReact = output.includes('THIS IS REACT!');
     t.false(doesIncludeReact);
 });
 
@@ -601,15 +600,15 @@ test('when used with NamedModulesPlugin', async t => {
     const files = stats.compilation.chunks.reduce((files, x) => files.concat(x.files), []);
 
     t.is(files.length, 2);
-    t.true(includes(files, 'app.js'));
-    t.true(includes(files, 'https://unpkg.com/react@15.6.1/dist/react.js'));
+    t.true(files.includes('app.js'));
+    t.true(files.includes('https://unpkg.com/react@15.6.1/dist/react.js'));
 
     const output = await fs.readFile(path.resolve(__dirname, './fixtures/output/named-modules/app.js'));
 
-    const doesHaveIncorrectRequire = includes(output, '__webpack_require__(undefined)');
+    const doesHaveIncorrectRequire = output.includes('__webpack_require__(undefined)');
     t.false(doesHaveIncorrectRequire);
 
-    const doesHaveCorrectReactRequire = includes(output, '__webpack_require__(/*! react */ \\"react\\")');
+    const doesHaveCorrectReactRequire = output.includes('__webpack_require__(/*! react */ \\"react\\")');
     t.true(doesHaveCorrectReactRequire);
 });
 
@@ -636,5 +635,5 @@ test('When module contains a submodule', async t => {
     const files = stats.compilation.chunks.reduce((files, x) => files.concat(x.files), []);
 
     t.is(files.length, 1);
-    t.true(includes(files, 'app.js'));
+    t.true(files.includes('app.js'));
 });
