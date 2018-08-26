@@ -37,10 +37,22 @@
       "profile": "http://blog.fedeoo.cn/",
       "contributions": [
         {
-            "type": "code",
-            "url": "https://github.com/mastilver/dynamic-cdn-webpack-plugin/pull/21"
+          "type": "code",
+          "url": "https://github.com/mastilver/dynamic-cdn-webpack-plugin/pull/21"
         }
       ]
+    },
+    {
+      "login": "aulisius",
+      "name": "​Faizaan",
+      "avatar_url": "https://avatars2.githubusercontent.com/u/6629172?v=4",
+      "profile": "https://github.com/aulisius",
+      "contributions": [
+        "question",
+        "code",
+        "doc"
+      ]
     }
-  ]
+  ],
+  "repoType": "github"
 }
