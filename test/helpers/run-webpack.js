@@ -1,7 +1,9 @@
 import webpack from 'webpack';
 
 export default async function (config) {
-    config = Object.assign({}, config, {mode: 'development'});
+    if (!config.mode) {
+        config.mode = 'development';
+    }
 
     return new Promise((resolve, reject) => {
         webpack(config).run((err, stats) => {

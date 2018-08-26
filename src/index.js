@@ -23,7 +23,7 @@ export default class DynamicCdnWebpackPlugin {
         }
 
         this.disable = disable;
-        this.env = env || process.env.NODE_ENV || 'development';
+        this.env = env;
         this.exclude = exclude || [];
         this.only = only || null;
         this.verbose = verbose === true;
@@ -34,7 +34,7 @@ export default class DynamicCdnWebpackPlugin {
 
     apply(compiler) {
         if (!this.disable) {
-            this.execute(compiler, {env: this.env});
+            this.execute(compiler, {env: this.env || compiler.options.mode || 'production'});
         }
 
         const isUsingHtmlWebpackPlugin = HtmlWebpackPlugin != null && compiler.options.plugins.some(x => x instanceof HtmlWebpackPlugin);
