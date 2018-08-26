@@ -80,7 +80,7 @@ test('using production version', async t => {
     t.false(doesIncludeReact);
 });
 
-test.serial('with mode=production', async t => {
+test('with mode=production', async t => {
     await cleanDir(path.resolve(__dirname, './fixtures/output/node-env-prod'));
 
     const stats = await runWebpack({
