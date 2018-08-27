@@ -148,17 +148,29 @@ import { BrowserRouter } from 'react-router-dom';
 
 ### DynamicCdnWebpackPlugin(options)
 
+`webpack.config.js`<br>
+```js
+const DynamicCdnWebpackPlugin = require('dynamic-cdn-webpack-plugin');
+
+module.exports = {
+    mode: 'production',
+    plugins: [
+        new DynamicCdnWebpackPlugin(options)
+    ]
+}
+```
+
 #### options.disable
 
 Type: `boolean`<br>
 Default: `false`
 
-Usefull when working offline, will fallback to webpack normal behaviour
+Useful when working offline, will fallback to webpack normal behaviour
 
 #### options.env
 
 Type: `string`<br>
-Default: `mode` used by webpack<br>
+Default: `mode`<br>
 Values: `development`, `production`
 
 Determine if it should load the development or the production version of modules
