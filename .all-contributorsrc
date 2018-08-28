@@ -19,6 +19,17 @@
       ]
     },
     {
+      "login": "aulisius",
+      "name": "​Faizaan",
+      "avatar_url": "https://avatars2.githubusercontent.com/u/6629172?v=4",
+      "profile": "https://github.com/aulisius",
+      "contributions": [
+        "question",
+        "code",
+        "doc"
+      ]
+    },
+    {
       "login": "mjackson",
       "name": "MICHAEL JACKSON",
       "avatar_url": "https://avatars0.githubusercontent.com/u/92839?v=4",
@@ -40,17 +51,6 @@
           "type": "code",
           "url": "https://github.com/mastilver/dynamic-cdn-webpack-plugin/pull/21"
         }
-      ]
-    },
-    {
-      "login": "aulisius",
-      "name": "​Faizaan",
-      "avatar_url": "https://avatars2.githubusercontent.com/u/6629172?v=4",
-      "profile": "https://github.com/aulisius",
-      "contributions": [
-        "question",
-        "code",
-        "doc"
       ]
     }
   ],
