@@ -52,7 +52,7 @@ import { BrowserRouter } from 'react-router-dom';
 // ... do react stuff
 ```
 
-`NODE_ENV=production webpack` will generate:
+`webpack --mode=production` will generate:
 
 ```js
 /* simplified webpack build */
@@ -117,7 +117,7 @@ import { BrowserRouter } from 'react-router-dom';
 // ... do react stuff
 ```
 
-`NODE_ENV=production webpack` will generate:
+`webpack --mode=production` will generate:
 
 ```js
 /* simplified webpack build */
@@ -148,17 +148,29 @@ import { BrowserRouter } from 'react-router-dom';
 
 ### DynamicCdnWebpackPlugin(options)
 
+`webpack.config.js`<br>
+```js
+const DynamicCdnWebpackPlugin = require('dynamic-cdn-webpack-plugin');
+
+module.exports = {
+    mode: 'production',
+    plugins: [
+        new DynamicCdnWebpackPlugin(options)
+    ]
+}
+```
+
 #### options.disable
 
 Type: `boolean`<br>
 Default: `false`
 
-Usefull when working offline, will fallback to webpack normal behaviour
+Useful when working offline, will fallback to webpack normal behaviour
 
 #### options.env
 
 Type: `string`<br>
-Default: `process.env.NODE_ENV || 'development'`<br>
+Default: `mode`<br>
 Values: `development`, `production`
 
 Determine if it should load the development or the production version of modules
@@ -203,8 +215,9 @@ The resolver should return (or resolve as a Promise) either `null` or an `object
 Thanks goes to these wonderful people ([emoji key](https://github.com/kentcdodds/all-contributors#emoji-key)):
 
 <!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
-| [<img src="https://avatars3.githubusercontent.com/u/4112409?v=4" width="100px;"/><br /><sub>Thomas Sileghem</sub>](https://github.com/mastilver)<br />[💻](https://github.com/mastilver/dynamic-cdn-webpack-plugin/commits?author=mastilver "Code") [📖](https://github.com/mastilver/dynamic-cdn-webpack-plugin/commits?author=mastilver "Documentation") [⚠️](https://github.com/mastilver/dynamic-cdn-webpack-plugin/commits?author=mastilver "Tests") | [<img src="https://avatars0.githubusercontent.com/u/92839?v=4" width="100px;"/><br /><sub>MICHAEL JACKSON</sub>](https://twitter.com/mjackson)<br />[💡](https://github.com/unpkg/unpkg-demos "Examples") | [<img src="https://avatars2.githubusercontent.com/u/5313455?v=4" width="100px;"/><br /><sub>fedeoo</sub>](http://blog.fedeoo.cn/)<br />[💻](https://github.com/mastilver/dynamic-cdn-webpack-plugin/pull/21 "Code") |
-| :---: | :---: | :---: |
+<!-- prettier-ignore -->
+| [<img src="https://avatars3.githubusercontent.com/u/4112409?v=4" width="100px;"/><br /><sub><b>Thomas Sileghem</b></sub>](https://github.com/mastilver)<br />[💻](https://github.com/mastilver/dynamic-cdn-webpack-plugin/commits?author=mastilver "Code") [📖](https://github.com/mastilver/dynamic-cdn-webpack-plugin/commits?author=mastilver "Documentation") [⚠️](https://github.com/mastilver/dynamic-cdn-webpack-plugin/commits?author=mastilver "Tests") | [<img src="https://avatars0.githubusercontent.com/u/92839?v=4" width="100px;"/><br /><sub><b>MICHAEL JACKSON</b></sub>](https://twitter.com/mjackson)<br />[💡](https://github.com/unpkg/unpkg-demos "Examples") | [<img src="https://avatars2.githubusercontent.com/u/5313455?v=4" width="100px;"/><br /><sub><b>fedeoo</b></sub>](http://blog.fedeoo.cn/)<br />[💻](https://github.com/mastilver/dynamic-cdn-webpack-plugin/pull/21 "Code") | [<img src="https://avatars2.githubusercontent.com/u/6629172?v=4" width="100px;"/><br /><sub><b>​Faizaan</b></sub>](https://github.com/aulisius)<br />[💬](#question-aulisius "Answering Questions") [💻](https://github.com/mastilver/dynamic-cdn-webpack-plugin/commits?author=aulisius "Code") [📖](https://github.com/mastilver/dynamic-cdn-webpack-plugin/commits?author=aulisius "Documentation") |
+| :---: | :---: | :---: | :---: |
 <!-- ALL-CONTRIBUTORS-LIST:END -->
 
 This project follows the [all-contributors](https://github.com/kentcdodds/all-contributors) specification. Contributions of any kind welcome!

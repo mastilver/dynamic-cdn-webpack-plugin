@@ -9,8 +9,6 @@ import DynamicCdnWebpackPlugin from '../src';
 import runWebpack from './helpers/run-webpack';
 import cleanDir from './helpers/clean-dir';
 
-process.env.NODE_ENV = 'development';
-
 test('basic', async t => {
     await cleanDir(path.resolve(__dirname, './fixtures/output/basic'));
 
@@ -82,12 +80,12 @@ test('using production version', async t => {
     t.false(doesIncludeReact);
 });
 
-test.serial('with NODE_ENV=production', async t => {
-    process.env.NODE_ENV = 'production';
-
+test('with mode=production', async t => {
     await cleanDir(path.resolve(__dirname, './fixtures/output/node-env-prod'));
 
     const stats = await runWebpack({
+        mode: 'production',
+
         context: path.resolve(__dirname, './fixtures/app'),
 
         output: {
@@ -115,8 +113,6 @@ test.serial('with NODE_ENV=production', async t => {
     // NOTE: not inside t.false to prevent ava to display whole file in console
     const doesIncludeReact = output.includes('THIS IS REACT!');
     t.false(doesIncludeReact);
-
-    delete process.env.NODE_ENV;
 });
 
 test('nested dependencies', async t => {

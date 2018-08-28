@@ -16,6 +16,17 @@ try {
 
 const moduleRegex = /^((?:@[a-z0-9][\w-.]+\/)?[a-z0-9][\w-.]*)/;
 
+const getEnvironment = mode => {
+    switch (mode) {
+        case 'none':
+        case 'development':
+            return 'development';
+
+        default:
+            return 'production';
+    }
+};
+
 export default class DynamicCdnWebpackPlugin {
     constructor({disable = false, env, exclude, only, verbose, resolver} = {}) {
         if (exclude && only) {
@@ -23,7 +34,7 @@ export default class DynamicCdnWebpackPlugin {
         }
 
         this.disable = disable;
-        this.env = env || process.env.NODE_ENV || 'development';
+        this.env = env;
         this.exclude = exclude || [];
         this.only = only || null;
         this.verbose = verbose === true;
@@ -34,7 +45,7 @@ export default class DynamicCdnWebpackPlugin {
 
     apply(compiler) {
         if (!this.disable) {
-            this.execute(compiler, {env: this.env});
+            this.execute(compiler, {env: this.env || getEnvironment(compiler.options.mode)});
         }
 
         const isUsingHtmlWebpackPlugin = HtmlWebpackPlugin != null && compiler.options.plugins.some(x => x instanceof HtmlWebpackPlugin);
