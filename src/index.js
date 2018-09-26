@@ -1,2 +1,2 @@
-export { default as HtmlDynamicCdnWebpackPlugin } from "./HtmlDynamicCdnWebpackPlugin";
-export { default } from "./DynamicCdnWebpackPlugin";
+export {default as HtmlDynamicCdnWebpackPlugin} from './html-dynamic-cdn-webpack-plugin';
+export {default} from './dynamic-cdn-webpack-plugin';
