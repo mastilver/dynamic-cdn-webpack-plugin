@@ -136,7 +136,11 @@ export default class DynamicCdnWebpackPlugin {
             for (const [name, cdnConfig] of Object.entries(this.modulesFromCdn)) {
                 compilation.addChunkInGroup(name);
                 const chunk = compilation.addChunk(name);
-                chunk.files.push(cdnConfig.url);
+                if (Array.isArray(cdnConfig.url)) {
+                    chunk.files.push(...cdnConfig.url);
+                } else {
+                    chunk.files.push(...cdnConfig.url);
+                }
             }
 
             cb();
