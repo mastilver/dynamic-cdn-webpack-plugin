@@ -139,7 +139,7 @@ export default class DynamicCdnWebpackPlugin {
                 if (Array.isArray(cdnConfig.url)) {
                     chunk.files.push(...cdnConfig.url);
                 } else {
-                    chunk.files.push(...cdnConfig.url);
+                    chunk.files.push(cdnConfig.url);
                 }
             }
 
