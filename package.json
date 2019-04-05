@@ -10,7 +10,7 @@
     "url": "mastilver.com"
   },
   "engines": {
-    "node": ">=4"
+    "node": ">=8"
   },
   "scripts": {
     "test": "xo && nyc ava",
@@ -66,7 +66,7 @@
         "env",
         {
           "targets": {
-            "node": 6
+            "node": 8
           }
         }
       ]
