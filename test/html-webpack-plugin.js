@@ -4,7 +4,7 @@ import fs from 'mz/fs';
 import test from 'ava';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
 
-import DynamicCdnWebpackPlugin from '../src';
+import {HtmlDynamicCdnWebpackPlugin} from '../src';
 
 import runWebpack from './helpers/run-webpack';
 import cleanDir from './helpers/clean-dir';
@@ -26,7 +26,7 @@ test('html-webpack-plugin', async t => {
 
         plugins: [
             new HtmlWebpackPlugin(),
-            new DynamicCdnWebpackPlugin()
+            new HtmlDynamicCdnWebpackPlugin()
         ]
     });
 
