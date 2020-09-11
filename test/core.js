@@ -4,10 +4,10 @@ import fs from 'fs';
 import test from 'ava';
 import webpack from 'webpack';
 
-import DynamicCdnWebpackPlugin from '../lib';
+const DynamicCdnWebpackPlugin = require('../lib').default;
 
-const runWebpack = require('./helpers/run-webpack');
-const cleanDir = require('./helpers/clean-dir');
+import runWebpack from './helpers/run-webpack';
+import cleanDir from './helpers/clean-dir';
 
 test('basic', async t => {
     await cleanDir(path.resolve(__dirname, './fixtures/output/basic'));

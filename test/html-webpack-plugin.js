@@ -4,7 +4,7 @@ import fs from 'fs';
 import test from 'ava';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
 
-import DynamicCdnWebpackPlugin from '../lib';
+const DynamicCdnWebpackPlugin = require('../lib').default;
 
 import runWebpack from './helpers/run-webpack';
 import cleanDir from './helpers/clean-dir';

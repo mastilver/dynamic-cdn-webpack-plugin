@@ -4,7 +4,7 @@ const fs = require('fs');
 const test = require('ava');
 const ManifestPlugin = require('webpack-manifest-plugin');
 
-const DynamicCdnWebpackPlugin = require('../lib').default;
+import DynamicCdnWebpackPlugin from '../lib';
 
 const runWebpack = require('./helpers/run-webpack');
 const cleanDir = require('./helpers/clean-dir');
