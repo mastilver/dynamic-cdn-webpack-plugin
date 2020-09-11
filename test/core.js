@@ -301,8 +301,8 @@ test.serial('verbose options to output which modules are loaded from CDN / which
     const logs = [];
 
     const originalLog = console.log;
-    console.log = log => {
-        logs.push(log);
+    console.log = (...log) => {
+        logs.push(...log);
     };
 
     await runWebpack({
@@ -324,8 +324,8 @@ test.serial('verbose options to output which modules are loaded from CDN / which
         ]
     });
 
-    t.true(logs.includes('✔️ \'react\' will be served by https://unpkg.com/react@15.6.1/dist/react.js'));
-    t.true(logs.includes('❌ \'a\' couldn\'t be found, please add it to https://github.com/mastilver/module-to-cdn/blob/master/modules.json'));
+    t.true(logs.includes('✔️ will be served by https://unpkg.com/react@15.6.1/dist/react.js'));
+    t.true(logs.includes('❌ couldn\'t be found, if you want it you can add it to your resolver.'));
 
     console.log = originalLog;
 });

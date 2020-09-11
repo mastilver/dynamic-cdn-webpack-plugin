@@ -10,11 +10,11 @@ let HtmlWebpackPlugin;
 try {
     // eslint-disable-next-line import/no-extraneous-dependencies
     HtmlWebpackPlugin = require('html-webpack-plugin');
-} catch (err) {
+} catch {
     HtmlWebpackPlugin = null;
 }
 
-const moduleRegex = /^((?:@[a-z0-9][\w-.]+\/)?[a-z0-9][\w-.]*)/;
+const moduleRegex = /^((?:@[a-z\d][\w-.]+\/)?[a-z\d][\w-.]*)/;
 
 const getEnvironment = mode => {
     switch (mode) {
@@ -90,6 +90,11 @@ export default class DynamicCdnWebpackPlugin {
 
         const moduleName = modulePath.match(moduleRegex)[1];
         const {pkg: {version, peerDependencies}} = await readPkgUp({cwd: resolvePkg(moduleName, {cwd: contextPath})});
+        const log = (...message) => {
+            if (this.verbose) {
+                console.log('\n', modulePath, version, contextPath, ...message);
+            }
+        };
 
         const isModuleAlreadyLoaded = Boolean(this.modulesFromCdn[modulePath]);
         if (isModuleAlreadyLoaded) {
@@ -97,22 +102,18 @@ export default class DynamicCdnWebpackPlugin {
             if (isSameVersion) {
                 return this.modulesFromCdn[modulePath].var;
             }
-
+            log('❌ is already loaded in another version. you have this deps twice');
             return false;
         }
 
         const cdnConfig = await this.resolver(modulePath, version, {env});
 
         if (cdnConfig == null) {
-            if (this.verbose) {
-                console.log(`❌ '${modulePath}' couldn't be found, please add it to https://github.com/mastilver/module-to-cdn/blob/master/modules.json`);
-            }
+            log('❌ couldn\'t be found, if you want it you can add it to your resolver.');
             return false;
         }
 
-        if (this.verbose) {
-            console.log(`✔️ '${cdnConfig.name}' will be served by ${cdnConfig.url}`);
-        }
+        log(`✔️ will be served by ${cdnConfig.url}`);
 
         if (peerDependencies) {
             const arePeerDependenciesLoaded = (await Promise.all(Object.keys(peerDependencies).map(peerDependencyName => {
@@ -122,6 +123,7 @@ export default class DynamicCdnWebpackPlugin {
                 .reduce((result, x) => result && x, true);
 
             if (!arePeerDependenciesLoaded) {
+                log('❌ couldn\'t be loaded because some peer deps are missing', peerDependencies);
                 return false;
             }
         }

@@ -1,6 +1,6 @@
 import webpack from 'webpack';
 
-export default async function (config) {
+export default async function runWebpack(config) {
     if (!config.mode) {
         config.mode = 'development';
     }

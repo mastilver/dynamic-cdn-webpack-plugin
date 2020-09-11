@@ -1,5 +1,5 @@
 {
-  "name": "dynamic-cdn-webpack-plugin",
+  "name": "@talend/dynamic-cdn-webpack-plugin",
   "version": "4.0.0",
   "description": "Dynamically get your dependencies from a cdn rather than bundling them in your app",
   "license": "MIT",
@@ -10,7 +10,7 @@
     "url": "mastilver.com"
   },
   "engines": {
-    "node": ">=8"
+    "node": ">=10"
   },
   "scripts": {
     "test": "xo && nyc ava",
@@ -36,29 +36,30 @@
   ],
   "dependencies": {
     "html-webpack-include-assets-plugin": "^1.0.4",
-    "read-pkg-up": "^4.0.0",
-    "resolve-pkg": "^1.0.0"
+    "read-pkg-up": "^7.0.0",
+    "resolve-pkg": "^2.0.0"
   },
   "peerDependencies": {
-    "module-to-cdn": "^3.1.1",
+    "@talend/module-to-cdn": "^3.1.1",
     "webpack": "4"
   },
   "devDependencies": {
-    "all-contributors-cli": "^5.4.0",
-    "ava": "^0.25.0",
-    "babel-cli": "^6.26.0",
-    "babel-core": "^6.26.0",
-    "babel-preset-env": "^1.6.1",
+    "@ava/babel": "^1.0.0",
+    "@babel/cli": "^7.0.0",
+    "@babel/core": "^7.0.0",
+    "@babel/preset-env": "^7.11.0",
+    "@talend/module-to-cdn": "^3.1.1",
+    "all-contributors-cli": "^6.17.0",
+    "ava": "^3.12.0",
     "codecov": "^3.0.4",
-    "html-webpack-plugin": "^3.0.4",
-    "module-to-cdn": "^3.1.1",
+    "html-webpack-plugin": "^4.0.4",
     "mz": "^2.6.0",
-    "nyc": "^12.0.2",
-    "rimraf": "^2.6.1",
+    "nyc": "^15.0.2",
+    "rimraf": "^3.0.2",
     "webpack": "^4.17.1",
     "webpack-cli": "^3.1.0",
-    "webpack-manifest-plugin": "2.0.0-rc.2",
-    "xo": "^0.22.0"
+    "webpack-manifest-plugin": "^2.2.0",
+    "xo": "^0.31.0"
   },
   "babel": {
     "presets": [
@@ -66,7 +67,7 @@
         "env",
         {
           "targets": {
-            "node": 8
+            "node": 10
           }
         }
       ]
@@ -77,7 +78,8 @@
     "space": 4,
     "rules": {
       "eqeqeq": "off",
-      "no-eq-null": "off"
+      "no-eq-null": "off",
+      "unicorn/no-reduce": "off"
     },
     "ignores": [
       "test/fixtures/**/*.js"
@@ -88,10 +90,7 @@
       "test/**/*.js",
       "!test/fixtures/output/**/*"
     ],
-    "babel": "inherit",
-    "require": [
-      "babel-core/register"
-    ]
+    "babel": true
   },
   "nyc": {
     "reporter": [
