@@ -296,16 +296,24 @@ test('errors when using \'only\' and \'exclude\' together', async t => {
     t.is(error.message, 'You can\'t use \'exclude\' and \'only\' at the same time');
 });
 
-test.serial('verbose options to output which modules are loaded from CDN / which are bundled', async t => {
+test.serial('loglevel options to output which modules are loaded from CDN / which are bundled', async t => {
     await cleanDir(path.resolve(__dirname, './fixtures/output/verbose'));
 
     const logs = [];
 
     const originalLog = console.log;
+    const plugin = new DynamicCdnWebpackPlugin({
+        loglevel: 'DEBUG'
+    })
     console.log = (...log) => {
         logs.push(...log);
     };
-
+    plugin.log = (...log) => {
+        logs.push(...log);
+    };
+    plugin.debug = (...log) => {
+        logs.push(...log);
+    };
     await runWebpack({
         context: path.resolve(__dirname, './fixtures/app'),
 
@@ -318,15 +326,11 @@ test.serial('verbose options to output which modules are loaded from CDN / which
             app: './mix.js'
         },
 
-        plugins: [
-            new DynamicCdnWebpackPlugin({
-                verbose: true
-            })
-        ]
+        plugins: [plugin]
     });
-
-    t.true(logs.includes('✔️ will be served by https://unpkg.com/react@15.6.1/dist/react.js'));
-    t.true(logs.includes('❌ couldn\'t be found, if you want it you can add it to your resolver.'));
+    originalLog(logs);
+    t.true(logs.includes('will be served by https://unpkg.com/react@15.6.1/dist/react.js'));
+    t.true(logs.includes('couldn\'t be found, if you want it you can add it to your resolver.'));
 
     console.log = originalLog;
 });

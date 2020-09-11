@@ -27,7 +27,7 @@ const getEnvironment = mode => {
 };
 
 export default class DynamicCdnWebpackPlugin {
-    constructor({disable = false, env, exclude, only, verbose, resolver} = {}) {
+    constructor({disable = false, env, exclude, only, resolver, loglevel = 'ERROR', verbose} = {}) {
         if (exclude && only) {
             throw new Error('You can\'t use \'exclude\' and \'only\' at the same time');
         }
@@ -36,8 +36,24 @@ export default class DynamicCdnWebpackPlugin {
         this.env = env;
         this.exclude = exclude || [];
         this.only = only || null;
-        this.verbose = verbose === true;
         this.resolver = getResolver(resolver);
+        this.loglevel = verbose ? 'debug' : loglevel;
+
+        if (this.loglevel === 'INFO' || this.loglevel === 'DEBUG') {
+            this.log = (...message) => {
+                console.log('\nDynamicCdnWebpackPlugin:', ...message);
+            };
+        } else {
+            this.log = () => {};
+        }
+
+        if (this.loglevel === 'DEBUG') {
+            this.debug = (...message) => {
+                console.debug('\nDynamicCdnWebpackPlugin:', ...message);
+            };
+        } else {
+            this.debug = () => {};
+        }
 
         this.modulesFromCdn = {};
     }
@@ -90,11 +106,13 @@ export default class DynamicCdnWebpackPlugin {
         const moduleName = modulePath.match(moduleRegex)[1];
         const cwd = resolvePkg(moduleName, {cwd: contextPath});
         const {packageJson: {version, peerDependencies}} = readPkgUp.sync({cwd});
-        const log = (...message) => {
-            if (this.verbose) {
-                console.log('\n', modulePath, version, contextPath, ...message);
+        const withInfo = (fn) => {
+            return (...message) => {
+                fn('\n', modulePath, version, ...message);
             }
         };
+        const log = withInfo(this.log);
+        const debug = withInfo(this.debug);
 
         const isModuleAlreadyLoaded = Boolean(this.modulesFromCdn[modulePath]);
         if (isModuleAlreadyLoaded) {
@@ -103,18 +121,16 @@ export default class DynamicCdnWebpackPlugin {
                 return this.modulesFromCdn[modulePath].var;
             }
 
-            log('❌ is already loaded in another version. you have this deps twice');
+            log('is already loaded in another version. you have this deps twice');
             return false;
         }
 
         const cdnConfig = await this.resolver(modulePath, version, {env});
 
         if (cdnConfig == null) {
-            log('❌ couldn\'t be found, if you want it you can add it to your resolver.');
+            debug('couldn\'t be found, if you want it you can add it to your resolver.');
             return false;
         }
-
-        log(`✔️ will be served by ${cdnConfig.url}`);
 
         if (peerDependencies) {
             const arePeerDependenciesLoaded = (await Promise.all(Object.keys(peerDependencies).map(peerDependencyName => {
@@ -124,13 +140,13 @@ export default class DynamicCdnWebpackPlugin {
                 .reduce((result, x) => result && x, true);
 
             if (!arePeerDependenciesLoaded) {
-                log('❌ couldn\'t be loaded because some peer deps are missing', peerDependencies);
+                log('couldn\'t be loaded because some peer deps are missing', peerDependencies);
                 return false;
             }
         }
 
         this.modulesFromCdn[modulePath] = cdnConfig;
-
+        debug(`will be served by ${cdnConfig.url}`);
         return cdnConfig.var;
     }
 
