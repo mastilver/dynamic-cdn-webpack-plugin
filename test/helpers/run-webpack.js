@@ -1,6 +1,6 @@
-import webpack from 'webpack';
+const webpack = require('webpack');
 
-export default async function runWebpack(config) {
+module.exports = function (config) {
     if (!config.mode) {
         config.mode = 'development';
     }
@@ -19,4 +19,4 @@ export default async function runWebpack(config) {
             resolve(stats);
         });
     });
-}
+};

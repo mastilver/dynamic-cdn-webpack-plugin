@@ -8,7 +8,6 @@ import getResolver from './get-resolver';
 const pluginName = 'dynamic-cdn-webpack-plugin';
 let HtmlWebpackPlugin;
 try {
-    // eslint-disable-next-line import/no-extraneous-dependencies
     HtmlWebpackPlugin = require('html-webpack-plugin');
 } catch {
     HtmlWebpackPlugin = null;
@@ -89,7 +88,8 @@ export default class DynamicCdnWebpackPlugin {
         }
 
         const moduleName = modulePath.match(moduleRegex)[1];
-        const {pkg: {version, peerDependencies}} = await readPkgUp({cwd: resolvePkg(moduleName, {cwd: contextPath})});
+        const cwd = resolvePkg(moduleName, {cwd: contextPath});
+        const {packageJson: {version, peerDependencies}} = readPkgUp.sync({cwd});
         const log = (...message) => {
             if (this.verbose) {
                 console.log('\n', modulePath, version, contextPath, ...message);
@@ -102,6 +102,7 @@ export default class DynamicCdnWebpackPlugin {
             if (isSameVersion) {
                 return this.modulesFromCdn[modulePath].var;
             }
+
             log('❌ is already loaded in another version. you have this deps twice');
             return false;
         }

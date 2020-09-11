@@ -1,10 +1,10 @@
 import path from 'path';
-import fs from 'mz/fs';
+import fs from 'fs';
 
 import test from 'ava';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
 
-import DynamicCdnWebpackPlugin from '../src';
+import DynamicCdnWebpackPlugin from '../lib';
 
 import runWebpack from './helpers/run-webpack';
 import cleanDir from './helpers/clean-dir';
@@ -30,12 +30,12 @@ test('html-webpack-plugin', async t => {
         ]
     });
 
-    const indexFile = await fs.readFile(path.resolve(__dirname, './fixtures/output/html-webpack-plugin/index.html'), {encoding: 'utf-8'});
+    const indexFile = fs.readFileSync(path.resolve(__dirname, './fixtures/output/html-webpack-plugin/index.html'), {encoding: 'utf-8'});
 
     t.true(indexFile.includes('src="/app.js"'));
     t.true(indexFile.includes('src="https://unpkg.com/react@15.6.1/dist/react.js"'));
 
-    const output = await fs.readFile(path.resolve(__dirname, './fixtures/output/html-webpack-plugin/app.js'));
+    const output = fs.readFileSync(path.resolve(__dirname, './fixtures/output/html-webpack-plugin/app.js'));
 
     // NOTE: not inside t.false to prevent ava to display whole file in console
     const doesIncludeReact = output.includes('PureComponent');

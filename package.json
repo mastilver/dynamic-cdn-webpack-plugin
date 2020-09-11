@@ -13,7 +13,7 @@
     "node": ">=10"
   },
   "scripts": {
-    "test": "xo && nyc ava",
+    "test": "npm run build && xo && nyc ava",
     "prepublishOnly": "npm run build",
     "version": "all-contributors generate",
     "build": "babel src --out-dir lib",
@@ -79,7 +79,9 @@
     "rules": {
       "eqeqeq": "off",
       "no-eq-null": "off",
-      "unicorn/no-reduce": "off"
+      "unicorn/no-reduce": "off",
+      "eslint-comments/no-unused-disable": "off",
+      "import/no-extraneous-dependencies": "off"
     },
     "ignores": [
       "test/fixtures/**/*.js"
@@ -87,10 +89,10 @@
   },
   "ava": {
     "files": [
-      "test/**/*.js",
-      "!test/fixtures/output/**/*"
+      "test/*.js"
     ],
-    "babel": true
+    "babel": true,
+    "concurrency": 1
   },
   "nyc": {
     "reporter": [

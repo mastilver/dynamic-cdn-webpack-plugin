@@ -1,13 +1,13 @@
 import path from 'path';
-import fs from 'mz/fs';
+import fs from 'fs';
 
 import test from 'ava';
 import webpack from 'webpack';
 
-import DynamicCdnWebpackPlugin from '../src';
+import DynamicCdnWebpackPlugin from '../lib';
 
-import runWebpack from './helpers/run-webpack';
-import cleanDir from './helpers/clean-dir';
+const runWebpack = require('./helpers/run-webpack');
+const cleanDir = require('./helpers/clean-dir');
 
 test('basic', async t => {
     await cleanDir(path.resolve(__dirname, './fixtures/output/basic'));
@@ -35,7 +35,7 @@ test('basic', async t => {
     t.true(files.includes('app.js'));
     t.true(files.includes('https://unpkg.com/react@15.6.1/dist/react.js'));
 
-    const output = await fs.readFile(path.resolve(__dirname, './fixtures/output/basic/app.js'));
+    const output = fs.readFileSync(path.resolve(__dirname, './fixtures/output/basic/app.js'));
 
     // NOTE: not inside t.false to prevent ava to display whole file in console
     const doesIncludeReact = output.includes('THIS IS REACT!');
@@ -73,7 +73,7 @@ test('using production version', async t => {
     t.true(files.includes('app.js'));
     t.true(files.includes('https://unpkg.com/react@15.6.1/dist/react.min.js'));
 
-    const output = await fs.readFile(path.resolve(__dirname, './fixtures/output/env-prod/app.js'));
+    const output = fs.readFileSync(path.resolve(__dirname, './fixtures/output/env-prod/app.js'));
 
     // NOTE: not inside t.false to prevent ava to display whole file in console
     const doesIncludeReact = output.includes('THIS IS REACT!');
@@ -108,7 +108,7 @@ test('with mode=production', async t => {
     t.true(files.includes('app.js'));
     t.true(files.includes('https://unpkg.com/react@15.6.1/dist/react.min.js'));
 
-    const output = await fs.readFile(path.resolve(__dirname, './fixtures/output/node-env-prod/app.js'));
+    const output = fs.readFileSync(path.resolve(__dirname, './fixtures/output/node-env-prod/app.js'));
 
     // NOTE: not inside t.false to prevent ava to display whole file in console
     const doesIncludeReact = output.includes('THIS IS REACT!');
@@ -224,7 +224,7 @@ test('exclude some modules', async t => {
     t.true(files.includes('app.js'));
     t.false(files.includes('https://unpkg.com/react@15.6.1/dist/react.js'));
 
-    const output = await fs.readFile(path.resolve(__dirname, './fixtures/output/exclude/app.js'));
+    const output = fs.readFileSync(path.resolve(__dirname, './fixtures/output/exclude/app.js'));
 
     // NOTE: not inside t.true to prevent ava to display whole file in console
     const doesIncludeReact = output.includes('THIS IS REACT!');
@@ -261,7 +261,7 @@ test('only include some modules', async t => {
     t.false(files.includes('https://unpkg.com/babel-polyfill@6.23.0/dist/polyfill.js'));
     t.false(files.includes('https://unpkg.com/react-dom@15.6.1/dist/react-dom.js'));
 
-    const output = await fs.readFile(path.resolve(__dirname, './fixtures/output/only/app.js'));
+    const output = fs.readFileSync(path.resolve(__dirname, './fixtures/output/only/app.js'));
 
     // NOTE: not inside t.true to prevent ava to display whole file in console
     const doesIncludeReactDom = output.includes('THIS IS REACT DOM!');
@@ -274,7 +274,7 @@ test('only include some modules', async t => {
 test('errors when using \'only\' and \'exclude\' together', async t => {
     await cleanDir(path.resolve(__dirname, './fixtures/output/error'));
 
-    t.throws(() => runWebpack({
+    const error = t.throws(() => runWebpack({
         context: path.resolve(__dirname, './fixtures/app'),
 
         output: {
@@ -292,7 +292,8 @@ test('errors when using \'only\' and \'exclude\' together', async t => {
                 only: ['react']
             })
         ]
-    }), /You can't use 'exclude' and 'only' at the same time/);
+    }));
+    t.is(error.message, 'You can\'t use \'exclude\' and \'only\' at the same time');
 });
 
 test.serial('verbose options to output which modules are loaded from CDN / which are bundled', async t => {
@@ -382,9 +383,9 @@ test('async loading', async t => {
     t.true(files.includes('app.js'));
     t.true(files.includes('https://unpkg.com/react@15.6.1/dist/react.js'));
 
-    const outputs = await Promise.all(files.filter(x => !x.startsWith('https://unpkg.com')).map(async file => {
-        return fs.readFile(path.resolve(__dirname, `./fixtures/output/async/${file}`));
-    }));
+    const outputs = files.filter(x => !x.startsWith('https://unpkg.com')).map(file => {
+        return fs.readFileSync(path.resolve(__dirname, `./fixtures/output/async/${file}`));
+    });
 
     // NOTE: not inside t.false to prevent ava to display whole file in console
     const doesIncludeReact = outputs.some(output => output.includes('THIS IS REACT!'));
@@ -416,7 +417,7 @@ test('when using multiple versions of a module, make sure the right version is u
     t.true(files.includes('app.js'));
     t.true(files.includes('https://unpkg.com/react@15.6.1/dist/react.js'));
 
-    let output = await fs.readFile(path.resolve(__dirname, './fixtures/output/multiple-versions/app.js'));
+    let output = fs.readFileSync(path.resolve(__dirname, './fixtures/output/multiple-versions/app.js'));
     output = output.toString();
 
     const numberOfExports = output.match(/module\.exports =/g).length;
@@ -464,7 +465,7 @@ test('when using a custom resolver', async t => {
     t.true(files.includes('app.js'));
     t.true(files.includes('https://my-cdn.com/react.js'));
 
-    let output = await fs.readFile(path.resolve(__dirname, './fixtures/output/custom-resolver/app.js'));
+    let output = fs.readFileSync(path.resolve(__dirname, './fixtures/output/custom-resolver/app.js'));
     output = output.toString();
 
     const doesExportCustomReact = output.includes('module.exports = CustomReact');
@@ -519,7 +520,7 @@ test('when one peerDependency fails, do not load from cdn', async t => {
     t.true(files.includes('https://unpkg.com/rxjs@5.4.1/bundles/Rx.js'));
     t.false(files.includes('https://unpkg.com/zone.js@0.8.12/dist/zone.js'));
 
-    let output = await fs.readFile(path.resolve(__dirname, './fixtures/output/failing-peer-dependency/app.js'));
+    let output = fs.readFileSync(path.resolve(__dirname, './fixtures/output/failing-peer-dependency/app.js'));
     output = output.toString();
 
     const doesIncludeAngular = output.includes('console.log(\'THIS IS ANGULAR!\');');
@@ -562,7 +563,7 @@ test('when resolver retuns a Promise', async t => {
     t.true(files.includes('app.js'));
     t.true(files.includes('https://my-cdn.com/react.js'));
 
-    let output = await fs.readFile(path.resolve(__dirname, './fixtures/output/custom-resolver/app.js'));
+    let output = fs.readFileSync(path.resolve(__dirname, './fixtures/output/custom-resolver/app.js'));
     output = output.toString();
 
     const doesExportCustomReact = output.includes('module.exports = CustomReact');
@@ -599,7 +600,7 @@ test('when used with NamedModulesPlugin', async t => {
     t.true(files.includes('app.js'));
     t.true(files.includes('https://unpkg.com/react@15.6.1/dist/react.js'));
 
-    const output = await fs.readFile(path.resolve(__dirname, './fixtures/output/named-modules/app.js'));
+    const output = fs.readFileSync(path.resolve(__dirname, './fixtures/output/named-modules/app.js'));
 
     const doesHaveIncorrectRequire = output.includes('__webpack_require__(undefined)');
     t.false(doesHaveIncorrectRequire);

@@ -1,6 +1,6 @@
-import rimraf from 'rimraf';
+const rimraf = require('rimraf');
 
-export default function cleanDir(dir) {
+module.exports = function (dir) {
     return new Promise((resolve, reject) => {
         rimraf(dir, err => {
             if (err) {
@@ -10,4 +10,4 @@ export default function cleanDir(dir) {
             resolve();
         });
     });
-}
+};
