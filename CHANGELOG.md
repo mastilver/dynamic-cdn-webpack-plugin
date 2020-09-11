@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## 5.0.0 (Septembre 11, 2020)
+
+This is the first release as a fork
+
+- update all dependencies and usage of it
+- set default resolver to @talend/module-to-cdn
 
 ## 3.3.0 (July 26, 2017)
 

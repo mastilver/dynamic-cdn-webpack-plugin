@@ -1,14 +1,19 @@
 # dynamic-cdn-webpack-plugin
 
-[![npm](https://img.shields.io/npm/v/dynamic-cdn-webpack-plugin.svg)](https://www.npmjs.com/package/dynamic-cdn-webpack-plugin) [![Build Status](https://travis-ci.org/mastilver/dynamic-cdn-webpack-plugin.svg?branch=master)](https://travis-ci.org/mastilver/dynamic-cdn-webpack-plugin) [![codecov](https://codecov.io/gh/mastilver/dynamic-cdn-webpack-plugin/badge.svg?branch=master)](https://codecov.io/gh/mastilver/dynamic-cdn-webpack-plugin?branch=master) [![David](https://img.shields.io/david/mastilver/dynamic-cdn-webpack-plugin.svg)](https://david-dm.org/mastilver/dynamic-cdn-webpack-plugin) [![XO code style](https://img.shields.io/badge/code_style-XO-5ed9c7.svg)](https://github.com/sindresorhus/xo)
+[![npm](https://img.shields.io/npm/v/@talend/dynamic-cdn-webpack-plugin.svg)](https://www.npmjs.com/package/@talend/dynamic-cdn-webpack-plugin) [![Build Status](https://travis-ci.org/toutpt/dynamic-cdn-webpack-plugin.svg?branch=master)](https://travis-ci.org/toutpt/dynamic-cdn-webpack-plugin) [![codecov](https://codecov.io/gh/toutpt/dynamic-cdn-webpack-plugin/badge.svg?branch=master)](https://codecov.io/gh/toutpt/dynamic-cdn-webpack-plugin?branch=master) [![David](https://img.shields.io/david/toutpt/dynamic-cdn-webpack-plugin.svg)](https://david-dm.org/toutpt/dynamic-cdn-webpack-plugin) [![XO code style](https://img.shields.io/badge/code_style-XO-5ed9c7.svg)](https://github.com/sindresorhus/xo)
 
 > Dynamically get your dependencies from a cdn rather than bundling them in your app
+
+
+Warning: This module is a fork from https://github.com/mastilver/dynamic-cdn-webpack-plugin. We start to fork after month without update and because we need to ship our libs and project over CDN leverage UMD builds.
+
+Please consider https://github.com/toutpt/module-to-cdn also.
 
 
 ## Install
 
 ```
-$ npm install --save-dev dynamic-cdn-webpack-plugin module-to-cdn
+$ npm install --save-dev @talend/dynamic-cdn-webpack-plugin @talend/module-to-cdn
 ```
 
 ## Compatibility with webpack
@@ -26,7 +31,7 @@ $ npm install --save-dev dynamic-cdn-webpack-plugin@3.4.1 module-to-cdn
 const path = require('path');
 
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-const DynamicCdnWebpackPlugin = require('dynamic-cdn-webpack-plugin');
+const DynamicCdnWebpackPlugin = require('@talend/dynamic-cdn-webpack-plugin');
 
 module.exports = {
     entry: {
@@ -89,7 +94,7 @@ import { BrowserRouter } from 'react-router-dom';
 const path = require('path');
 
 const ManifestPlugin = require('webpack-manifest-plugin');
-const DynamicCdnWebpackPlugin = require('dynamic-cdn-webpack-plugin');
+const DynamicCdnWebpackPlugin = require('@talend/dynamic-cdn-webpack-plugin');
 
 module.exports = {
     entry: {
@@ -150,7 +155,7 @@ import { BrowserRouter } from 'react-router-dom';
 
 `webpack.config.js`<br>
 ```js
-const DynamicCdnWebpackPlugin = require('dynamic-cdn-webpack-plugin');
+const DynamicCdnWebpackPlugin = require('@talend/dynamic-cdn-webpack-plugin');
 
 module.exports = {
     mode: 'production',
@@ -207,7 +212,7 @@ The resolver should return (or resolve as a Promise) either `null` or an `object
 ## Related
 
 - [html-webpack-plugin](https://github.com/jantimon/html-webpack-plugin)
-- [module-to-cdn](https://github.com/mastilver/module-to-cdn)
+- [@talend/module-to-cdn](https://github.com/toutpt/module-to-cdn)
 
 
 ## Contributors
