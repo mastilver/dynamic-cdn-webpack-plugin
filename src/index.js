@@ -37,33 +37,40 @@ export default class DynamicCdnWebpackPlugin {
         this.exclude = exclude || [];
         this.only = only || null;
         this.resolver = getResolver(resolver);
-        this.loglevel = verbose ? 'debug' : loglevel;
+        this.loglevel = verbose ? 'DEBUG' : loglevel;
 
-        if (this.loglevel === 'INFO' || this.loglevel === 'DEBUG') {
-            this.log = (...message) => {
-                console.log('\nDynamicCdnWebpackPlugin:', ...message);
-            };
-        } else {
+        this.log = (...message) => {
+            console.log('\nDynamicCdnWebpackPlugin:', ...message);
+        };
+
+        if (this.loglevel === 'ERROR') {
             this.log = () => {};
         }
 
+        this.debug = () => {};
         if (this.loglevel === 'DEBUG') {
             this.debug = (...message) => {
                 console.debug('\nDynamicCdnWebpackPlugin:', ...message);
             };
-        } else {
-            this.debug = () => {};
         }
+
+        this.error = (...message) => {
+            console.error('\nDynamicCdnWebpackPlugin ERROR:', ...message);
+        };
 
         this.modulesFromCdn = {};
     }
 
     apply(compiler) {
         if (!this.disable) {
-            this.execute(compiler, {env: this.env || getEnvironment(compiler.options.mode)});
+            this.execute(compiler, {
+                env: this.env || getEnvironment(compiler.options.mode)
+            });
         }
 
-        const isUsingHtmlWebpackPlugin = HtmlWebpackPlugin != null && compiler.options.plugins.some(x => x instanceof HtmlWebpackPlugin);
+        const isUsingHtmlWebpackPlugin =
+            HtmlWebpackPlugin != null &&
+            compiler.options.plugins.some(x => x instanceof HtmlWebpackPlugin);
 
         if (isUsingHtmlWebpackPlugin) {
             this.applyHtmlWebpackPlugin(compiler);
@@ -83,7 +90,9 @@ export default class DynamicCdnWebpackPlugin {
                     return factory(data, cb);
                 }
 
-                const varName = await this.addModule(contextPath, modulePath, {env});
+                const varName = await this.addModule(contextPath, modulePath, {
+                    env
+                });
 
                 if (varName === false) {
                     factory(data, cb);
@@ -97,22 +106,17 @@ export default class DynamicCdnWebpackPlugin {
     }
 
     async addModule(contextPath, modulePath, {env}) {
-        const isModuleExcluded = this.exclude.includes(modulePath) ||
-            (this.only && !this.only.includes(modulePath));
+        const isModuleExcluded =
+            this.exclude.includes(modulePath) || (this.only && !this.only.includes(modulePath));
         if (isModuleExcluded) {
             return false;
         }
 
         const moduleName = modulePath.match(moduleRegex)[1];
         const cwd = resolvePkg(moduleName, {cwd: contextPath});
-        const {packageJson: {version, peerDependencies}} = readPkgUp.sync({cwd});
-        const withInfo = (fn) => {
-            return (...message) => {
-                fn('\n', modulePath, version, ...message);
-            }
-        };
-        const log = withInfo(this.log);
-        const debug = withInfo(this.debug);
+        const {
+            packageJson: {version, peerDependencies}
+        } = readPkgUp.sync({cwd});
 
         const isModuleAlreadyLoaded = Boolean(this.modulesFromCdn[modulePath]);
         if (isModuleAlreadyLoaded) {
@@ -121,32 +125,56 @@ export default class DynamicCdnWebpackPlugin {
                 return this.modulesFromCdn[modulePath].var;
             }
 
-            log('is already loaded in another version. you have this deps twice');
+            this.log(
+                '\n',
+                modulePath,
+                version,
+                'is already loaded in another version. you have this deps twice'
+            );
             return false;
         }
 
         const cdnConfig = await this.resolver(modulePath, version, {env});
 
         if (cdnConfig == null) {
-            debug('couldn\'t be found, if you want it you can add it to your resolver.');
+            this.debug(
+                '\n',
+                modulePath,
+                version,
+                'couldn\'t be found, if you want it you can add it to your resolver.'
+            );
             return false;
         }
 
         if (peerDependencies) {
-            const arePeerDependenciesLoaded = (await Promise.all(Object.keys(peerDependencies).map(peerDependencyName => {
-                return this.addModule(contextPath, peerDependencyName, {env});
-            })))
+            const arePeerDependenciesLoaded = (
+                await Promise.all(
+                    Object.keys(peerDependencies).map(peerDependencyName => {
+                        const result = this.addModule(contextPath, peerDependencyName, {env});
+                        if (!result) {
+                            this.error(
+                                '\n',
+                                modulePath,
+                                version,
+                                'couldn\'t be loaded because peer dependency is missing',
+                                peerDependencyName
+                            );
+                        }
+
+                        return result;
+                    })
+                )
+            )
                 .map(x => Boolean(x))
                 .reduce((result, x) => result && x, true);
 
             if (!arePeerDependenciesLoaded) {
-                log('couldn\'t be loaded because some peer deps are missing', peerDependencies);
                 return false;
             }
         }
 
         this.modulesFromCdn[modulePath] = cdnConfig;
-        debug(`will be served by ${cdnConfig.url}`);
+        this.debug('\n', modulePath, version, `will be served by ${cdnConfig.url}`);
         return cdnConfig.var;
     }
 
@@ -172,7 +200,9 @@ export default class DynamicCdnWebpackPlugin {
         includeAssetsPlugin.apply(compiler);
 
         compiler.hooks.afterCompile.tapAsync(pluginName, (compilation, cb) => {
-            const assets = Object.values(this.modulesFromCdn).map(moduleFromCdn => moduleFromCdn.url);
+            const assets = Object.values(this.modulesFromCdn).map(
+                moduleFromCdn => moduleFromCdn.url
+            );
 
             // HACK: Calling the constructor directly is not recomended
             //       But that's the only secure way to edit `assets` afterhand

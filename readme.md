@@ -194,12 +194,22 @@ Default: `[]`
 
 List the modules that will always be bundled (not be served by the cdn)
 
-#### options.verbose
+#### options.loglevel
 
-Type: `boolean`<br>
-Default: `false`
+Type: `string`<br>
+Default: `ERROR`
+Options: ERROR, INFO, DEBUG
 
-Log whether the library is being served by the cdn or is bundled
+ERROR:
+* module XX could not be loaded because peerDependency YY is not loaded
+
+INFO:
+* module XX already loaded in another version
+
+DEBUG:
+* module XX could not be found in cdn config
+* module XX will be served http://mycdn.com/XX/version/xx.min.js
+
 
 #### options.resolver
 Type: `string`, `function`<br>

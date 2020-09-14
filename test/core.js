@@ -304,16 +304,19 @@ test.serial('loglevel options to output which modules are loaded from CDN / whic
     const originalLog = console.log;
     const plugin = new DynamicCdnWebpackPlugin({
         loglevel: 'DEBUG'
-    })
+    });
     console.log = (...log) => {
         logs.push(...log);
     };
+
     plugin.log = (...log) => {
         logs.push(...log);
     };
+
     plugin.debug = (...log) => {
         logs.push(...log);
     };
+
     await runWebpack({
         context: path.resolve(__dirname, './fixtures/app'),
 
@@ -328,7 +331,7 @@ test.serial('loglevel options to output which modules are loaded from CDN / whic
 
         plugins: [plugin]
     });
-    originalLog(logs);
+
     t.true(logs.includes('will be served by https://unpkg.com/react@15.6.1/dist/react.js'));
     t.true(logs.includes('couldn\'t be found, if you want it you can add it to your resolver.'));
 
