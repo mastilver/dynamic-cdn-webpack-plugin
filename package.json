@@ -12,6 +12,9 @@
   "engines": {
     "node": ">=10"
   },
+  "publishConfig": {
+    "access": "public"
+  },
   "scripts": {
     "test": "npm run build && xo && nyc ava",
     "prepublishOnly": "npm run build",

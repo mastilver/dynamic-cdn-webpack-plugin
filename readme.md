@@ -1,6 +1,6 @@
 # dynamic-cdn-webpack-plugin
 
-[![npm](https://img.shields.io/npm/v/@talend/dynamic-cdn-webpack-plugin.svg)](https://www.npmjs.com/package/@talend/dynamic-cdn-webpack-plugin) [![Build Status](https://travis-ci.org/toutpt/dynamic-cdn-webpack-plugin.svg?branch=master)](https://travis-ci.org/toutpt/dynamic-cdn-webpack-plugin) [![codecov](https://codecov.io/gh/toutpt/dynamic-cdn-webpack-plugin/badge.svg?branch=master)](https://codecov.io/gh/toutpt/dynamic-cdn-webpack-plugin?branch=master) [![David](https://img.shields.io/david/toutpt/dynamic-cdn-webpack-plugin.svg)](https://david-dm.org/toutpt/dynamic-cdn-webpack-plugin) [![XO code style](https://img.shields.io/badge/code_style-XO-5ed9c7.svg)](https://github.com/sindresorhus/xo)
+[![npm](https://img.shields.io/npm/v/@talend/dynamic-cdn-webpack-plugin.svg)](https://www.npmjs.com/package/@talend/dynamic-cdn-webpack-plugin) [![Build Status](https://travis-ci.org/toutpt/dynamic-cdn-webpack-plugin.svg?branch=fork)](https://travis-ci.org/toutpt/dynamic-cdn-webpack-plugin) [![codecov](https://codecov.io/gh/toutpt/dynamic-cdn-webpack-plugin/badge.svg?branch=fork)](https://codecov.io/gh/toutpt/dynamic-cdn-webpack-plugin?branch=fork) [![David](https://img.shields.io/david/toutpt/dynamic-cdn-webpack-plugin.svg)](https://david-dm.org/toutpt/dynamic-cdn-webpack-plugin) [![XO code style](https://img.shields.io/badge/code_style-XO-5ed9c7.svg)](https://github.com/sindresorhus/xo)
 
 > Dynamically get your dependencies from a cdn rather than bundling them in your app
 
