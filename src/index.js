@@ -151,15 +151,19 @@ export default class DynamicCdnWebpackPlugin {
                 await Promise.all(
                     Object.keys(peerDependencies).map(peerDependencyName => {
                         const result = this.addModule(contextPath, peerDependencyName, {env});
-                        if (!result) {
-                            this.error(
-                                '\n',
-                                modulePath,
-                                version,
-                                'couldn\'t be loaded because peer dependency is missing',
-                                peerDependencyName
-                            );
-                        }
+                        result.then(found => {
+                            if (!found) {
+                                this.error(
+                                    '\n',
+                                    modulePath,
+                                    version,
+                                    'couldn\'t be loaded because peer dependency is missing',
+                                    peerDependencyName
+                                );
+                            }
+
+                            return found;
+                        });
 
                         return result;
                     })
