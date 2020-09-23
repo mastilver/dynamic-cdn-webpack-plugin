@@ -2,6 +2,8 @@ import readPkgUp from 'read-pkg-up';
 import HtmlWebpackIncludeAssetsPlugin from 'html-webpack-include-assets-plugin';
 import ExternalModule from 'webpack/lib/ExternalModule';
 import resolvePkg from 'resolve-pkg';
+import {RawSource} from 'webpack-sources';
+import fs from 'fs';
 
 import getResolver from './get-resolver';
 
@@ -25,6 +27,31 @@ const getEnvironment = mode => {
             return 'production';
     }
 };
+
+function getDeps(cdnConfig) {
+    return Object.keys(cdnConfig).reduce((acc, key) => {
+        acc[key] = {
+            name: cdnConfig[key].name,
+            var: cdnConfig[key].var,
+            version: cdnConfig[key].version,
+            path: cdnConfig[key].path
+        };
+        return acc;
+    }, {});
+}
+
+function getPackageRootPath(name) {
+    let main;
+    try {
+        main = require.resolve(name);
+    } catch {
+        return;
+    }
+
+    const splitted = main.split('/');
+    const index = splitted.indexOf(name);
+    return splitted.splice(0, index + 1).join('/');
+}
 
 export default class DynamicCdnWebpackPlugin {
     constructor({disable = false, env, exclude, only, resolver, loglevel = 'ERROR', verbose} = {}) {
@@ -115,7 +142,7 @@ export default class DynamicCdnWebpackPlugin {
         const moduleName = modulePath.match(moduleRegex)[1];
         const cwd = resolvePkg(moduleName, {cwd: contextPath});
         const {
-            packageJson: {version, peerDependencies}
+            packageJson: {version, peerDependencies, dependencies}
         } = readPkgUp.sync({cwd});
 
         const isModuleAlreadyLoaded = Boolean(this.modulesFromCdn[modulePath]);
@@ -146,34 +173,54 @@ export default class DynamicCdnWebpackPlugin {
             return false;
         }
 
-        if (peerDependencies) {
-            const arePeerDependenciesLoaded = (
+        // Try to get the manifest
+        const depPath = `${getPackageRootPath(cdnConfig.name)}${cdnConfig.path}.dependencies.json`;
+        if (fs.existsSync(depPath)) {
+            const manifest = require(depPath);
+            await Promise.all(
+                Object.keys(manifest).map(dependencyName => {
+                    return this.addModule(contextPath, dependencyName, {env});
+                })
+            );
+        } else {
+            if (dependencies) {
+                // We build our lib using module-to-cdn, don t care of the results
                 await Promise.all(
-                    Object.keys(peerDependencies).map(peerDependencyName => {
-                        const result = this.addModule(contextPath, peerDependencyName, {env});
-                        result.then(found => {
-                            if (!found) {
-                                this.error(
-                                    '\n',
-                                    modulePath,
-                                    version,
-                                    'couldn\'t be loaded because peer dependency is missing',
-                                    peerDependencyName
-                                );
-                            }
-
-                            return found;
-                        });
-
-                        return result;
+                    Object.keys(dependencies).map(dependencyName => {
+                        return this.addModule(contextPath, dependencyName, {env});
                     })
-                )
-            )
-                .map(x => Boolean(x))
-                .reduce((result, x) => result && x, true);
+                );
+            }
 
-            if (!arePeerDependenciesLoaded) {
-                return false;
+            if (peerDependencies) {
+                const arePeerDependenciesLoaded = (
+                    await Promise.all(
+                        Object.keys(peerDependencies).map(peerDependencyName => {
+                            const result = this.addModule(contextPath, peerDependencyName, {env});
+                            result.then(found => {
+                                if (!found) {
+                                    this.error(
+                                        '\n',
+                                        modulePath,
+                                        version,
+                                        'couldn\'t be loaded because peer dependency is missing',
+                                        peerDependencyName
+                                    );
+                                }
+
+                                return found;
+                            });
+
+                            return result;
+                        })
+                    )
+                )
+                    .map(x => Boolean(x))
+                    .reduce((result, x) => result && x, true);
+
+                if (!arePeerDependenciesLoaded) {
+                    return false;
+                }
             }
         }
 
@@ -184,6 +231,10 @@ export default class DynamicCdnWebpackPlugin {
 
     applyWebpackCore(compiler) {
         compiler.hooks.afterCompile.tapAsync(pluginName, (compilation, cb) => {
+            const depName = `${compiler.options.output.filename}.dependencies.json`;
+            compilation.assets[depName] = new RawSource(
+                JSON.stringify(getDeps(this.modulesFromCdn))
+            );
             for (const [name, cdnConfig] of Object.entries(this.modulesFromCdn)) {
                 compilation.addChunkInGroup(name);
                 const chunk = compilation.addChunk(name);
