@@ -1,6 +1,6 @@
 {
   "name": "@talend/dynamic-cdn-webpack-plugin",
-  "version": "5.2.0",
+  "version": "5.2.1",
   "description": "Dynamically get your dependencies from a cdn rather than bundling them in your app",
   "license": "MIT",
   "repository": "mastilver/dynamic-cdn-webpack-plugin",
