@@ -126,7 +126,7 @@ export default class DynamicCdnWebpackPlugin {
             }
 
             this.log(
-                '\n',
+                '\n‼️',
                 modulePath,
                 version,
                 'is already loaded in another version. you have this deps twice'
@@ -138,7 +138,7 @@ export default class DynamicCdnWebpackPlugin {
 
         if (cdnConfig == null) {
             this.debug(
-                '\n',
+                '\n❔',
                 modulePath,
                 version,
                 'couldn\'t be found, if you want it you can add it to your resolver.'
@@ -153,7 +153,7 @@ export default class DynamicCdnWebpackPlugin {
                         const result = this.addModule(contextPath, peerDependencyName, {env});
                         if (!result) {
                             this.error(
-                                '\n',
+                                '\n❌',
                                 modulePath,
                                 version,
                                 'couldn\'t be loaded because peer dependency is missing',
@@ -174,7 +174,7 @@ export default class DynamicCdnWebpackPlugin {
         }
 
         this.modulesFromCdn[modulePath] = cdnConfig;
-        this.debug('\n', modulePath, version, `will be served by ${cdnConfig.url}`);
+        this.debug('\n✅', modulePath, version, `will be served by ${cdnConfig.url}`);
         return cdnConfig.var;
     }
 
