@@ -48,15 +48,14 @@ function getPackageRootPath(name) {
         return;
     }
 
-    const splitted = main.split('/');
-    const index = splitted.indexOf(name);
-    return splitted.splice(0, index + 1).join('/');
+    const index = main.indexOf(name);
+    return main.substring(0, index + name.length);
 }
 
 export default class DynamicCdnWebpackPlugin {
     constructor({disable = false, env, exclude, only, resolver, loglevel = 'ERROR', verbose} = {}) {
         if (exclude && only) {
-            throw new Error('You can\'t use \'exclude\' and \'only\' at the same time');
+            throw new Error("You can't use 'exclude' and 'only' at the same time");
         }
 
         this.disable = disable;
@@ -168,7 +167,7 @@ export default class DynamicCdnWebpackPlugin {
                 '\n❔',
                 modulePath,
                 version,
-                'couldn\'t be found, if you want it you can add it to your resolver.'
+                "couldn't be found, if you want it you can add it to your resolver."
             );
             return false;
         }
@@ -203,7 +202,7 @@ export default class DynamicCdnWebpackPlugin {
                                         '\n❌',
                                         modulePath,
                                         version,
-                                        'couldn\'t be loaded because peer dependency is missing',
+                                        "couldn't be loaded because peer dependency is missing",
                                         peerDependencyName
                                     );
                                 }
