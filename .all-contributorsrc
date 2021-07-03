@@ -52,7 +52,17 @@
           "url": "https://github.com/mastilver/dynamic-cdn-webpack-plugin/pull/21"
         }
       ]
+    },
+    {
+      "login": "kmalakoff",
+      "name": "Kevin Malakoff",
+      "avatar_url": "https://avatars.githubusercontent.com/u/756520?v=4",
+      "profile": "http://effortlessmotion.com/",
+      "contributions": [
+        "code"
+      ]
     }
   ],
-  "repoType": "github"
+  "repoType": "github",
+  "commitConvention": "none"
 }
