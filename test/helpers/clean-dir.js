@@ -1,12 +1,9 @@
 import rimraf from 'rimraf';
 
-export default function (dir) {
+export default function cleanDir(dir) {
     return new Promise((resolve, reject) => {
-        rimraf(dir, err => {
-            if (err) {
-                return reject(err);
-            }
-
+        rimraf(dir, error => {
+            if (error) return reject(error);
             resolve();
         });
     });

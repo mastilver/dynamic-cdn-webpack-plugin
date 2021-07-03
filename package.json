@@ -36,29 +36,30 @@
   ],
   "dependencies": {
     "html-webpack-include-assets-plugin": "^1.0.4",
-    "read-pkg-up": "^4.0.0",
-    "resolve-pkg": "^1.0.0"
+    "read-pkg-up": "^7.0.1",
+    "resolve-pkg": "^2.0.0"
   },
   "peerDependencies": {
-    "module-to-cdn": "^3.1.1",
+    "module-to-cdn": "^3.1.5",
     "webpack": "4"
   },
   "devDependencies": {
-    "all-contributors-cli": "^5.4.0",
-    "ava": "^0.25.0",
+    "@ava/babel": "^1.0.1",
+    "all-contributors-cli": "^6.20.0",
+    "ava": "^3.15.0",
     "babel-cli": "^6.26.0",
-    "babel-core": "^6.26.0",
-    "babel-preset-env": "^1.6.1",
-    "codecov": "^3.0.4",
+    "babel-core": "^6.26.3",
+    "babel-preset-env": "^1.7.0",
+    "codecov": "^3.8.2",
     "html-webpack-plugin": "^3.0.4",
-    "module-to-cdn": "^3.1.1",
-    "mz": "^2.6.0",
-    "nyc": "^12.0.2",
-    "rimraf": "^2.6.1",
+    "module-to-cdn": "^3.1.5",
+    "mz": "^2.7.0",
+    "nyc": "^15.1.0",
+    "rimraf": "^3.0.2",
     "webpack": "^4.17.1",
     "webpack-cli": "^3.1.0",
     "webpack-manifest-plugin": "2.0.0-rc.2",
-    "xo": "^0.22.0"
+    "xo": "^0.40.3"
   },
   "babel": {
     "presets": [
@@ -77,7 +78,14 @@
     "space": 4,
     "rules": {
       "eqeqeq": "off",
-      "no-eq-null": "off"
+      "no-eq-null": "off",
+      "curly": "off",
+      "import/extensions": "off",
+      "node/file-extension-in-import": "off",
+      "unicorn/prefer-module": "off",
+      "unicorn/prefer-node-protocol": "off",
+      "unicorn/no-array-reduce": "off",
+      "unicorn/prefer-spread": "off"
     },
     "ignores": [
       "test/fixtures/**/*.js"
@@ -86,9 +94,10 @@
   "ava": {
     "files": [
       "test/**/*.js",
-      "!test/fixtures/output/**/*"
+      "!test/helpers/**/*",
+      "!test/fixtures/**/*"
     ],
-    "babel": "inherit",
+    "babel": true,
     "require": [
       "babel-core/register"
     ]

@@ -8,20 +8,19 @@ import getResolver from './get-resolver';
 const pluginName = 'dynamic-cdn-webpack-plugin';
 let HtmlWebpackPlugin;
 try {
-    // eslint-disable-next-line import/no-extraneous-dependencies
     HtmlWebpackPlugin = require('html-webpack-plugin');
-} catch (err) {
+// eslint-disable-next-line unicorn/prefer-optional-catch-binding
+} catch (_) {
     HtmlWebpackPlugin = null;
 }
 
-const moduleRegex = /^((?:@[a-z0-9][\w-.]+\/)?[a-z0-9][\w-.]*)/;
+const moduleRegex = /^((?:@[a-z\d][\w-.]+\/)?[a-z\d][\w-.]*)/;
 
 const getEnvironment = mode => {
     switch (mode) {
         case 'none':
         case 'development':
             return 'development';
-
         default:
             return 'production';
     }
@@ -29,9 +28,7 @@ const getEnvironment = mode => {
 
 export default class DynamicCdnWebpackPlugin {
     constructor({disable = false, env, exclude, only, verbose, resolver} = {}) {
-        if (exclude && only) {
-            throw new Error('You can\'t use \'exclude\' and \'only\' at the same time');
-        }
+        if (exclude && only) throw new Error('You can\'t use \'exclude\' and \'only\' at the same time');
 
         this.disable = disable;
         this.env = env;
@@ -44,17 +41,11 @@ export default class DynamicCdnWebpackPlugin {
     }
 
     apply(compiler) {
-        if (!this.disable) {
-            this.execute(compiler, {env: this.env || getEnvironment(compiler.options.mode)});
-        }
+        if (!this.disable) this.execute(compiler, {env: this.env || getEnvironment(compiler.options.mode)});
 
         const isUsingHtmlWebpackPlugin = HtmlWebpackPlugin != null && compiler.options.plugins.some(x => x instanceof HtmlWebpackPlugin);
-
-        if (isUsingHtmlWebpackPlugin) {
-            this.applyHtmlWebpackPlugin(compiler);
-        } else {
-            this.applyWebpackCore(compiler);
-        }
+        if (isUsingHtmlWebpackPlugin) this.applyHtmlWebpackPlugin(compiler);
+        else this.applyWebpackCore(compiler);
     }
 
     execute(compiler, {env}) {
@@ -64,19 +55,13 @@ export default class DynamicCdnWebpackPlugin {
                 const contextPath = data.context;
 
                 const isModulePath = moduleRegex.test(modulePath);
-                if (!isModulePath) {
-                    return factory(data, cb);
-                }
+                if (!isModulePath) return factory(data, cb);
 
                 const varName = await this.addModule(contextPath, modulePath, {env});
 
-                if (varName === false) {
-                    factory(data, cb);
-                } else if (varName == null) {
-                    cb(null);
-                } else {
-                    cb(null, new ExternalModule(varName, 'var', modulePath));
-                }
+                if (varName === false) factory(data, cb);
+                else if (varName == null) cb(null);
+                else cb(null, new ExternalModule(varName, 'var', modulePath));
             });
         });
     }
@@ -84,29 +69,21 @@ export default class DynamicCdnWebpackPlugin {
     async addModule(contextPath, modulePath, {env}) {
         const isModuleExcluded = this.exclude.includes(modulePath) ||
             (this.only && !this.only.includes(modulePath));
-        if (isModuleExcluded) {
-            return false;
-        }
+        if (isModuleExcluded) return false;
 
         const moduleName = modulePath.match(moduleRegex)[1];
-        const {pkg: {version, peerDependencies}} = await readPkgUp({cwd: resolvePkg(moduleName, {cwd: contextPath})});
+        const {packageJson: {version, peerDependencies}} = await readPkgUp({cwd: resolvePkg(moduleName, {cwd: contextPath})});
 
         const isModuleAlreadyLoaded = Boolean(this.modulesFromCdn[modulePath]);
         if (isModuleAlreadyLoaded) {
             const isSameVersion = this.modulesFromCdn[modulePath].version === version;
-            if (isSameVersion) {
-                return this.modulesFromCdn[modulePath].var;
-            }
-
-            return false;
+            return isSameVersion ? this.modulesFromCdn[modulePath].var : false;
         }
 
         const cdnConfig = await this.resolver(modulePath, version, {env});
 
         if (cdnConfig == null) {
-            if (this.verbose) {
-                console.log(`❌ '${modulePath}' couldn't be found, please add it to https://github.com/mastilver/module-to-cdn/blob/master/modules.json`);
-            }
+            if (this.verbose) console.log(`❌ '${modulePath}' couldn't be found, please add it to https://github.com/mastilver/module-to-cdn/blob/master/modules.json`);
             return false;
         }
 
@@ -121,13 +98,10 @@ export default class DynamicCdnWebpackPlugin {
                 .map(x => Boolean(x))
                 .reduce((result, x) => result && x, true);
 
-            if (!arePeerDependenciesLoaded) {
-                return false;
-            }
+            if (!arePeerDependenciesLoaded) return false;
         }
 
         this.modulesFromCdn[modulePath] = cdnConfig;
-
         return cdnConfig.var;
     }
 

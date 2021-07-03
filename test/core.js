@@ -292,7 +292,7 @@ test('errors when using \'only\' and \'exclude\' together', async t => {
                 only: ['react']
             })
         ]
-    }), /You can't use 'exclude' and 'only' at the same time/);
+    }), {message: /You can't use 'exclude' and 'only' at the same time/});
 });
 
 test.serial('verbose options to output which modules are loaded from CDN / which are bundled', async t => {
