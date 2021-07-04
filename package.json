@@ -1,5 +1,5 @@
 {
-  "name": "dynamic-cdn-webpack-plugin",
+  "name": "@effortlessmotion/dynamic-cdn-webpack-plugin",
   "version": "5.0.0",
   "description": "Dynamically get your dependencies from a cdn rather than bundling them in your app",
   "license": "MIT",
