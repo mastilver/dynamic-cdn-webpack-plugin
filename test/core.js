@@ -1,13 +1,15 @@
 import path from 'path';
 import fs from 'mz/fs';
-
 import test from 'ava';
-import webpack from 'webpack';
 
 import DynamicCdnWebpackPlugin from '../src';
 
 import runWebpack from './helpers/run-webpack';
 import cleanDir from './helpers/clean-dir';
+
+function getChunkFiles(stats) {
+    return Array.from(stats.compilation.chunks).reduce((files, x) => files.concat(Array.from(x.files)), []);
+}
 
 test('basic', async t => {
     await cleanDir(path.resolve(__dirname, './fixtures/output/basic'));
@@ -29,8 +31,7 @@ test('basic', async t => {
         ]
     });
 
-    const files = stats.compilation.chunks.reduce((files, x) => files.concat(x.files), []);
-
+    const files = getChunkFiles(stats);
     t.is(files.length, 2);
     t.true(files.includes('app.js'));
     t.true(files.includes('https://unpkg.com/react@15.6.1/dist/react.js'));
@@ -43,6 +44,42 @@ test('basic', async t => {
 
     const doesRequireReact = output.includes('module.exports = React');
     t.true(doesRequireReact);
+});
+
+test('disable', async t => {
+    await cleanDir(path.resolve(__dirname, './fixtures/output/basic'));
+
+    const stats = await runWebpack({
+        context: path.resolve(__dirname, './fixtures/app'),
+
+        output: {
+            publicPath: '',
+            path: path.resolve(__dirname, './fixtures/output/basic')
+        },
+
+        entry: {
+            app: './single.js'
+        },
+
+        plugins: [
+            new DynamicCdnWebpackPlugin({
+                disable: true
+            })
+        ]
+    });
+
+    const files = getChunkFiles(stats);
+    t.is(files.length, 1);
+    t.true(files.includes('app.js'));
+
+    const output = await fs.readFile(path.resolve(__dirname, './fixtures/output/basic/app.js'));
+
+    // NOTE: not inside t.false to prevent ava to display whole file in console
+    const doesIncludeReact = output.includes('THIS IS REACT!');
+    t.true(doesIncludeReact);
+
+    const doesRequireReact = output.includes('module.exports = React');
+    t.false(doesRequireReact);
 });
 
 test('using production version', async t => {
@@ -67,8 +104,7 @@ test('using production version', async t => {
         ]
     });
 
-    const files = stats.compilation.chunks.reduce((files, x) => files.concat(x.files), []);
-
+    const files = getChunkFiles(stats);
     t.is(files.length, 2);
     t.true(files.includes('app.js'));
     t.true(files.includes('https://unpkg.com/react@15.6.1/dist/react.min.js'));
@@ -102,11 +138,44 @@ test('with mode=production', async t => {
         ]
     });
 
-    const files = stats.compilation.chunks.reduce((files, x) => files.concat(x.files), []);
-
+    const files = getChunkFiles(stats);
     t.is(files.length, 2);
     t.true(files.includes('app.js'));
     t.true(files.includes('https://unpkg.com/react@15.6.1/dist/react.min.js'));
+
+    const output = await fs.readFile(path.resolve(__dirname, './fixtures/output/node-env-prod/app.js'));
+
+    // NOTE: not inside t.false to prevent ava to display whole file in console
+    const doesIncludeReact = output.includes('THIS IS REACT!');
+    t.false(doesIncludeReact);
+});
+
+test('with mode=none', async t => {
+    await cleanDir(path.resolve(__dirname, './fixtures/output/node-env-prod'));
+
+    const stats = await runWebpack({
+        mode: 'none',
+
+        context: path.resolve(__dirname, './fixtures/app'),
+
+        output: {
+            publicPath: '',
+            path: path.resolve(__dirname, './fixtures/output/node-env-prod')
+        },
+
+        entry: {
+            app: './single.js'
+        },
+
+        plugins: [
+            new DynamicCdnWebpackPlugin()
+        ]
+    });
+
+    const files = getChunkFiles(stats);
+    t.is(files.length, 2);
+    t.true(files.includes('app.js'));
+    t.true(files.includes('https://unpkg.com/react@15.6.1/dist/react.js'));
 
     const output = await fs.readFile(path.resolve(__dirname, './fixtures/output/node-env-prod/app.js'));
 
@@ -135,8 +204,7 @@ test('nested dependencies', async t => {
         ]
     });
 
-    const files = stats.compilation.chunks.reduce((files, x) => files.concat(x.files), []);
-
+    const files = getChunkFiles(stats);
     t.deepEqual(files, ['app.js']);
 });
 
@@ -160,8 +228,7 @@ test('peerDependencies', async t => {
         ]
     });
 
-    const files = stats.compilation.chunks.reduce((files, x) => files.concat(x.files), []);
-
+    const files = getChunkFiles(stats);
     t.is(files.length, 4);
     t.true(files.includes('app.js'));
     t.true(files.includes('https://unpkg.com/@angular/core@4.2.4/bundles/core.umd.js'));
@@ -189,8 +256,7 @@ test('load module without export', async t => {
         ]
     });
 
-    const files = stats.compilation.chunks.reduce((files, x) => files.concat(x.files), []);
-
+    const files = getChunkFiles(stats);
     t.is(files.length, 2);
     t.true(files.includes('app.js'));
     t.true(files.includes('https://unpkg.com/babel-polyfill@6.23.0/dist/polyfill.js'));
@@ -218,8 +284,7 @@ test('exclude some modules', async t => {
         ]
     });
 
-    const files = stats.compilation.chunks.reduce((files, x) => files.concat(x.files), []);
-
+    const files = getChunkFiles(stats);
     t.is(files.length, 1);
     t.true(files.includes('app.js'));
     t.false(files.includes('https://unpkg.com/react@15.6.1/dist/react.js'));
@@ -253,8 +318,7 @@ test('only include some modules', async t => {
         ]
     });
 
-    const files = stats.compilation.chunks.reduce((files, x) => files.concat(x.files), []);
-
+    const files = getChunkFiles(stats);
     t.is(files.length, 2);
     t.true(files.includes('app.js'));
     t.true(files.includes('https://unpkg.com/react@15.6.1/dist/react.js'));
@@ -350,8 +414,7 @@ test('require files without extension', async t => {
         ]
     });
 
-    const files = stats.compilation.chunks.reduce((files, x) => files.concat(x.files), []);
-
+    const files = getChunkFiles(stats);
     t.is(files.length, 1);
     t.true(files.includes('app.js'));
     t.false(files.includes('https://unpkg.com/react@15.6.1/dist/react.js'));
@@ -377,8 +440,7 @@ test('async loading', async t => {
         ]
     });
 
-    const files = stats.compilation.chunks.reduce((files, x) => files.concat(x.files), []);
-
+    const files = getChunkFiles(stats);
     t.true(files.includes('app.js'));
     t.true(files.includes('https://unpkg.com/react@15.6.1/dist/react.js'));
 
@@ -411,8 +473,7 @@ test('when using multiple versions of a module, make sure the right version is u
         ]
     });
 
-    const files = stats.compilation.chunks.reduce((files, x) => files.concat(x.files), []);
-
+    const files = getChunkFiles(stats);
     t.true(files.includes('app.js'));
     t.true(files.includes('https://unpkg.com/react@15.6.1/dist/react.js'));
 
@@ -459,8 +520,7 @@ test('when using a custom resolver', async t => {
         ]
     });
 
-    const files = stats.compilation.chunks.reduce((files, x) => files.concat(x.files), []);
-
+    const files = getChunkFiles(stats);
     t.true(files.includes('app.js'));
     t.true(files.includes('https://my-cdn.com/react.js'));
 
@@ -511,8 +571,7 @@ test('when one peerDependency fails, do not load from cdn', async t => {
         ]
     });
 
-    const files = stats.compilation.chunks.reduce((files, x) => files.concat(x.files), []);
-
+    const files = getChunkFiles(stats);
     t.is(files.length, 2);
     t.true(files.includes('app.js'));
     t.false(files.includes('https://unpkg.com/@angular/core@4.2.4/bundles/core.umd.js'));
@@ -557,8 +616,7 @@ test('when resolver retuns a Promise', async t => {
         ]
     });
 
-    const files = stats.compilation.chunks.reduce((files, x) => files.concat(x.files), []);
-
+    const files = getChunkFiles(stats);
     t.true(files.includes('app.js'));
     t.true(files.includes('https://my-cdn.com/react.js'));
 
@@ -587,14 +645,16 @@ test('when used with NamedModulesPlugin', async t => {
             app: './single.js'
         },
 
+        optimization: {
+            moduleIds: 'named'
+        },
+
         plugins: [
-            new DynamicCdnWebpackPlugin(),
-            new webpack.NamedModulesPlugin()
+            new DynamicCdnWebpackPlugin()
         ]
     });
 
-    const files = stats.compilation.chunks.reduce((files, x) => files.concat(x.files), []);
-
+    const files = getChunkFiles(stats);
     t.is(files.length, 2);
     t.true(files.includes('app.js'));
     t.true(files.includes('https://unpkg.com/react@15.6.1/dist/react.js'));
@@ -628,8 +688,7 @@ test('When module contains a submodule', async t => {
         ]
     });
 
-    const files = stats.compilation.chunks.reduce((files, x) => files.concat(x.files), []);
-
+    const files = getChunkFiles(stats);
     t.is(files.length, 1);
     t.true(files.includes('app.js'));
 });
