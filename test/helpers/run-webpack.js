@@ -1,6 +1,6 @@
-import webpack from 'webpack';
+const webpack = require('webpack');
 
-export default async function runWebpack(config) {
+module.exports = async function runWebpack(config) {
     if (!config.mode) config.mode = 'development';
 
     return new Promise((resolve, reject) => {

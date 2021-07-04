@@ -1,16 +1,16 @@
-import readPkgUp from 'read-pkg-up';
-import ExternalModule from 'webpack/lib/ExternalModule';
-import resolvePkg from 'resolve-pkg';
+const readPkgUp = require('read-pkg-up');
+const ExternalModule = require('webpack/lib/ExternalModule');
+const resolvePkg = require('resolve-pkg');
 
-import getResolver from './get-resolver';
-
-const pluginName = 'dynamic-cdn-webpack-plugin';
 let HtmlWebpackPlugin = null;
 try {
     HtmlWebpackPlugin = require('html-webpack-plugin');
 // eslint-disable-next-line unicorn/prefer-optional-catch-binding
 } catch (_) {}
 
+const getResolver = require('./get-resolver');
+
+const pluginName = 'dynamic-cdn-webpack-plugin';
 const moduleRegex = /^((?:@[a-z\d][\w-.]+\/)?[a-z\d][\w-.]*)/;
 
 const getEnvironment = mode => {
@@ -23,7 +23,7 @@ const getEnvironment = mode => {
     }
 };
 
-export default class DynamicCdnWebpackPlugin {
+module.exports = class DynamicCdnWebpackPlugin {
     constructor({disable = false, env, exclude, only, verbose, resolver} = {}) {
         if (exclude && only) throw new Error('You can\'t use \'exclude\' and \'only\' at the same time');
 
@@ -66,7 +66,7 @@ export default class DynamicCdnWebpackPlugin {
             });
 
             // Optionally, update the HtmlWebpackPlugin assets
-            const isUsingHtmlWebpackPlugin = HtmlWebpackPlugin && compiler.options.plugins.some(x => x instanceof HtmlWebpackPlugin);
+            const isUsingHtmlWebpackPlugin = compiler.options.plugins.some(x => x.constructor.name === 'HtmlWebpackPlugin');
             if (isUsingHtmlWebpackPlugin) {
                 const hooks = HtmlWebpackPlugin.getHooks(compilation);
                 hooks.beforeAssetTagGeneration.tapAsync(pluginName, (htmlPluginData, callback) => {

@@ -12,10 +12,10 @@
   "engines": {
     "node": ">=10.13.0"
   },
+  "main": "index.js",
   "scripts": {
-    "build": "babel src --out-dir lib",
-    "prepublishOnly": "xo && npm run build",
-    "test": "nyc ava",
+    "prepublishOnly": "xo",
+    "test": "nyc tap test/**/*.test.js",
     "lint": "xo",
     "lint:fix": "xo --fix",
     "version": "all-contributors generate",
@@ -23,7 +23,7 @@
   },
   "files": [
     "index.js",
-    "lib"
+    "src"
   ],
   "keywords": [
     "webpack",
@@ -45,33 +45,16 @@
     "webpack": ">=5"
   },
   "devDependencies": {
-    "@ava/babel": "^1.0.1",
     "all-contributors-cli": "^6.20.0",
-    "ava": "^3.15.0",
-    "babel-cli": "^6.26.0",
-    "babel-core": "^6.26.3",
-    "babel-preset-env": "^1.7.0",
     "codecov": "^3.8.2",
     "html-webpack-plugin": "^5.3.2",
     "mz": "^2.7.0",
     "nyc": "^15.1.0",
     "rimraf": "^3.0.2",
+    "tap": "^15.0.9",
     "webpack": "^5.42.0",
-    "webpack-cli": "^4.7.2",
     "webpack-manifest-plugin": "3.1.1",
     "xo": "^0.40.3"
-  },
-  "babel": {
-    "presets": [
-      [
-        "env",
-        {
-          "targets": {
-            "node": 8
-          }
-        }
-      ]
-    ]
   },
   "xo": {
     "esnext": true,
@@ -89,17 +72,6 @@
     },
     "ignores": [
       "test/fixtures/**/*.js"
-    ]
-  },
-  "ava": {
-    "files": [
-      "test/**/*.js",
-      "!test/helpers/**/*",
-      "!test/fixtures/**/*"
-    ],
-    "babel": true,
-    "require": [
-      "babel-core/register"
     ]
   },
   "nyc": {
