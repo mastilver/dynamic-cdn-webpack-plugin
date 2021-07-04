@@ -1,6 +1,6 @@
 {
   "name": "@effortlessmotion/dynamic-cdn-webpack-plugin",
-  "version": "5.0.0",
+  "version": "5.0.1",
   "description": "Dynamically get your dependencies from a cdn rather than bundling them in your app",
   "license": "MIT",
   "repository": "mastilver/dynamic-cdn-webpack-plugin",

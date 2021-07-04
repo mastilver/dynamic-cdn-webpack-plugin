@@ -66,13 +66,13 @@ module.exports = class DynamicCdnWebpackPlugin {
             });
 
             // Optionally, update the HtmlWebpackPlugin assets
-            const isUsingHtmlWebpackPlugin = compiler.options.plugins.some(x => x.constructor.name === 'HtmlWebpackPlugin');
+            const isUsingHtmlWebpackPlugin = compiler.options.plugins.some(x => x instanceof HtmlWebpackPlugin);
             if (isUsingHtmlWebpackPlugin) {
                 const hooks = HtmlWebpackPlugin.getHooks(compilation);
                 hooks.beforeAssetTagGeneration.tapAsync(pluginName, (htmlPluginData, callback) => {
                     const {assets} = htmlPluginData;
                     const scripts = Object.values(this.modulesFromCdn).map(moduleFromCdn => moduleFromCdn.url);
-                    assets.js = assets.js.concat(scripts);
+                    assets.js = scripts.concat(assets.js);
                     return callback(null, htmlPluginData);
                 });
             }
