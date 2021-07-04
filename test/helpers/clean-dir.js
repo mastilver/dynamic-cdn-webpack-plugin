@@ -7,4 +7,4 @@ module.exports = function cleanDir(dir) {
             resolve();
         });
     });
-}
+};

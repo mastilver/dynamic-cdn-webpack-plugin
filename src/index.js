@@ -117,4 +117,4 @@ module.exports = class DynamicCdnWebpackPlugin {
         this.modulesFromCdn[modulePath] = cdnConfig;
         return cdnConfig.var;
     }
-}
+};

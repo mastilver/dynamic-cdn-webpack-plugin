@@ -4,6 +4,7 @@
 
 > Dynamically get your dependencies from a cdn rather than bundling them in your app
 
+Warning: This module is a fork from [https://github.com/mastilver/dynamic-cdn-webpack-plugin](https://github.com/mastilver/dynamic-cdn-webpack-plugin) to support Webpack 5.
 
 ## Install
 

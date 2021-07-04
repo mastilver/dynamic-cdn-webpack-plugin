@@ -2,8 +2,8 @@ const path = require('path');
 const {fs} = require('mz');
 const t = require('tap');
 
-const DynamicCdnWebpackPlugin = require('..');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const DynamicCdnWebpackPlugin = require('..');
 
 const runWebpack = require('./helpers/run-webpack.js');
 const cleanDir = require('./helpers/clean-dir.js');

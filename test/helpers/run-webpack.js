@@ -13,4 +13,4 @@ module.exports = async function runWebpack(config) {
             resolve(stats);
         });
     });
-}
+};
