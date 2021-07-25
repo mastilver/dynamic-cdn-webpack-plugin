@@ -4,17 +4,17 @@ language: node_js
 node_js: lts/*
 jobs:
   include:
-  - stage: Tests
-    name: Unit Tests on OSX
-    os: osx
-  - stage: Tests
-    name: Unit Tests on Linux
-    os: linux
-  - stage: Tests
-    name: Unit Tests on Windows
-    os: windows
+    # - stage: Tests
+    #   name: Unit Tests on OSX
+    #   os: osx
+    - stage: Tests
+      name: Unit Tests on Linux
+      os: linux
+    - stage: Tests
+      name: Unit Tests on Windows
+      os: windows
 before_install:
-- npm uninstall node-version-use -g
+  - npm uninstall node-version-use -g
 script:
-- npm install node-version-use -g
-- nvu engines npm test
+  - npm install node-version-use -g
+  - nvu engines npm test
