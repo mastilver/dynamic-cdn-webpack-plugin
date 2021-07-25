@@ -1,35 +1,20 @@
 os: linux
 dist: xenial
 language: node_js
-node_js: 'lts/*'
-
+node_js: lts/*
 jobs:
   include:
-    - stage: 'Tests'
-      name: 'Unit Tests on OSX'
-      os: osx
-    - stage: 'Tests'
-      name: 'Unit Tests on Linux'
-      os: linux
-    - stage: 'Tests'
-      name: 'Unit Tests on Windows'
-      os: windows
-    - stage: release
-      name: 'Publish to npm'
-      if: 
-        - tag IS present
-        - branch = master
-      deploy:
-        provider: npm
-        email: kmalakoff@gmail.com
-        api_token:
-          secure: VB0Kxn16i6NQqnpn/iFttrLe74gXtimlOudn1IbQU+jZbySqg3Ye8Y+BsvM7daypsV1l7e7lR5uZ3awPCAHcywQFS4br+xQiRfIQc11zu0z3klLiZLJKzw1U4lKHv7n+9LYfCdlI3AkFZsYgqMvrMxJVxDyt75VLUZTN/NS8v6kq3W7S1XoQRe2hc2hOmr0c1y5voDAoAAgWzz9Pop2rspH0DXVg1ywFiUua7Q0y3PFDgNlxIdOP2RdyA0d1GpBL/CBQevgsdpH8MsSL0E1C3mfUoQdCdH+xtHC1yADLkAHhIANxcv2XhIk/yxLGNexmQkP6NJiZc1Z+SqA0rUyQoJ2AcffuDim/xDCt4TbwuoxmyvOnoa/pAlhERgBFC+2frsGLNRfBOnVOeO0vlDJWTAQ7Yvn3ton3NaZ1+NsxIY5sCWvMpE39oMh2tiUNqda4Zdf5eFL/GSVcdPt0DOSKre/Vpl5QXV89IL+z1pDhtHWCof2JF3074xtjLfW8quqEtahFLb9hIypScfpBhKin52lz/cn7MFzK8CwBDVMO08k7ESJAYlbzMjfabuWbeZiNZnHRATEHHwoRx9pH2ceSZlrk4FLlCCrcTC10XwKvuhT0fDCPetFsqKk1jYR+ajuk9mQmOD2eCnKCdW2vSrOXpQ+WYBilv8wXt/MiSSbzBiI=
-      install: skip
-      script: skip
-      after_success: skip
-
+  - stage: Tests
+    name: Unit Tests on OSX
+    os: osx
+  - stage: Tests
+    name: Unit Tests on Linux
+    os: linux
+  - stage: Tests
+    name: Unit Tests on Windows
+    os: windows
 before_install:
-  - npm uninstall node-version-use -g
+- npm uninstall node-version-use -g
 script:
-  - npm install node-version-use -g
-  - nvu engines npm test
+- npm install node-version-use -g
+- nvu engines npm test
