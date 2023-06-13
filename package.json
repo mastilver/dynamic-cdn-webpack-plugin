@@ -10,7 +10,7 @@
     "url": "https://github.com/mastilver"
   },
   "engines": {
-    "node": ">=10.13.0"
+    "node": ">=16.0.0"
   },
   "main": "index.js",
   "scripts": {
@@ -37,16 +37,15 @@
     "externals"
   ],
   "dependencies": {
-    "module-to-cdn": "^3.1.5",
     "read-pkg-up": "^7.0.1",
     "resolve-pkg": "^2.0.0"
   },
   "peerDependencies": {
+    "module-to-cdn": "^3.1.5",
     "webpack": ">=5"
   },
   "devDependencies": {
     "all-contributors-cli": "^6.20.0",
-    "codecov": "^3.8.3",
     "html-webpack-plugin": "^5.5.0",
     "mz": "^2.7.0",
     "nyc": "^15.1.0",
