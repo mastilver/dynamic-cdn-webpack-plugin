@@ -1,5 +1,5 @@
 {
-  "name": "dynamic-cdn-webpack-plugin",
+  "name": "@mastilver/dynamic-cdn-webpack-plugin",
   "version": "5.0.0",
   "description": "Dynamically get your dependencies from a cdn rather than bundling them in your app",
   "license": "MIT",
@@ -17,7 +17,7 @@
   },
   "main": "index.js",
   "scripts": {
-    "prepublishOnly": "xo && npm run test-compat",
+    "prepublishOnly": "xo && npm run test",
     "test": "nyc tap test/**/*.test.js",
     "lint": "xo",
     "lint:fix": "xo --fix",
