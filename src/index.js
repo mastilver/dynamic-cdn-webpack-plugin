@@ -96,7 +96,9 @@ module.exports = class DynamicCdnWebpackPlugin {
         const cdnConfig = await this.resolver(modulePath, version, {env});
 
         if (cdnConfig == null) {
-            if (this.verbose) console.log(`❌ '${modulePath}' couldn't be found, please add it to https://github.com/mastilver/module-to-cdn/blob/master/modules.json`);
+            if (this.verbose) {
+                console.log(`❌ '${modulePath}' couldn't be found, please add it to https://github.com/mastilver/module-to-cdn/blob/master/modules.json`);
+            }
             return false;
         }
 
