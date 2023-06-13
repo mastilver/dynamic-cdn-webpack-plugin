@@ -3,7 +3,7 @@
   "version": "5.0.0",
   "description": "Dynamically get your dependencies from a cdn rather than bundling them in your app",
   "license": "MIT",
-  "repository": "mastilver/dynamic-cdn-webpack-plugin",
+  "repository": "https://github.com/mastilver/dynamic-cdn-webpack-plugin.git",
   "author": {
     "name": "Thomas Sileghem",
     "email": "th.sileghem@gmail.com",
@@ -11,6 +11,9 @@
   },
   "engines": {
     "node": ">=16.0.0"
+  },
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com"
   },
   "main": "index.js",
   "scripts": {
