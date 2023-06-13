@@ -1,0 +1,40 @@
+name: Build and Test
+on:
+  workflow_dispatch:
+  pull_request:
+    types: [ opened, edited, reopened, ready_for_review, synchronize ]
+    branches:
+      - develop
+      - master
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event_name == 'pull_request' && github.head_ref || github.sha }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    name: Build and Test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Use Node.js 16.x
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16.x
+          cache: "npm"
+
+      - name: Show versions
+        run: |
+          node --version
+          npm --version
+
+      - name: NPM Install
+        run: npm install
+
+      - name: Test JavaScript
+        run: npm run test
+
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v3

@@ -4,3 +4,4 @@ test/fixtures/output
 yarn.lock
 .nyc_output
 coverage
+.vscode

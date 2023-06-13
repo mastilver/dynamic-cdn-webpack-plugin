@@ -1,15 +1,14 @@
-import path from 'path';
-import fs from 'mz/fs';
+const path = require('path');
+const {fs} = require('mz');
+const t = require('tap');
 
-import test from 'ava';
-import ManifestPlugin from 'webpack-manifest-plugin';
+const {WebpackManifestPlugin} = require('webpack-manifest-plugin');
+const DynamicCdnWebpackPlugin = require('..');
 
-import DynamicCdnWebpackPlugin from '../src';
+const runWebpack = require('./helpers/run-webpack.js');
+const cleanDir = require('./helpers/clean-dir.js');
 
-import runWebpack from './helpers/run-webpack';
-import cleanDir from './helpers/clean-dir';
-
-test('webpack-manifest-plugin', async t => {
+t.test('webpack-manifest-plugin', async t => {
     await cleanDir(path.resolve(__dirname, './fixtures/output/webpack-manifest-plugin'));
 
     await runWebpack({
@@ -25,23 +24,21 @@ test('webpack-manifest-plugin', async t => {
         },
 
         plugins: [
-            new ManifestPlugin({
-                fileName: 'manifest.json'
-            }),
+            new WebpackManifestPlugin({fileName: 'manifest.json'}),
             new DynamicCdnWebpackPlugin()
         ]
     });
 
     const manifest = JSON.parse(await fs.readFile(path.resolve(__dirname, './fixtures/output/webpack-manifest-plugin/manifest.json')));
 
-    t.deepEqual(manifest, {
+    t.same(manifest, {
         'app.js': 'app.js',
         'react.js': 'https://unpkg.com/react@15.6.1/dist/react.js'
     });
 
     const output = await fs.readFile(path.resolve(__dirname, './fixtures/output/webpack-manifest-plugin/app.js'));
 
-    // NOTE: not inside t.false to prevent ava to display whole file in console
+    // NOTE: not inside t.notOk to prevent ava to display whole file in console
     const doesIncludeReact = output.includes('PureComponent');
-    t.false(doesIncludeReact);
+    t.notOk(doesIncludeReact);
 });
