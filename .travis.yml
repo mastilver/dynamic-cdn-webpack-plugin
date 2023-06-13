@@ -1,16 +1,20 @@
+os: linux
+dist: xenial
 language: node_js
-node_js:
-  - '8'
-
-env:
-  - WEBPACK_VERSION=4
-
-install:
-  - npm install
-  - npm install webpack@$WEBPACK_VERSION || true
-
+node_js: lts/*
+jobs:
+  include:
+    # - stage: Tests
+    #   name: Unit Tests on OSX
+    #   os: osx
+    - stage: Tests
+      name: Unit Tests on Linux
+      os: linux
+    - stage: Tests
+      name: Unit Tests on Windows
+      os: windows
+before_install:
+  - npm uninstall node-version-use -g
 script:
-  - npm test
-
-after_script:
-  - './node_modules/.bin/nyc report --reporter=text-lcov > coverage.lcov && ./node_modules/.bin/codecov'
+  - npm install node-version-use -g
+  - nvu engines npm test
